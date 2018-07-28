@@ -5,11 +5,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MUI Landing Page with Extras</title>
+    <title>PyBites My Reading List</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <link rel="stylesheet" href="//cdn.muicss.com/mui-0.9.39/extra/mui-colors.min.css">
     <script src="//cdn.muicss.com/mui-0.9.39/extra/mui-combined.min.js"></script>
+    <script type="text/javascript" src="//books.google.com/books/previewlib.js"></script>
     <script src="{% static 'js/jquery_min.js' %}"></script>
     <script src="{% static 'js/jquery.autocomplete.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
@@ -22,7 +23,8 @@
     <div class="mui-container">
       <table>
         <tr class="mui--appbar-height">
-          <td class="mui--text-title">Brand.io</td>
+          <td class="mui--text-title">PyBites My Reading List</td>
+
           <td class="mui--text-right">
             <ul class="mui-list--inline mui--text-body2">
               <li><a href="#">About</a></li>
@@ -51,7 +53,10 @@
             {% endfor %}
           </div>
 
-          <input class="form-control mr-sm-2" type="text" name="searchTitles", id="searchTitles" placeholder="Search Books" aria-label="Search Books">
+          <div class="mui-textfield">
+            <input class="form-control mr-sm-2" type="text" name="searchTitles", id="searchTitles" placeholder="What's on your reading list?">
+          </div>
+          <br>
 
           {% block content %}
           {% endblock %}
@@ -63,7 +68,10 @@
 
     <footer>
       <div class="mui-container mui--text-center">
-        Made with ♥ by <a href="https://www.muicss.com">MUICSS</a>
+        <p>
+          <i>A reader lives a thousand lives before he dies, said Jojen. The man who never reads lives only one. - George R.R. Martin, A Dance with Dragons</i>
+          <br>Made with ♥ using <a href="https://www.muicss.com">MUICSS</a> by <a href="https://pybit.es">PyBites</a> 
+        </p>
       </div>
     </footer>
     <script src="//cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>

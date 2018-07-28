@@ -8,6 +8,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^api/get_books/', views.get_books, name='get_books'),
+    url(r'^books/(?P<bookid>.*)$', views.book_page, name='book_page'),
     url(r'hey-bob/', admin.site.urls),
 ]
 

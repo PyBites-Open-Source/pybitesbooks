@@ -99,3 +99,26 @@ footer {
   border-radius: 5px;
 }
 
+
+/* custom styles */
+blockquote {
+  border-left: 1px solid #f2f2f2;
+  padding: 0.5em 10px;
+  quotes: "“" "”";
+}
+blockquote:before, blockquote:after {
+  color: #ccc;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.10em;
+  vertical-align: -0.4em;
+}
+blockquote:before {
+  content: open-quote;
+}
+blockquote:after {
+  content: " ";
+}
+blockquote {
+  display: inline;
+}
