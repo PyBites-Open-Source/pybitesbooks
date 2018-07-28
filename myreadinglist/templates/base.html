@@ -1,0 +1,69 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MUI Landing Page with Extras</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.muicss.com/mui-0.9.39/extra/mui-colors.min.css">
+    <script src="//cdn.muicss.com/mui-0.9.39/extra/mui-combined.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <header class="mui-appbar mui--z1">
+
+    <div class="mui-container">
+      <table>
+        <tr class="mui--appbar-height">
+          <td class="mui--text-title">Brand.io</td>
+          <td class="mui--text-right">
+            <ul class="mui-list--inline mui--text-body2">
+              <li><a href="#">About</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i> Login</a></li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+    </header>
+
+    <div id="content-wrapper">
+
+      <div class="mui--appbar-height"></div>
+      <br><br>
+
+      <div class="mui-container-fluid">
+        <div class="mui-container">
+
+          <div class="row" id="messages">
+            {% for message in messages %}
+              <p style="color: {% if message.tags == 'success' %}green{% elif message.tags == 'error' %}red{% endif %}">
+                {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}
+              </p>
+            {% endfor %}
+          </div>
+
+          {% block content %}
+          {% endblock %}
+
+        </div>
+      </div>
+
+    </div>
+
+    <footer>
+      <div class="mui-container mui--text-center">
+        Made with ♥ by <a href="https://www.muicss.com">MUICSS</a>
+      </div>
+    </footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script>
+      new WOW().init();
+    </script>
+  </body>
+</html>
