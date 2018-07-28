@@ -64,3 +64,38 @@ footer {
   border-top: 1px solid #e0e0e0;
   padding-top: 35px;
 }
+
+
+
+/* autocomplete */
+
+.searchResWrapper {
+  float: left;
+  clear: both;
+  padding-left: 0px;
+  margin-left: 0px;
+}
+.miniAvatar {
+  padding: 0px;
+  margin-right: 5px;
+  width: 30px;
+}
+.searchRes {
+  float: right;
+  font-size: 90%;
+}
+
+#actionWrapper {
+  margin-top: 10px;
+}
+
+#bookInfo ul {
+  padding: 0px;
+}
+.thumbNail {
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+

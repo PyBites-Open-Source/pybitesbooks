@@ -7,6 +7,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
+    url(r'^api/get_books/', views.get_books, name='get_books'),
     url(r'hey-bob/', admin.site.urls),
 ]
 
