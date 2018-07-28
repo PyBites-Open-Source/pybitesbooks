@@ -1,4 +1,8 @@
-23.38
+23:38 env made app
+00:06 bookstrapped startapp
+00:31 google api books autocomplete working
+01:07 book page done, pushing to heroku
+
 pvenv6
 pip install django django-registration
 
@@ -10,7 +14,7 @@ pip install django django-registration
 517  django-admin startapp notes
 
 
-00:06
+
 commit a09d191bdac754897c7e193f498c9833b86debc5 (HEAD -> master)
 Author: Bob Belderbos <bob@pybit.es>
 Date:   Sun Jul 29 00:06:42 2018 +0200
@@ -20,6 +24,6 @@ Date:   Sun Jul 29 00:06:42 2018 +0200
 git show a09d191bdac754897c7e193f498c9833b86debc5
 
 
-00:31
+
 google api books autocomplete working
 https://github.com/pybites/myreadinglist/tree/master/mysite
