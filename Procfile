@@ -1,2 +1,2 @@
-web: gunicorn myreadinglist/wsgi --log-file -
+web: gunicorn myreadinglist.wsgi --log-file -
 
