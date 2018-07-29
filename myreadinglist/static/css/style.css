@@ -122,3 +122,12 @@ blockquote:after {
 blockquote {
   display: inline;
 }
+
+.thumbNail {
+  height: 100px;
+  margin: 5px 3px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+

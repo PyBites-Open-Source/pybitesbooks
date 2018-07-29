@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<h2>Register to receive PyBites Email Notifications</h2>
+<form class="pure-form pure-form-stacked" method="post" action=".">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input class="pure-button pure-button-primary" type="submit" value="{% trans 'Submit' %}" />
+</form>
+{% endblock %}

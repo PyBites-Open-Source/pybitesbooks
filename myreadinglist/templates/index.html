@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+  <div class="mui--text-display1">Recent Searches</div>
+  <br>
+  {% for book in last_added_books %}
+    <a href="{% url 'book_page' bookid=book.bookid %}"><img class="thumbNail" src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.title }}"></a>
+  {% endfor %}
+{% endblock %}

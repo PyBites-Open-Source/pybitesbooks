@@ -24,13 +24,18 @@
     <div class="mui-container">
       <table>
         <tr class="mui--appbar-height">
-          <td class="mui--text-title">PyBites My Reading List</td>
+          <td class="mui--text-title"><a href="{% url 'index' %}">PyBites My Reading List</a></td>
 
           <td class="mui--text-right">
             <ul class="mui-list--inline mui--text-body2">
               <li><a href="#">About</a></li>
-              <li><a href="#">Pricing</a></li>
-              <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i> Login</a></li>
+              <li>
+                {% if user.is_authenticated %}
+                    Hey {{ user.username }}, <a href="{% url 'auth_logout' %}?next=/">logout</a>
+                {% else %}
+                  <a href="{% url 'auth_login' %}"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
+                {% endif %} 
+              </li>
             </ul>
           </td>
         </tr>

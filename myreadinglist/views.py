@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from myreadinglist.googlebooks import search_books, get_book_info
+from books.models import Book
 
 BOOK_ENTRY = ('<span class="searchResWrapper">'
               '<span class="searchRes" id="{id}">'
@@ -51,5 +52,6 @@ def book_page(request, bookid):
     return render(request, 'book.html', {'book': book})
 
 
-def home(request):
-    return render(request, 'home.html')
+def index(request):
+    last_added_books = Book.objects.order_by('-inserted').all()
+    return render(request, 'index.html', {'last_added_books': last_added_books})

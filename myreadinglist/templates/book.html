@@ -16,7 +16,7 @@
 
     <div class="mui-row">
       <div class="mui-col-md-4">
-        <img class="thumbNail" src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata" alt="{{ book.title }}">
+        <img src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata" alt="{{ book.title }}">
       </div>
       <div class="mui-col-md-8">
         <div class="mui--text-display1">{{ book.title }}</div>
@@ -46,6 +46,16 @@
             <tr>
               <td>Language</td>
               <td>{{ book.language }}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                {% if user.is_authenticated %}
+                  logged in
+                {% else %}
+                  <a href="{% url 'auth_login' %}">login (register)</a>
+                {% endif %}
+              </td>
             </tr>
           </tbody>
         </table>
