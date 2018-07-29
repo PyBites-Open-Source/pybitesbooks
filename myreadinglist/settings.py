@@ -156,3 +156,6 @@ LOGGING = {
         },
     },
 }
+LOGIN_URL = 'index'
+LOGOUT_URL = '/'
+LOGIN_REDIRECT_URL = 'index'

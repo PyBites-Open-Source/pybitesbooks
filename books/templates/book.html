@@ -48,14 +48,34 @@
               <td>{{ book.language }}</td>
             </tr>
             <tr>
-              <td></td>
-              <td>
+              <td colspan="2">
                 {% if user.is_authenticated %}
-                  logged in
+                  <form class="mui-form" id="addBookForm" method="post">
+                    {% csrf_token %}
+
+                    <div class="mui-select">
+                      {{ form.status.errors }}
+                      {{ form.status }}
+                    </div>
+
+                    <div class="mui-textfield">
+                      {{ form.completed.errors }}
+                      {{ form.completed }}
+                    </div>
+
+                    <button type="submit" value="1" class="mui-btn--primary
+                    mui-btn" name="addBookSubmit">{% if userbook %}Edit{% else %}Add{% endif %} Book</button>
+
+                  </form>
+
                 {% else %}
-                  <a href="{% url 'auth_login' %}">login (register)</a>
+
+                <a href="{% url 'auth_login' %}?next={{ request.get_full_path|urlencode }}">
+                  <i class="fa fa-user" aria-hidden="true"></i> Add Book</a>
+
                 {% endif %}
               </td>
+
             </tr>
           </tbody>
         </table>

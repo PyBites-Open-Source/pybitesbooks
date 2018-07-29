@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from myreadinglist.googlebooks import search_books, get_book_info
+from books.googlebooks import search_books
 from books.models import Book
 
 BOOK_ENTRY = ('<span class="searchResWrapper">'
@@ -45,11 +45,6 @@ def get_books(request):
     data = list(_parse_response(items))
 
     return HttpResponse(data)
-
-
-def book_page(request, bookid):
-    book = get_book_info(bookid)
-    return render(request, 'book.html', {'book': book})
 
 
 def index(request):

@@ -34,6 +34,11 @@
                 {% else %}
                   <a href="{% url 'auth_login' %}"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
                 {% endif %} 
+
+                {% if user.is_superuser %}
+                  <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                {% endif %}
+
               </li>
             </ul>
           </td>

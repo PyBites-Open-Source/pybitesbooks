@@ -7,7 +7,7 @@
   {{ form.as_p }}
 
   <input class="pure-button pure-button-primary" type="submit" value="{% trans 'Log in' %}" />
-  <input type="hidden" name="next" value="{% url 'index' %}" />
+  <input type="hidden" name="next" value="{{ request.GET.next }}" />
 </form>
 
 <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>

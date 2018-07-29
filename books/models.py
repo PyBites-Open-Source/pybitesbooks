@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Book(models.Model):
@@ -26,3 +27,17 @@ class Search(models.Model):
 
     def __str__(self):
         return self.term
+
+
+class UserBook(models.Model):
+    READ_STATUSES = (
+        ('r', 'I am reading this book'),
+        ('c', 'I have completed this book'),
+        ('t', 'I want to read this book'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=READ_STATUSES, default='c')
+    completed = models.DateTimeField(default=timezone.now)
+    inserted = models.DateTimeField(auto_now_add=True)  # != completed
+    updated = models.DateTimeField(auto_now=True)
