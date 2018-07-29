@@ -17,7 +17,7 @@ class Book(models.Model):
     edited = models.DateTimeField('last modified', auto_now=True)
 
     def __str__(self):
-        return '{} {}'.format(self.bookid, self.title)
+        return f'{self.bookid} {self.title}'
 
 
 class Search(models.Model):
@@ -33,7 +33,7 @@ class UserBook(models.Model):
     READ_STATUSES = (
         ('r', 'I am reading this book'),
         ('c', 'I have completed this book'),
-        ('t', 'I want to read this book'),
+        ('t', 'I want to read this book'),  # t of 'todo'
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -41,3 +41,10 @@ class UserBook(models.Model):
     completed = models.DateTimeField(default=timezone.now)
     inserted = models.DateTimeField(auto_now_add=True)  # != completed
     updated = models.DateTimeField(auto_now=True)
+
+    @property
+    def done_reading(self):
+        return self.status == 'c'
+
+    def __str__(self):
+        return f'{self.user} {self.book} {self.status} {self.completed}'

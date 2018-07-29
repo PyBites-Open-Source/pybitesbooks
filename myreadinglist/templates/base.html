@@ -27,19 +27,21 @@
           <td class="mui--text-title"><a href="{% url 'index' %}">PyBites My Reading List</a></td>
 
           <td class="mui--text-right">
-            <ul class="mui-list--inline mui--text-body2">
-              <li>
-                {% if user.is_authenticated %}
-                    Hey {{ user.username }}, <a href="{% url 'auth_logout' %}?next=/">logout</a>
-                {% else %}
-                  <a href="{% url 'auth_login' %}"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
-                {% endif %} 
-
+            <ul class="mui-list--inline mui--text-body2" id="navigation">
+              {% if user.is_authenticated %}
+                <span>Hey {{ user.username }}</span>
+                <li><a href="{% url 'user_page' username=user.username %}">My Books</a></li>
                 {% if user.is_superuser %}
                   <li><a href="{% url 'admin:index' %}">Admin</a></li>
                 {% endif %}
+                <li><a href="{% url 'auth_logout' %}">Logout</a></li>
 
-              </li>
+              {% else %}
+
+                <li><a href="{% url 'auth_login' %}"><i class="fa fa-user" aria-hidden="true"></i> Login</a></li>
+
+              {% endif %} 
+
             </ul>
           </td>
         </tr>
