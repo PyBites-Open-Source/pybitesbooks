@@ -2,29 +2,37 @@ from collections import OrderedDict
 
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
 from .googlebooks import get_book_info
 from .forms import UserBookForm
-from .models import UserBook
+from .models import UserBook, BookNote
 
 
 def book_page(request, bookid):
     post = request.POST
+    print(post)
 
+    # return vars
+    userbook = None
+
+    # get book info
     book = get_book_info(bookid)
 
-    submitted = post.get('addBookSubmit')
-    status = post.get('status')
-    completed = post.get('completed') or None
-    if completed:
-        completed = timezone.datetime.strptime(completed, '%Y-%m-%d')
+    # a form was submitted
+    book_edit = post.get('bookSubmit')
+    note_edit = post.get('noteSubmit')
 
-    userbook = None
-    if submitted and status:
+    # book form
+    if book_edit:
+        status = post.get('status')
+        completed = post.get('completed') or None
+        if completed:
+            completed = timezone.datetime.strptime(completed, '%Y-%m-%d')
+
         userbook, created = UserBook.objects.get_or_create(book=book,
-                                                        user=request.user)
+                                                           user=request.user)
         userbook.status = status
         userbook.completed = completed
         userbook.save()
@@ -32,18 +40,52 @@ def book_page(request, bookid):
         action = created and 'added' or 'updated'
         messages.success(request, f'Successfully {action} book')
 
+    # note form
+    elif note_edit:
+        noteid = post.get('noteid')
+        type_note = post.get('type_note')
+        description = post.get('description')
+        private = post.get('private') and True or False
+
+        usernote, created = BookNote.objects.get_or_create(book=book,
+                                                           user=request.user,
+                                                           pk=noteid)
+
+        if not created and usernote.user != request.user:
+            messages.error('You can only edit your own notes')
+            redirect('book_page')
+
+        usernote.type_note = type_note
+        usernote.description = description
+        usernote.private = private
+        usernote.save()
+
+        action = created and 'added' or 'updated'
+        messages.success(request, f'Successfully {action} note')
+
+        # reset form values
+        # noteid, type_note, description, private = None, None, None, None
+
+    # prepare book form (note form = multiple = best manual)
     if request.method == 'POST':
-        form = UserBookForm(post)
+        book_form = UserBookForm(post)
     elif userbook:
         # make sure to bounce back previously entered form values
-        form = UserBookForm(initial=dict(status=userbook.status,
-                                         completed=userbook.completed))
+        book_form = UserBookForm(initial=dict(status=userbook.status,
+                                              completed=userbook.completed))
     else:
-        form = UserBookForm()
+        book_form = UserBookForm()
+
+    # all notes (do last as new note might have been added)
+    notes = BookNote.objects.filter(book=book)
 
     return render(request, 'book.html', {'book': book,
+                                         'notes': notes,
                                          'userbook': userbook,
-                                         'form': form})
+                                         # book form is via Django Form
+                                         'book_form': book_form,
+                                         # note form = multiple = manual
+                                         })
 
 
 def user_page(request, username):

@@ -76,13 +76,14 @@ footer {
   margin-left: 0px;
 }
 .miniAvatar {
-  padding: 0px;
-  margin-right: 5px;
+  height: 50px;
   width: 30px;
+  padding: 0px;
+  margin-right: 10px;
 }
-.searchRes {
-  float: right;
-  font-size: 90%;
+.titleAndAuthors {
+  position: relative;
+  bottom: 20px;
 }
 
 #actionWrapper {
@@ -135,4 +136,9 @@ blockquote {
   margin-left: 10px;
   padding: 5px 10px;
   border-bottom: 1px solid #ccc;
+}
+
+#preview {
+  margin-left: 20px;
+  display: inline;
 }

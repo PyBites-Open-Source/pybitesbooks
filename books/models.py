@@ -13,8 +13,8 @@ class Book(models.Model):
     pages = models.CharField(max_length=5)
     language = models.CharField(max_length=2)
     description = models.TextField()
-    inserted = models.DateTimeField('inserted', auto_now_add=True)
-    edited = models.DateTimeField('last modified', auto_now=True)
+    inserted = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.bookid} {self.title}'
@@ -23,7 +23,7 @@ class Book(models.Model):
 class Search(models.Model):
     term = models.CharField(max_length=20)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    inserted = models.DateTimeField('inserted', auto_now_add=True)
+    inserted = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.term
@@ -48,3 +48,32 @@ class UserBook(models.Model):
 
     def __str__(self):
         return f'{self.user} {self.book} {self.status} {self.completed}'
+
+
+class BookNote(models.Model):
+    NOTE_TYPES = (
+        ('q', 'Quote'),
+        ('n', 'Note'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    type_note = models.CharField(max_length=1, choices=NOTE_TYPES, default='n')
+    description = models.TextField()
+    private = models.BooleanField(default=True)
+    inserted = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
+
+    @property
+    def quote(self):
+        return self.type_note == 'q'
+
+    def __str__(self):
+        return f'{self.user} {self.book} {self.note} {self.public}'
+
+
+class Badge(models.Model):
+    books = models.IntegerField()
+    title = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f'{self.books} -> {self.title}'

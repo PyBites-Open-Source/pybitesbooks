@@ -6,7 +6,6 @@
 <ul class="mui-tabs__bar">
   <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="pane-default-1">Details</a></li>
   <li><a data-mui-toggle="tab" data-mui-controls="pane-default-2">Description</a></li>
-  <li><a data-mui-toggle="tab" data-mui-controls="pane-default-3">Preview</a></li>
 </ul>
 
 <div class="mui-tabs__pane mui--is-active" id="pane-default-1">
@@ -19,7 +18,12 @@
         <img src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata" alt="{{ book.title }}">
       </div>
       <div class="mui-col-md-8">
-        <div class="mui--text-display1">{{ book.title }}</div>
+        <div class="mui--text-display1">{{ book.title }}
+          <div id="preview">
+            <script type="text/javascript">GBS_insertPreviewButtonPopup('ISBN:{{ book.isbn }}');</script>
+          </div>
+        </div>
+
         <br>
 
         <table class="mui-table">
@@ -54,17 +58,18 @@
                     {% csrf_token %}
 
                     <div class="mui-select">
-                      {{ form.status.errors }}
-                      {{ form.status }}
+                      {{ book_form.status.errors }}
+                      {{ book_form.status }}
                     </div>
 
                     <div class="mui-textfield">
-                      {{ form.completed.errors }}
-                      {{ form.completed }}
+                      {{ book_form.completed.errors }}
+                      {{ book_form.completed }}
                     </div>
 
                     <button type="submit" value="1" class="mui-btn--primary
-                    mui-btn" name="addBookSubmit">{% if userbook %}Edit{% else %}Add{% endif %} Book</button>
+                    mui-btn" name="bookSubmit">{% if userbook %}Edit{% else %}Add{% endif %}</button>
+                    <button type="submit" value="1" class="mui-btn--danger mui-btn" name="bookSubmit">Delete</button>
 
                   </form>
 
@@ -92,11 +97,58 @@
   </div>
 </div>
 
-<div class="mui-tabs__pane" id="pane-default-3">
-  <br>
-  <script type="text/javascript">
-  GBS_insertEmbeddedViewer('ISBN:{{ book.isbn }}',800,600);
-  </script>
+
+<div class="mui--text-display1">Quotes &amp; Notes</div>
+<br>
+
+{% for note in notes %}
+  <div class="mui-panel">
+    {% if note.user == request.user %}
+      <form class="mui-form" name="noteForm_{{ note.id }}" method="post">
+        {% csrf_token %}
+        <div class="mui-textfield">
+          <textarea name="description"></textarea>
+        </div>
+        <div class="mui-checkbox">
+          <label>
+            <input name="private" type="checkbox" value="1" checked>
+            Private quote/note
+          </label>
+        </div>
+        <input type="hidden" name="noteid" value="{{ note.id }}">
+        <button type="submit" value="1" class="mui-btn--primary mui-btn" name="noteSubmit">Edit</button>
+        <button type="submit" value="1" class="mui-btn--danger mui-btn" name="deleteNote">Delete</button>
+      </form>
+    {% elif note.quote %}
+      <blockquote>{{ note.description }}</blockquote>
+    {% else %}
+      <p>{{ note.description }}</p>
+    {% endif %}
+  </div>
+{% endfor %}
+
+<div class="mui-panel">
+  <form class="mui-form" name="addNoteForm_new" method="post">
+    {% csrf_token %}
+    <div class="mui-select">
+      <select name="type_note">
+        <option value='n'>Note</option> 
+        <option value='q'>Quote</option> 
+      </select>
+    </div>
+    <div class="mui-textfield">
+      <textarea name="description"></textarea>
+    </div>
+    <div class="mui-checkbox">
+      <label>
+        <input name="private" type="checkbox" value="1" checked>
+        Private quote/note
+      </label>
+    </div>
+    <input type="hidden" name="noteid" value="-1">
+    <button type="submit" value="1" class="mui-btn--primary mui-btn" name="noteSubmit">Add</button>
+    <button type="submit" value="1" class="mui-btn--danger mui-btn" name="deleteNote">Delete</button>
+  </form>
 </div>
 
 {% endblock %}
