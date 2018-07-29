@@ -28,7 +28,6 @@
 
           <td class="mui--text-right">
             <ul class="mui-list--inline mui--text-body2">
-              <li><a href="#">About</a></li>
               <li>
                 {% if user.is_authenticated %}
                     Hey {{ user.username }}, <a href="{% url 'auth_logout' %}?next=/">logout</a>
