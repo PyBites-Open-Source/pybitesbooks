@@ -144,6 +144,6 @@ def user_page(request, username):
 
     return render(request, 'user.html', {'userbooks': userbooks,
                                          'username': username,
-                                         'num_books_added': len(userbooks),
+                                         'num_books_added': len(books),
                                          'num_books_done': len(books_pages),
                                          'num_pages_read': sum(books_pages)})
