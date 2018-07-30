@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'myreadinglist',
     'books',
-    'notes',
 ]
 
 MIDDLEWARE = [
