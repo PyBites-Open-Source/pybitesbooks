@@ -4,7 +4,9 @@ confusable-homoglyphs==3.1.1
 dj-database-url==0.5.0
 Django==2.0.7
 django-debug-toolbar==1.9.1
-django-registration==2.4.1
+# django-registration==2.4.1
+# current bug: https://github.com/ubernostrum/django-registration/pull/127
+git+https://github.com/jambonrose/django-registration.git@fix_issue_106_add_reverse_lazy#egg=django-registration
 gunicorn==19.9.0
 idna==2.7
 psycopg2==2.7.5
