@@ -157,5 +157,5 @@ LOGGING = {
     },
 }
 LOGIN_URL = 'index'
-LOGOUT_URL = '/'
+LOGOUT_URL = 'index'
 LOGIN_REDIRECT_URL = 'index'
