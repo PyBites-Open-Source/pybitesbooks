@@ -107,11 +107,12 @@ def book_page(request, bookid):
         book_form = UserBookForm()
 
     # all notes (do last as new note might have been added)
-    notes = None
     if request.user.is_authenticated:
         filter_criteria = Q(book=book) & (Q(user=request.user) | Q(public=True))
         notes = BookNote.objects.select_related('user').filter(filter_criteria)
-        notes = notes.order_by('-edited').all()
+    else:
+        notes = BookNote.objects.select_related('user').filter(book=book, public=True)
+    notes = notes.order_by('-edited').all()
 
     book_users = UserBook.objects.select_related('user').filter(book=book,
                                                                 status=COMPLETED)
