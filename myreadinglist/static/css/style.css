@@ -93,13 +93,6 @@ footer {
 #bookInfo ul {
   padding: 0px;
 }
-.thumbNail {
-  margin-bottom: 10px;
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
 
 /* custom styles */
 blockquote {
@@ -123,6 +116,7 @@ blockquote:after {
 
 .thumbNail {
   height: 100px;
+  width: 70px;
   margin: 5px 3px;
   padding: 5px;
   border: 1px solid #ddd;
