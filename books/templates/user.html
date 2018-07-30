@@ -1,26 +1,43 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 {% load tags %}
 
 {% block content %}
 
-<div class="mui--text-display1">
-  {% if username == request.user.username %}
-    Your
-  {% else %}
-    {{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %}
-  {% endif %}
-  Reading List
-</div>
-<br>
-<div class="mui--text-subhead mui--text-accent-secondary">
-  <strong class="mui--text-title">{{ num_books }}</strong> books added, 
-  <strong class="mui--text-title">{{ num_pages }}</strong> pages read
+<div class="mui-container-fluid">
+  <div class="mui-row">
+    <div class="mui-col-md-10">
+      <div class="mui--text-display1">
+        {% if username == request.user.username %}
+          Your
+        {% else %}
+          {{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %}
+        {% endif %}
+        Reading List
+      </div>
+      <br>
+      <div class="mui--text-subhead mui--text-accent-secondary">
+        Status: <strong class="mui--text-title">{{ num_books_added }}</strong> books added, 
+        of which <strong class="mui--text-title">{{ num_books_done }}</strong> read 
+        totalling <strong class="mui--text-title">{{ num_pages_read|intcomma }}</strong> pages.
+      </div>
+    </div>
+
+    <div class="mui-col-md-2">
+      <div class="badge">
+        <a href="#" title="wow you read {{ num_books_done }} books!">
+          <img src="{% static 'img/book-badge.png' %}" class="bookBadge" alt="book badge">
+        </a>
+        <span class="numBooks">{{ num_books_done }}</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <br><div class="mui-divider"></div><br>
 
-{% if num_books == 0 %}
+{% if not num_books_added %}
   <div class="mui--text-title">
     {% if username == request.user.username %}You{% else %}{{ username }}{% endif %} did not add any books yet.
   </div>

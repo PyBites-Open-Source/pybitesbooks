@@ -75,7 +75,7 @@ footer {
   padding-left: 0px;
   margin-left: 0px;
 }
-.miniAvatar {
+.bookThumb {
   height: 50px;
   width: 30px;
   padding: 0px;
@@ -120,9 +120,6 @@ blockquote:before {
 blockquote:after {
   content: " ";
 }
-blockquote {
-  display: inline;
-}
 
 .thumbNail {
   height: 100px;
@@ -138,7 +135,49 @@ blockquote {
   border-bottom: 1px solid #ccc;
 }
 
-#preview {
+.userAvatar {
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  float: left;
+  border-radius: 50%;
+  padding: 5px;
+  color: #fff;
+  border: 1px solid #ccc;
+}
+.userAvatarSmall {
+  width: 20px;
+  height: 20px;
+  margin: 2px;
+  padding: 2px 3px 8px 7px;
+  font-size: 85%;
+}
+
+.note .usernameAndTime {
   margin-left: 20px;
-  display: inline;
+}
+
+.note .description {
+  float: left;
+  margin-left: 20px;
+}
+
+.badge {
+  width: 120px;
+  height: 120px;
+  position: relative;
+}
+.badge .numBooks {
+  position: absolute;
+  top: 52px;
+  left: 59px;
+  font-weight: bold;
+  font-size: 200%;
+}
+.rankAvatar {
+  background-color: #2196F3;
+  color: white;
+  position: absolute;
+  top: 90px;
+  left: 80px;
 }

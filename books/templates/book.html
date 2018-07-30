@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load tags %}
 
 {% block content %}
 
@@ -14,77 +15,93 @@
   <div class="mui-container-fluid">
 
     <div class="mui-row">
+
       <div class="mui-col-md-4">
         <img src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata" alt="{{ book.title }}">
       </div>
       <div class="mui-col-md-8">
-        <div class="mui--text-display1">{{ book.title }}
-          <div id="preview">
-            <script type="text/javascript">GBS_insertPreviewButtonPopup('ISBN:{{ book.isbn }}');</script>
-          </div>
+
+        <div class="mui-col-md-10">
+          <div class="mui--text-display1">{{ book.title }}</div>
+          <br>
+
+          <table class="mui-table">
+            <tbody>
+              <tr>
+                <td>Author(s)</td>
+                <td>{{ book.authors }}</td>
+              </tr>
+              <tr>
+                <td>Publisher</td>
+                <td>{{ book.publisher }}</td>
+              </tr>
+              <tr>
+                <td>Published</td>
+                <td>{{ book.published }}</td>
+              </tr>
+              <tr>
+                <td>ISBN</td>
+                <td>{{ book.isbn }}</td>
+              </tr>
+              <tr>
+                <td>Page Count</td><td>{{ book.pages }}</td>
+              </tr>
+              <tr>
+                <td>Language</td>
+                <td>{{ book.language }}</td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  {% if user.is_authenticated %}
+                    <form class="mui-form" id="addBookForm" method="post">
+                      {% csrf_token %}
+
+                      <div class="mui-select">
+                        {{ book_form.status.errors }}
+                        {{ book_form.status }}
+                      </div>
+
+                      <div class="mui-textfield">
+                        {{ book_form.completed.errors }}
+                        {{ book_form.completed }}
+                      </div>
+
+                      <input type="hidden" name="addOrEditBook" value="{{ book.id }}">
+                      <button type="submit" value="1" class="mui-btn--primary mui-btn" name="bookSubmit">{% if userbook %}Edit{% else %}Add{% endif %}</button>
+                      {% if userbook %}
+                        <button type="submit" value="1" class="mui-btn--accent mui-btn" name="deleteBook">Delete</button>
+                      {% endif %}
+
+                    </form>
+
+                  {% else %}
+
+                  <a href="{% url 'auth_login' %}?next={{ request.get_full_path|urlencode }}">
+                    <i class="fa fa-user"></i> Add Book</a>
+
+                  {% endif %}
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div><!-- mui-col-md-10 -->
+
+        <div class="mui-col-md-2">
+          <script type="text/javascript">GBS_insertPreviewButtonPopup('ISBN:{{ book.isbn }}');</script>
+
+          <br><br><div class="mui-divider"></div><br>
+  
+          <i>Added by:</i><br><br>
+          {% for bu in book_users %}
+            <a class="mui--text-title userAvatar userAvatarSmall" href="{% url 'user_page' username=bu.user.username %}" style="{{ bu.user.id|user2rgb }}">{{ bu.user.username|slice:":2"|upper }}</a>
+          {% endfor %}
+
         </div>
 
-        <br>
+      </div><!-- mui-col-md-8 -->
 
-        <table class="mui-table">
-          <tbody>
-            <tr>
-              <td>Author(s)</td>
-              <td>{{ book.authors }}</td>
-            </tr>
-            <tr>
-              <td>Publisher</td>
-              <td>{{ book.publisher }}</td>
-            </tr>
-            <tr>
-              <td>Published</td>
-              <td>{{ book.published }}</td>
-            </tr>
-            <tr>
-              <td>ISBN</td>
-              <td>{{ book.isbn }}</td>
-            </tr>
-            <tr>
-              <td>Page Count</td><td>{{ book.pages }}</td>
-            </tr>
-            <tr>
-              <td>Language</td>
-              <td>{{ book.language }}</td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                {% if user.is_authenticated %}
-                  <form class="mui-form" id="addBookForm" method="post">
-                    {% csrf_token %}
-
-                    <div class="mui-select">
-                      {{ book_form.status.errors }}
-                      {{ book_form.status }}
-                    </div>
-
-                    <div class="mui-textfield">
-                      {{ book_form.completed.errors }}
-                      {{ book_form.completed }}
-                    </div>
-
-                    <button type="submit" value="1" class="mui-btn--primary
-                    mui-btn" name="bookSubmit">{% if userbook %}Edit{% else %}Add{% endif %}</button>
-                    <button type="submit" value="1" class="mui-btn--danger mui-btn" name="bookSubmit">Delete</button>
-
-                  </form>
-
-                {% else %}
-
-                <a href="{% url 'auth_login' %}?next={{ request.get_full_path|urlencode }}">
-                  <i class="fa fa-user" aria-hidden="true"></i> Add Book</a>
-
-                {% endif %}
-              </td>
-
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div><!-- mui-row -->
   </div><!-- mui-container-fluid -->
 
@@ -98,57 +115,76 @@
 </div>
 
 
-<div class="mui--text-display1">Quotes &amp; Notes</div>
-<br>
+{% if notes or userbook %}
 
-{% for note in notes %}
-  <div class="mui-panel">
-    {% if note.user == request.user %}
-      <form class="mui-form" name="noteForm_{{ note.id }}" method="post">
+  <div class="mui--text-display1">Notes &amp; Quotes</div>
+  <br>
+
+  {% if userbook %}
+    <div class="mui-panel">
+      <form class="mui-form" name="addNoteForm_new" method="post">
         {% csrf_token %}
+        <div class="mui-select">
+          <select name="type_note">
+            <option value='n'>Note</option> 
+            <option value='q'>Quote</option> 
+          </select>
+        </div>
         <div class="mui-textfield">
           <textarea name="description"></textarea>
         </div>
         <div class="mui-checkbox">
           <label>
-            <input name="private" type="checkbox" value="1" checked>
-            Private quote/note
+            <input name="public" type="checkbox" value="1" checked>
+            publicly shared quote/note
           </label>
         </div>
-        <input type="hidden" name="noteid" value="{{ note.id }}">
-        <button type="submit" value="1" class="mui-btn--primary mui-btn" name="noteSubmit">Edit</button>
-        <button type="submit" value="1" class="mui-btn--danger mui-btn" name="deleteNote">Delete</button>
+        <input type="hidden" name="noteSubmit" value="1">
+        <button type="submit" value="1" class="mui-btn--primary mui-btn" name="addNote">Add</button>
       </form>
-    {% elif note.quote %}
-      <blockquote>{{ note.description }}</blockquote>
-    {% else %}
-      <p>{{ note.description }}</p>
-    {% endif %}
-  </div>
-{% endfor %}
+    </div>
+  {% endif %}
 
-<div class="mui-panel">
-  <form class="mui-form" name="addNoteForm_new" method="post">
-    {% csrf_token %}
-    <div class="mui-select">
-      <select name="type_note">
-        <option value='n'>Note</option> 
-        <option value='q'>Quote</option> 
-      </select>
+
+  {% for note in notes %}
+    <div class="mui-panel note">
+      {% if note.user == request.user %}
+        <form class="mui-form" name="noteForm_{{ note.id }}" method="post">
+          {% csrf_token %}
+          <div class="mui-select">
+            <select name="type_note">
+              <option value='n' {% if note.type_note == 'n' %}selected{% endif %}>Note</option> 
+              <option value='q' {% if note.type_note == 'q' %}selected{% endif %}>Quote</option> 
+            </select>
+          </div>
+          <div class="mui-textfield">
+            <textarea name="description">{{ note.description }}</textarea>
+          </div>
+          <div class="mui-checkbox">
+            <label>
+              <input name="public" type="checkbox" value="1" {% if note.public %}checked{% endif %}>
+              publicly shared quote/note
+            </label>
+          </div>
+          <input type="hidden" name="noteid" value="{{ note.id }}">
+          <input type="hidden" name="noteSubmit" value="1">
+          <button type="submit" value="1" class="mui-btn--primary mui-btn" name="editNote">Edit</button>
+          <button type="submit" value="1" class="mui-btn--accent mui-btn" name="deleteNote">Delete</button>
+        </form>
+
+      {% else %}
+
+        <p><a class="mui--text-title userAvatar" href="{% url 'user_page' username=note.user.username %}" style="{{ note.user.id|user2rgb }}">{{ note.user.username|slice:":2"|upper }}</a> <span class="usernameAndTime">{{ note.user.username }} added a {{ note.type_note_label }} {{ note.inserted|timesince }} ago:</span></p>
+        {% if note.quote %}
+          <blockquote class="description">{{ note.description }}</blockquote>
+        {% else %}
+          <p class="description">{{ note.description }}</p>
+        {% endif %}
+
+      {% endif %}
     </div>
-    <div class="mui-textfield">
-      <textarea name="description"></textarea>
-    </div>
-    <div class="mui-checkbox">
-      <label>
-        <input name="private" type="checkbox" value="1" checked>
-        Private quote/note
-      </label>
-    </div>
-    <input type="hidden" name="noteid" value="-1">
-    <button type="submit" value="1" class="mui-btn--primary mui-btn" name="noteSubmit">Add</button>
-    <button type="submit" value="1" class="mui-btn--danger mui-btn" name="deleteNote">Delete</button>
-  </form>
-</div>
+  {% endfor %}
+
+{% endif %}
 
 {% endblock %}

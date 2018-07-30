@@ -2,3 +2,4 @@ venv
 .env
 *pyc
 *swp
+**.DS_Store

@@ -2,6 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+READING = 'r'
+COMPLETED = 'c'
+TO_READ = 't'
+QUOTE = 'q'
+NOTE = 'n'
+
 
 class Book(models.Model):
     bookid = models.CharField(max_length=20)  # google bookid
@@ -17,7 +23,7 @@ class Book(models.Model):
     edited = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.bookid} {self.title}'
+        return f'{self.id} {self.bookid} {self.title}'
 
 
 class Search(models.Model):
@@ -31,20 +37,21 @@ class Search(models.Model):
 
 class UserBook(models.Model):
     READ_STATUSES = (
-        ('r', 'I am reading this book'),
-        ('c', 'I have completed this book'),
-        ('t', 'I want to read this book'),  # t of 'todo'
+        (READING, 'I am reading this book'),
+        (COMPLETED, 'I have completed this book'),
+        (TO_READ, 'I want to read this book'),  # t of 'todo'
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    status = models.CharField(max_length=1, choices=READ_STATUSES, default='c')
+    status = models.CharField(max_length=1, choices=READ_STATUSES,
+    default=COMPLETED)
     completed = models.DateTimeField(default=timezone.now)
     inserted = models.DateTimeField(auto_now_add=True)  # != completed
     updated = models.DateTimeField(auto_now=True)
 
     @property
     def done_reading(self):
-        return self.status == 'c'
+        return self.status == COMPLETED
 
     def __str__(self):
         return f'{self.user} {self.book} {self.status} {self.completed}'
@@ -52,23 +59,31 @@ class UserBook(models.Model):
 
 class BookNote(models.Model):
     NOTE_TYPES = (
-        ('q', 'Quote'),
-        ('n', 'Note'),
+        (QUOTE, 'Quote'),
+        (NOTE, 'Note'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    type_note = models.CharField(max_length=1, choices=NOTE_TYPES, default='n')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, blank=True, null=True)
+    userbook = models.ForeignKey(UserBook, on_delete=models.CASCADE, blank=True, null=True)
+    type_note = models.CharField(max_length=1, choices=NOTE_TYPES, default=NOTE)
     description = models.TextField()
-    private = models.BooleanField(default=True)
+    public = models.BooleanField(default=False)
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
     @property
     def quote(self):
-        return self.type_note == 'q'
+        return self.type_note == QUOTE
+
+    @property
+    def type_note_label(self):
+        for note, label in self.NOTE_TYPES:
+            if note == self.type_note:
+                return label.lower()
+        return None
 
     def __str__(self):
-        return f'{self.user} {self.book} {self.note} {self.public}'
+        return f'{self.user} {self.userbook} {self.type_note} {self.description} {self.public}'
 
 
 class Badge(models.Model):

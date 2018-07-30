@@ -1,12 +1,13 @@
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from books.googlebooks import search_books
-from books.models import Book
+from books.models import Book, UserBook, COMPLETED
 
 BOOK_ENTRY = ('<span class="searchResWrapper">'
               '<span class="searchRes" id="{id}">'
-              '<img class="miniAvatar" src="{thumb}">'
+              '<img class="bookThumb" src="{thumb}">'
               '<span class="titleAndAuthors">{title} ({authors})</span>'
               '</span></span>\n')
 
@@ -48,5 +49,11 @@ def get_books(request):
 
 
 def index(request):
-    last_added_books = Book.objects.order_by('-inserted').all()
-    return render(request, 'index.html', {'last_added_books': last_added_books})
+    last_searches = Book.objects.order_by('-inserted').all()
+
+    user_books = UserBook.objects.select_related('user').filter(status=COMPLETED)
+    top_users = user_books.values('user__username').annotate(count=Count('book'))
+    top_users = top_users.values('user__username', 'count').order_by('-count')
+
+    return render(request, 'index.html', {'last_searches': last_searches,
+                                          'top_users': top_users})
