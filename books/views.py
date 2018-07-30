@@ -17,10 +17,12 @@ def book_page(request, bookid):
 
     # get book info
     book = get_book_info(bookid)
-    try:
-        userbook = UserBook.objects.get(user=request.user, book=book)
-    except UserBook.DoesNotExist:
-        userbook = None
+    userbook = None
+    if request.user.is_authenticated:
+        try:
+            userbook = UserBook.objects.get(user=request.user, book=book)
+        except UserBook.DoesNotExist:
+            pass
 
     # a form was submitted
     book_edit = post.get('addOrEditBook')
@@ -105,9 +107,11 @@ def book_page(request, bookid):
         book_form = UserBookForm()
 
     # all notes (do last as new note might have been added)
-    filter_criteria = Q(book=book) & (Q(user=request.user) | Q(public=True))
-    notes = BookNote.objects.select_related('user').filter(filter_criteria)
-    notes = notes.order_by('-edited').all()
+    notes = None
+    if request.user.is_authenticated:
+        filter_criteria = Q(book=book) & (Q(user=request.user) | Q(public=True))
+        notes = BookNote.objects.select_related('user').filter(filter_criteria)
+        notes = notes.order_by('-edited').all()
 
     book_users = UserBook.objects.select_related('user').filter(book=book,
                                                                 status=COMPLETED)
