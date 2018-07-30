@@ -91,12 +91,17 @@
         <div class="mui-col-md-2">
           <script type="text/javascript">GBS_insertPreviewButtonPopup('ISBN:{{ book.isbn }}');</script>
 
-          <br><br><div class="mui-divider"></div><br>
   
-          <i>Read by:</i><br><br>
-          {% for bu in book_users %}
-            <a class="mui--text-title userAvatar userAvatarSmall" href="{% url 'user_page' username=bu.user.username %}" style="{{ bu.user.id|user2rgb }}">{{ bu.user.username|slice:":2"|upper }}</a>
-          {% endfor %}
+          {% if book_users %}
+            <br><br><div class="mui-divider"></div><br>
+
+            <i>Read by:</i><br><br>
+
+            {% for bu in book_users %}
+              <a class="mui--text-title userAvatar userAvatarSmall" href="{% url 'user_page' username=bu.user.username %}" style="{{ bu.user.id|user2rgb }}">{{ bu.user.username|slice:":2"|upper }}</a>
+            {% endfor %}
+
+          {% endif %}
 
         </div>
 
