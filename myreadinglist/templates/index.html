@@ -5,27 +5,10 @@
 
 <div class="mui-container-fluid">
   <div class="mui-row">
-    <div class="mui-col-md-6">
-      <div class="mui--text-display1">Recent Searches</div>
-      <br>
-      {% for book in last_searches %}
-        <a href="{% url 'book_page' bookid=book.bookid %}"><img class="thumbNail" src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.title }}"></a>
-      {% endfor %}
-    </div>
-    <div class="mui-col-md-6">
-      <div class="mui--text-display1">Top Readers</div>
-      <br>
-        {% for tu in top_users %}
-          <div class="badge">
-            <a href="{% url 'user_page' username=tu.user__username %}">
-              <img src="{% static 'img/book-badge.png' %}" class="bookBadge" alt="book badge">
-            </a>
-            <span class="numBooks">{{ tu.count }}</span>
-            <a class="mui--text-title userAvatar userAvatarSmall rankAvatar" href="{% url 'user_page' username=tu.user__username %}">{{ tu.user__username|slice:":2"|upper }}</a>
-          </div>
-        {% endfor %}
-
-    </div>
+    <br>
+    {% for book in last_searches %}
+      <a href="{% url 'book_page' bookid=book.bookid %}"><img class="thumbNail" src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.title }}"></a>
+    {% endfor %}
   </div>
 </div>
 
