@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 import json
 
 from django.contrib.auth.models import User
@@ -8,17 +8,25 @@ from django.shortcuts import get_object_or_404
 from books.models import UserBook
 
 
-def user_books(request, username):
-    data = defaultdict(list)
+def user_books(request, username=None):
 
-    user = get_object_or_404(User, username=username)
-    books = UserBook.objects.select_related('book').filter(user=user)
+    print(username)
+    if username is None:
+        data = Counter()
+        books = UserBook.objects.select_related('user').all()
+        for book in books:
+            data[book.user.username] += 1
 
-    for book in books:
-        data[book.status].append(dict(bookid=book.book.bookid,
-                                      title=book.book.title,
-                                      authors=book.book.authors,
-                                      completed=book.completed))
+    else:
+        data = defaultdict(list)
+        user = get_object_or_404(User, username=username)
+        books = UserBook.objects.select_related('book').filter(user=user)
+
+        for book in books:
+            data[book.status].append(dict(bookid=book.book.bookid,
+                                        title=book.book.title,
+                                        authors=book.book.authors,
+                                        completed=book.completed))
 
     json_data = json.dumps(data, indent=4, default=str, sort_keys=False)
 
