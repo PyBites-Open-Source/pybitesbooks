@@ -4,7 +4,7 @@ confusable-homoglyphs==3.1.1
 dj-database-url==0.5.0
 Django==2.0.7
 django-debug-toolbar==1.9.1
--e git+https://github.com/jambonrose/django-registration.git@58026e4dca0d400c969516aa83534958a2ccf284#egg=django_registration
+django_registration
 gunicorn==19.9.0
 idna==2.7
 psycopg2==2.7.5
