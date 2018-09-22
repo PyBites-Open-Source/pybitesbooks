@@ -56,6 +56,9 @@ class UserBook(models.Model):
     def __str__(self):
         return f'{self.user} {self.book} {self.status} {self.completed}'
 
+    class Meta:
+        ordering = ['-completed', '-id']
+
 
 class BookNote(models.Model):
     NOTE_TYPES = (

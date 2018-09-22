@@ -10,7 +10,6 @@ from books.models import UserBook
 
 def user_books(request, username=None):
 
-    print(username)
     if username is None:
         data = Counter()
         books = UserBook.objects.select_related('user').all()
