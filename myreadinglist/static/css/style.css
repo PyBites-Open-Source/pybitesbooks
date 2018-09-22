@@ -164,9 +164,12 @@ blockquote:after {
 .badge .numBooks {
   position: absolute;
   top: 52px;
-  left: 59px;
+  left: 44px;
+  width: 20px;
   font-weight: bold;
-  font-size: 200%;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid red;
 }
 .rankAvatar {
   background-color: #2196F3;
