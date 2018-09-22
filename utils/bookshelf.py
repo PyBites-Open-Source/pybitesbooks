@@ -146,8 +146,8 @@ html = """
   <input id="filter" name="filter" class="defaultText qVal" title="Search Bookshelf ... " />
 </div>
 {content}
-<script type="text/javascript" src="http://projects.bobbelderbos.com/fbreadinglist/js/jquery_min.js"></script>
-<script type="text/javascript" src="http://projects.bobbelderbos.com/fbreadinglist/js/blazy.min.js"></script>
+<script type="text/javascript" src="https://projects.bobbelderbos.com/fbreadinglist/js/jquery_min.js"></script>
+<script type="text/javascript" src="https://projects.bobbelderbos.com/fbreadinglist/js/blazy.min.js"></script>
 <script>
   {js}
 </script>
