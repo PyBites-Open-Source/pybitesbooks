@@ -49,7 +49,7 @@ def get_books(request):
 
 
 def index(request):
-    last_searches = Book.objects.order_by('-inserted').all()[:50]
+    last_searches = Book.objects.order_by('-inserted').all()[:100]
 
     user_books = UserBook.objects.select_related('user').filter(status=COMPLETED)
     top_users = user_books.values('user__username').annotate(count=Count('book'))
