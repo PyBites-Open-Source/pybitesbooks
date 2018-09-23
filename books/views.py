@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 from .googlebooks import get_book_info
 from .forms import UserBookForm
@@ -150,6 +151,7 @@ def user_page(request, username):
                                          'num_pages_read': sum(books_pages)})
 
 
+@xframe_options_exempt
 def user_page_widget(request, username):
     user = get_object_or_404(User, username=username)
     books = UserBook.objects.select_related('book').filter(user=user, status='c')
