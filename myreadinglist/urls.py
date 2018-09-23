@@ -8,8 +8,9 @@ from books import views as book_views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^api/', include('api.urls', namespace='api')),
-    url(r'^books/(?P<bookid>.*)$', book_views.book_page, name='book_page'),
+    url(r'^books/', include('books.urls', namespace='books')),
     url(r'^users/(?P<username>.*)$', book_views.user_page, name='user_page'),
+    url(r'^widget/(?P<username>.*)$', book_views.user_page_widget, name='user_page'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'hey-bob/', admin.site.urls),
 ]

@@ -22,6 +22,14 @@ class Book(models.Model):
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
+    @property
+    def title_and_authors(self):
+        return f'{self.title} ({self.authors})'
+
+    @property
+    def url(self):
+        return f'http://pbreadinglist.herokuapp.com/books/{self.bookid}'
+
     def __str__(self):
         return f'{self.id} {self.bookid} {self.title}'
 

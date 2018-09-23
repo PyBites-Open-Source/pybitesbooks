@@ -7,7 +7,7 @@
   <div class="mui-row">
     <br>
     {% for book in last_searches %}
-      <a href="{% url 'book_page' bookid=book.bookid %}"><img class="thumbNail" src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.title }}"></a>
+      <a href="{% url 'books:book_page' bookid=book.bookid %}"><img class="thumbNail" src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.title }}"></a>
     {% endfor %}
   </div>
 </div>

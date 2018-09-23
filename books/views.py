@@ -148,3 +148,9 @@ def user_page(request, username):
                                          'num_books_added': len(books),
                                          'num_books_done': len(books_pages),
                                          'num_pages_read': sum(books_pages)})
+
+
+def user_page_widget(request, username):
+    user = get_object_or_404(User, username=username)
+    books = UserBook.objects.select_related('book').filter(user=user, status='c')
+    return render(request, 'widget.html', {'books': books})

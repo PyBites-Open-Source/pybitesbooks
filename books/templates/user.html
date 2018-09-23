@@ -57,7 +57,7 @@
 
       <div class="mui-panel">
         {% for book in books %}
-          <a href="{% url 'book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
+          <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
             <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.book.title }}">
           </a>
         {% endfor %}
