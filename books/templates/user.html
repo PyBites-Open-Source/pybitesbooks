@@ -49,6 +49,9 @@
     data-mui-controls="pane-default-1">Reading ({{ userbooks|get_item:'r'|length }})</a></li>
     <li><a data-mui-toggle="tab" data-mui-controls="pane-default-2">Completed ({{ userbooks|get_item:'c'|length }})</a></li>
     <li><a data-mui-toggle="tab" data-mui-controls="pane-default-3">Wants to read ({{ userbooks|get_item:'t'|length }})</a></li>
+    {% if request.user.username == username %}
+      <li><a data-mui-toggle="tab" data-mui-controls="pane-default-4">Widget</a></li>
+    {% endif %}
   </ul>
 
   {% for books in userbooks.values %}
@@ -65,6 +68,15 @@
 
     </div>
   {% endfor %}
+
+  {% if request.user.username == username %}
+    <div class="mui-tabs__pane" id="pane-default-4">
+      <br>
+      <p>Embed the books you have read on your website or blog (<a href="https://bobbelderbos.com/books/" target="_blank">example</a>). Use this code:</p>
+      <pre>&lt;iframe src="https://pbreadinglist.herokuapp.com/widget/{{ username }}" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;</pre>
+    </div>
+  {% endif %}
+
 
 {% endif %}
 
