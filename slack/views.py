@@ -5,7 +5,7 @@ import re
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from api.views import (get_user_stats, get_user_last_book,
+from api.views import (get_usernames, get_user_last_book,
                        get_random_book)
 
 PB_READING_LIST = "http://pbreadinglist.herokuapp.com/books/"
@@ -19,7 +19,7 @@ HELP_TEXT = ('```'
              '```')
 COMMANDS = dict(rand=get_random_book,
                 grep=get_random_book,
-                user=get_user_stats,
+                user=get_usernames,
                 username=get_user_last_book)
 
 
@@ -34,13 +34,6 @@ def _create_book_msg(book):
     return (f"*{book['title']}*\nAuthor: _{book['authors']}_ "
             f"(pages: {book['pages']})\n"
             f"Description:\n```{description}```")
-
-
-def _create_user_score_msg(users):
-    user_scores = []
-    for (user, count) in users.most_common(5):
-        user_scores.append(f'{user:<20}:{count}')
-    return '```' + '\n'.join(user_scores) + '```'
 
 
 @csrf_exempt
@@ -58,9 +51,8 @@ def get_book(request):
         msg = HELP_TEXT
 
     elif single_word_cmd == 'user':
-        headline = 'Top 5 PyBites Readers:'
-        out = COMMANDS['user']()
-        msg = _create_user_score_msg(out)
+        headline = 'PyBites Readers:'
+        msg = ', '.join(COMMANDS['user']())
 
     else:
         # 0 or multiple words

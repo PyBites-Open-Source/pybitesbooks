@@ -9,12 +9,8 @@ from django.shortcuts import get_object_or_404
 from books.models import UserBook
 
 
-def get_user_stats():
-    data = Counter()
-    books = UserBook.objects.select_related('user').all()
-    for book in books:
-        data[book.user.username] += 1
-    return data
+def get_usernames():
+    return [user.username for user in User.objects.all()]
 
 
 def get_user_last_book(username):
@@ -57,7 +53,7 @@ def get_user_books(username):
 def user_books(request, username=None):
 
     if username is None:
-        data = get_user_stats()
+        data = get_usernames()
     else:
         data = get_user_books()
 
