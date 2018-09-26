@@ -10,6 +10,7 @@ from api.views import (get_users,
                        get_user_last_book,
                        get_random_book)
 
+HOME = 'https://pbreadinglist.herokuapp.com'
 PB_READING_LIST = "http://pbreadinglist.herokuapp.com/books/"
 SLACK_TOKEN = os.environ['SLACK_VERIFICATION_TOKEN']
 HELP_TEXT = ('```'
@@ -46,15 +47,16 @@ def _create_user_output(user_books):
                      or 'no books read yet')
         users.append((user, last_book))
 
-    col1, col2 = 'User', 'Last read book'
+    col1, col2 = 'User', f'Last read book -> {HOME}'
     msg = [f'{col1:<20}: {col2}']
     msg.append('-' * 74)  # slack pre line length it seems
 
     for user, last_book in sorted(users,
                                   key=lambda x: x[1].completed,
                                   reverse=True):
-        msg.append((f'{user:<20}: {last_book.book.title} '
-                   f'({naturalday(last_book.completed)})'))
+        title = last_book.book.title
+        title = len(title) > 32 and title[:32] + ' ...' or f'{title:<36}'
+        msg.append(f'{user:<20}: {title} ({naturalday(last_book.completed)})')
     return '```' + '\n'.join(msg) + '```'
 
 
