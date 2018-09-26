@@ -56,7 +56,7 @@ def _create_user_output(user_books):
                                   reverse=True):
         title = last_book.book.title
         title = len(title) > 32 and title[:32] + ' ...' or f'{title:<36}'
-        msg.append(f'{user:<20}: {title} ({naturalday(last_book.completed)})')
+        msg.append(f'{user:<19}: {title} ({naturalday(last_book.completed)})')
     return '```' + '\n'.join(msg) + '```'
 
 
