@@ -47,7 +47,7 @@ def _create_user_output(user_books):
                      or 'no books read yet')
         users.append((user, last_book))
 
-    col1, col2 = 'User', f'Last read book -> {HOME}'
+    col1, col2 = 'User', f'Last read -> {HOME}'
     msg = [f'{col1:<20}: {col2}']
     msg.append('-' * 74)  # slack pre line length it seems
 
