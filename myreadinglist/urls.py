@@ -8,6 +8,7 @@ from books import views as book_views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^api/', include('api.urls', namespace='api')),
+    url(r'^slack/', include('slack.urls', namespace='slack')),
     url(r'^books/', include('books.urls', namespace='books')),
     url(r'^users/(?P<username>.*)$', book_views.user_page, name='user_page'),
     url(r'^widget/(?P<username>.*)$', book_views.user_page_widget, name='user_page_widget'),

@@ -27,6 +27,9 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ENV = config('ENV', default='heroku')
 LOCAL = ENV.lower() == 'local'
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+
 DOMAIN = config('DOMAIN', default='http://pbreadinglist.herokuapp.com/')
 
 
