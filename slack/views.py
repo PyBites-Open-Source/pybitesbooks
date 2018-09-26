@@ -48,7 +48,7 @@ def _create_user_output(user_books):
         users.append((user, last_book))
 
     col1, col2 = 'User', f'Last read -> {HOME}'
-    msg = [f'{col1:<20}: {col2}']
+    msg = [f'{col1:<19}: {col2}']
     msg.append('-' * 74)  # slack pre line length it seems
 
     for user, last_book in sorted(users,
