@@ -88,7 +88,7 @@ def get_book(request):
         elif len(text) == 2 and text[0] == 'user':
             username = text[-1]
             book = COMMANDS['username'](username)
-            headline = f'Last book {username.title()} read:'
+            headline = f'Last book _{username}_ read:'
 
         else:
             grep = ' '.join(text)
