@@ -2,6 +2,7 @@ import json
 import os
 import re
 
+from django.contrib.humanize.templatetags.humanize import naturalday
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -38,11 +39,16 @@ def _create_book_msg(book):
 
 
 def _create_user_output(user_books):
-    msg = []
+    users = []
     for user, books in user_books.items():
         last_book_date = books and sorted(books)[-1] or 'no books read yet'
-        msg.append(f'{user:<20}: {last_book_date}')
-    return '\n'.join(msg)
+        users.append((user, last_book_date))
+    msg = []
+    for user, last_book_date in sorted(users,
+                                       key=lambda x: x[1],
+                                       reverse=True):
+        msg.append(f'{user:<20}: {naturalday(last_book_date)}')
+    return '```' + '\n'.join(msg) + '```'
 
 
 @csrf_exempt
