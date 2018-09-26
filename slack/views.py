@@ -41,13 +41,19 @@ def _create_book_msg(book):
 def _create_user_output(user_books):
     users = []
     for user, books in user_books.items():
-        last_book_date = books and sorted(books)[-1] or 'no books read yet'
-        users.append((user, last_book_date))
-    msg = []
-    for user, last_book_date in sorted(users,
-                                       key=lambda x: x[1],
-                                       reverse=True):
-        msg.append(f'{user:<20}: {naturalday(last_book_date)}')
+        last_book = (books and sorted(books,
+                                      key=lambda x: x.completed)[-1]
+                     or 'no books read yet')
+        users.append((user, last_book))
+
+    col1, col2 = 'User', 'Last read book'
+    msg = [f'{col1:<20}: {col2}']
+
+    for user, last_book in sorted(users,
+                                  key=lambda x: x[1].completed,
+                                  reverse=True):
+        msg.append((f'{user:<20}: {last_book.book.title} '
+                   f'({naturalday(last_book.completed)})'))
     return '```' + '\n'.join(msg) + '```'
 
 

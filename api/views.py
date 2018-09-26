@@ -13,7 +13,7 @@ def get_users():
     user_books = defaultdict(list)
     books = UserBook.objects.select_related('user').all()
     for book in books:
-        user_books[book.user.username].append(book.completed)
+        user_books[book.user.username].append(book)
     return user_books
 
 
