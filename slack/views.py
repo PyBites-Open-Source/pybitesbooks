@@ -5,21 +5,22 @@ import re
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from api.views import (get_usernames, get_user_last_book,
+from api.views import (get_users,
+                       get_user_last_book,
                        get_random_book)
 
 PB_READING_LIST = "http://pbreadinglist.herokuapp.com/books/"
 SLACK_TOKEN = os.environ['SLACK_VERIFICATION_TOKEN']
 HELP_TEXT = ('```'
              '/book help          -> print this help message\n'
-             '/book               -> get a random book added to PyBites Reading List\n'
-             '/book grep          -> get a random book filtered on "grep" (if added)\n'
+             '/book               -> get a random book added to PyBites Reading List\n'  # noqa E501
+             '/book grep          -> get a random book filtered on "grep" (if added)\n'  # noqa E501
              '/book user          -> get a list of usernames using the app\n'
              '/book user username -> get the last book "username" completed\n'
              '```')
 COMMANDS = dict(rand=get_random_book,
                 grep=get_random_book,
-                user=get_usernames,
+                user=get_users,
                 username=get_user_last_book)
 
 
@@ -34,6 +35,14 @@ def _create_book_msg(book):
     return (f"*{book['title']}*\nAuthor: _{book['authors']}_ "
             f"(pages: {book['pages']})\n"
             f"Description:\n```{description}```")
+
+
+def _create_user_output(user_books):
+    msg = []
+    for user, books in user_books.items():
+        last_book_date = books and sorted(books)[-1] or 'no books read yet'
+        msg.append(f'{user:<20}: {last_book_date}')
+    return '\n'.join(msg)
 
 
 @csrf_exempt
@@ -52,7 +61,8 @@ def get_book(request):
 
     elif single_word_cmd == 'user':
         headline = 'PyBites Readers:'
-        msg = ', '.join(COMMANDS['user']())
+        user_books = COMMANDS['user']()
+        msg = _create_user_output(user_books)
 
     else:
         # 0 or multiple words

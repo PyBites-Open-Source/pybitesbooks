@@ -1,4 +1,4 @@
-from collections import defaultdict, Counter
+from collections import defaultdict
 import json
 from random import randint, choice
 
@@ -9,8 +9,12 @@ from django.shortcuts import get_object_or_404
 from books.models import UserBook
 
 
-def get_usernames():
-    return [user.username for user in User.objects.all()]
+def get_users():
+    user_books = defaultdict(list)
+    books = UserBook.objects.select_related('user').all()
+    for book in books:
+        user_books[book.user.username].append(book.completed)
+    return user_books
 
 
 def get_user_last_book(username):
@@ -53,7 +57,7 @@ def get_user_books(username):
 def user_books(request, username=None):
 
     if username is None:
-        data = get_usernames()
+        data = get_users()
     else:
         data = get_user_books()
 
