@@ -12,9 +12,9 @@ PB_READING_LIST = "http://pbreadinglist.herokuapp.com/books/"
 SLACK_TOKEN = os.environ['SLACK_VERIFICATION_TOKEN']
 HELP_TEXT = ('```'
              '/book help          -> print this help message\n'
-             '/book               -> get a random book from PyBites Reading List\n'
+             '/book               -> get a random book added to PyBites Reading List\n'
              '/book grep          -> get a random book filtered on "grep" (if added)\n'
-             '/book user          -> see our top 5 readers (dear all, read more!)\n'
+             '/book user          -> get a list of usernames using the app\n'
              '/book user username -> get the last book "username" completed\n'
              '```')
 COMMANDS = dict(rand=get_random_book,
