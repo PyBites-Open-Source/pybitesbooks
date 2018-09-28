@@ -52,6 +52,16 @@ def _create_user_output(user_books):
         msg.append(f'{user:<19}: {title} ({naturalday(last_book.completed)})')
     return '```' + '\n'.join(msg) + '```'
 
+def _get_attachment(msg, book=None):
+    if book is None:
+        return {"text": msg,
+                "color": "#3AA3E3"}
+    else:
+        return {"title": book['title'],
+                "title_link": book['url'],
+                "image_url": BOOK_THUMB.format(bookid=book['bookid']),
+                "text": msg,
+                "color": "#3AA3E3"}
 
 @csrf_exempt
 def get_book(request):
@@ -63,6 +73,7 @@ def get_book(request):
     text = request.get('text')
     text = text.split()
     single_word_cmd = text and len(text) == 1 and text[0]
+    book = None
     if single_word_cmd == 'help':
         headline = 'Command syntax:'
         msg = HELP_TEXT
@@ -91,17 +102,9 @@ def get_book(request):
         headline += f"\n{PB_READING_LIST}{book['bookid']}"
         msg = f"Author: _{book['authors']}_ (pages: {book['pages']})"
 
-    data = {
-        "response_type": "in_channel",
-        "text": headline,
-        "attachments": [
-            {"title": book['title'],
-             "title_link": book['url'],
-             "image_url": BOOK_THUMB.format(bookid=book['bookid']),
-             "text": msg,
-             "color": "#3AA3E3"}
-        ]
-    }
+    data = {"response_type": "in_channel",
+            "text": headline,
+            "attachments": [_get_attachment(msg, book)]}
 
     return HttpResponse(json.dumps(data),
                         content_type='application/json')

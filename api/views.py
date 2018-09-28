@@ -27,6 +27,7 @@ def get_user_last_book(username):
     book = books[0]
     data = dict(bookid=book.book.bookid,
                 title=book.book.title,
+                url=book.book.url,
                 authors=book.book.authors,
                 published=book.book.published,
                 isbn=book.book.isbn,
@@ -44,6 +45,7 @@ def get_user_books(username):
     for book in books:
         data = dict(bookid=book.book.bookid,
                     title=book.book.title,
+                    url=book.book.url,
                     authors=book.book.authors,
                     published=book.book.published,
                     isbn=book.book.isbn,
