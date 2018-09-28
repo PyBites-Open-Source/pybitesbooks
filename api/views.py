@@ -80,6 +80,7 @@ def get_random_book(grep=None):
 
     data = dict(bookid=book.book.bookid,
                 title=book.book.title,
+                url=book.book.url,
                 authors=book.book.authors,
                 published=book.book.published,
                 isbn=book.book.isbn,

@@ -1,6 +1,5 @@
 import json
 import os
-import re
 
 from django.contrib.humanize.templatetags.humanize import naturalday
 from django.http import Http404, HttpResponse
@@ -12,7 +11,7 @@ from api.views import (get_users,
 
 HOME = 'https://pbreadinglist.herokuapp.com'
 PB_READING_LIST = "http://pbreadinglist.herokuapp.com/books/"
-BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata"
+BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata"  # noqa
 SLACK_TOKEN = os.environ['SLACK_VERIFICATION_TOKEN']
 HELP_TEXT = ('```'
              '/book help          -> print this help message\n'
@@ -31,13 +30,6 @@ def _validate_token(request):
     token = request.get('token')
     if token is None or token != SLACK_TOKEN:
         raise Http404
-
-
-def _create_book_msg(book):
-    description = re.sub(r'<[^<]+?>', r'', book['description'])
-    return (f"*{book['title']}*\nAuthor: _{book['authors']}_ "
-            f"(pages: {book['pages']})\n"
-            f"Description:\n```{description}```")
 
 
 def _create_user_output(user_books):
@@ -97,17 +89,17 @@ def get_book(request):
             headline = f'Here is a "{grep}" title for your reading list:'
 
         headline += f"\n{PB_READING_LIST}{book['bookid']}"
-        msg = _create_book_msg(book)
+        msg = f"Author: _{book['authors']}_ (pages: {book['pages']})"
 
     data = {
         "response_type": "in_channel",
         "text": headline,
-        "color": "#3AA3E3",
-        "image_url": BOOK_THUMB.format(bookid=book['bookid']),
         "attachments": [
-            {
-                "text": msg,
-            }
+            {"title": book['title'],
+             "title_link": book['url'],
+             "image_url": BOOK_THUMB.format(bookid=book['bookid']),
+             "text": msg,
+             "color": "#3AA3E3"}
         ]
     }
 
