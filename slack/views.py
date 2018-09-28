@@ -10,7 +10,6 @@ from api.views import (get_users,
                        get_random_book)
 
 HOME = 'https://pbreadinglist.herokuapp.com'
-PB_READING_LIST = "http://pbreadinglist.herokuapp.com/books/"
 BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata"  # noqa
 SLACK_TOKEN = os.environ['SLACK_VERIFICATION_TOKEN']
 HELP_TEXT = ('```'
@@ -99,7 +98,6 @@ def get_book(request):
             book = COMMANDS['grep'](grep)
             headline = f'Here is a "{grep}" title for your reading list:'
 
-        headline += f"\n{PB_READING_LIST}{book['bookid']}"
         msg = f"Author: _{book['authors']}_ (pages: {book['pages']})"
 
     data = {"response_type": "in_channel",
