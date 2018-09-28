@@ -12,6 +12,7 @@ from api.views import (get_users,
 
 HOME = 'https://pbreadinglist.herokuapp.com'
 PB_READING_LIST = "http://pbreadinglist.herokuapp.com/books/"
+BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata"
 SLACK_TOKEN = os.environ['SLACK_VERIFICATION_TOKEN']
 HELP_TEXT = ('```'
              '/book help          -> print this help message\n'
@@ -102,7 +103,7 @@ def get_book(request):
         "response_type": "in_channel",
         "text": headline,
         "color": "#3AA3E3",
-        "image_url": "https://datadoghq.com/snapshot/path/to/snapshot.png",
+        "image_url": BOOK_THUMB.format(bookid=book['bookid']),
         "attachments": [
             {
                 "text": msg,
