@@ -21,7 +21,7 @@ def get_user_last_book(username):
     user = get_object_or_404(User, username=username)
 
     books = UserBook.objects.select_related('book')
-    books = books.order_by('-inserted')
+    books = books.filter(user=user).order_by('-inserted')
     if not books:
         raise Http404
 
