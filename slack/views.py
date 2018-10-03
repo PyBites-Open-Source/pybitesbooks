@@ -17,7 +17,7 @@ HELP_TEXT = ('```'
              '/book               -> get a random book added to PyBites Reading List\n'  # noqa E501
              '/book grep          -> get a random book filtered on "grep" (if added)\n'  # noqa E501
              '/book user          -> get a list of usernames using the app\n'
-             '/book user username -> get the last book "username" completed\n'
+             '/book user username -> get the last book "username" added\n'
              '```')
 COMMANDS = dict(rand=get_random_book,
                 grep=get_random_book,
