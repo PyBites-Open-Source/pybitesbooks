@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 
-from books.models import UserBook
+from books.models import Book, UserBook
 
 
 def get_users():
@@ -97,6 +97,29 @@ def get_random_book(grep=None):
 def random_book(request, grep=None):
     """Return a random book with optional filter"""
     data = get_random_book(grep)
+
+    json_data = json.dumps(data, indent=4, default=str, sort_keys=False)
+
+    return HttpResponse(json_data, content_type='application/json')
+
+
+def get_bookid(request, bookid):
+    books = Book.objects.filter(bookid=bookid)
+    print(books)
+    if not books:
+        raise Http404
+
+    book = books[0]
+    data = dict(bookid=book.bookid,
+                title=book.title,
+                url=book.url,
+                authors=book.authors,
+                publisher=book.publisher,
+                published=book.published,
+                isbn=book.isbn,
+                pages=book.pages,
+                language=book.language,
+                description=book.description)
 
     json_data = json.dumps(data, indent=4, default=str, sort_keys=False)
 

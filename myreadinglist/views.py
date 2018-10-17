@@ -29,7 +29,7 @@ def _parse_response(items):
         yield book_entry
 
 
-def get_books(request):
+def query_books(request):
     no_result = HttpResponse('fail')
 
     try:

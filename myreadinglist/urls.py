@@ -7,6 +7,8 @@ from books import views as book_views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    # autocomplete
+    url(r'^query_books/', views.query_books, name='query_books'),
     url(r'^api/', include('api.urls', namespace='api')),
     url(r'^slack/', include('slack.urls', namespace='slack')),
     url(r'^books/', include('books.urls', namespace='books')),

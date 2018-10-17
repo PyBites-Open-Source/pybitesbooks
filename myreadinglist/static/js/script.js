@@ -49,7 +49,7 @@ function logPomodoro(){
 
 
 $(document).ready(function(){
-    $("#searchTitles").autocomplete( "/api/get_books/", { minChars:3 });  
+    $("#searchTitles").autocomplete( "/query_books/", { minChars:3 });  
     
     // http://forum.jquery.com/topic/jquery-autocomplete-submit-form-on-result
     $("#searchTitles").result(function (event, data, formatted) {
