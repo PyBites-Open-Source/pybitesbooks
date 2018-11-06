@@ -35,7 +35,7 @@ class Book(models.Model):
 
 
 class Search(models.Model):
-    term = models.CharField(max_length=20)
+    term = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     inserted = models.DateTimeField(auto_now_add=True)
 

@@ -5,6 +5,7 @@ from django.shortcuts import render
 from books.googlebooks import search_books
 from books.models import Book, UserBook, COMPLETED
 
+DEFAULT_THUMB = 'http://pbreadinglist.herokuapp.com/static/img/book-badge.png'
 BOOK_ENTRY = ('<span class="searchResWrapper">'
               '<span class="searchRes" id="{id}">'
               '<img class="bookThumb" src="{thumb}">'
@@ -19,9 +20,13 @@ def _parse_response(items):
             volinfo = item['volumeInfo']
             title = volinfo['title']
             authors = volinfo['authors'][0]
-            thumb = volinfo['imageLinks']['smallThumbnail']
         except KeyError:
             continue
+
+        img = volinfo.get('imageLinks')
+        thumb = img and img.get('smallThumbnail')
+        thumb = thumb and thumb or DEFAULT_THUMB
+
         book_entry = BOOK_ENTRY.format(id=id_,
                                        title=title,
                                        authors=authors,
