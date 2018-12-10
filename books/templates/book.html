@@ -2,6 +2,10 @@
 {% load static %}
 {% load tags %}
 
+{% block title %}{{ book.title }}{% endblock %}
+{% block og_title %}{{ book.title }}{% endblock %}
+{% block og_url %}{{ request.path }}{% endblock %}
+
 {% block content %}
 
 <ul class="mui-tabs__bar">

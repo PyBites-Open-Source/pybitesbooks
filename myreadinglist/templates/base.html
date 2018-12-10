@@ -5,8 +5,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:site_name" content="PyBites My Reading List"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="PyBites My Reading List | {% block og_title %}Because We Love Books{% endblock %}"/>
+    <meta property="og:description" content="Leaders are readers! Share your reading using our reading app ..."/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="og:url" content="http://pbreadinglist.herokuapp.com{% block og_url %}{% endblock %}"/>
+    <meta property="og:image" content="http://pbreadinglist.herokuapp.com{% static 'img/book-badge.png' %}">
+
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
-    <title>PyBites My Reading List</title>
+    <title>PyBites My Reading List | {% block title %}Because We Love Books{% endblock %}</title>
+
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <link rel="stylesheet" href="//cdn.muicss.com/mui-0.9.39/extra/mui-colors.min.css">

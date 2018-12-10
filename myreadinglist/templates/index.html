@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block og_url %}{{ request.path }}{% endblock %}
+
 {% block content %}
 
 <div class="mui-container-fluid">

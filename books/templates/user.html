@@ -3,6 +3,10 @@
 {% load humanize %}
 {% load tags %}
 
+{% block title %}{{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %} Reading List{% endblock %}
+{% block og_title %}{{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %} Reading List{% endblock %}
+{% block og_url %}{{ request.path }}{% endblock %}
+
 {% block content %}
 
 <div class="mui-container-fluid">
