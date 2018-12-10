@@ -80,13 +80,13 @@
 
                   {% else %}
 
-                  <a href="{% url 'auth_login' %}?next={{ request.get_full_path|urlencode }}">
-                    <i class="fa fa-user"></i> Add Book</a>
+                    <a href="{% url 'auth_login' %}?next={{ request.get_full_path|urlencode }}"><i class="fa fa-user"></i> Add Book</a>
 
                   {% endif %}
                 </td>
 
               </tr>
+
             </tbody>
           </table>
 
@@ -95,7 +95,9 @@
         <div class="mui-col-md-2">
           <script type="text/javascript">GBS_insertPreviewButtonPopup('ISBN:{{ book.isbn }}');</script>
 
-  
+          <!-- Go to www.addthis.com/dashboard to customize your tools -->
+          <div class="addthis_inline_share_toolbox_50et"></div>
+             
           {% if book_users %}
             <br><br><div class="mui-divider"></div><br>
 
