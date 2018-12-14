@@ -12,7 +12,7 @@ psycopg2-binary==2.7.5
 python-decouple==3.1
 python-http-client==3.1.0
 pytz==2018.5
-requests==2.19.1
+requests
 sendgrid==5.4.1
 sqlparse==0.2.4
 urllib3==1.23
