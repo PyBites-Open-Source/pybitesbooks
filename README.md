@@ -10,9 +10,7 @@ Our simple reading app that gets you to read more. As Peter Drucker said: _What 
 4. Set this env variable together with `SECRET_KEY` in a file called `.env` in the root of the project: `cp .env-template .env && vi .env`. That's the bare minium. If you want to have email working create a [Sendgrid](https://sendgrid.com/) account obtaining an API key. The other variables have sensible defaults.
 5. Django migrate and run server: `python manage.py migrate && python manage.py runserver`.
 
---
-
-## Contributions
+## Contributions
 
 ... are more than welcome, just [open an issue](https://github.com/pybites/pbreadinglist/issues) and/or [PR new features](https://github.com/pybites/pbreadinglist/pulls). 
 
