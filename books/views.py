@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from datetime import date
 
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -11,6 +12,7 @@ from .googlebooks import get_book_info
 from .forms import UserBookForm
 from .models import (UserBook, BookNote,
                      READING, COMPLETED, TO_READ)
+from goal.models import Goal
 
 
 def book_page(request, bookid):
@@ -129,6 +131,21 @@ def user_page(request, username):
     user = get_object_or_404(User, username=username)
     books = UserBook.objects.select_related('book').filter(user=user).order_by('-updated').all()
 
+    try:
+        # only explicitly shared goals, and for active year
+        goal = Goal.objects.get(year=date.today().year,
+                                user=user,
+                                share=True)
+        completed_this_year = {book.id for book in
+                               UserBook.objects.filter(
+                                   user=user,
+                                   completed__year=goal.year
+                               )}
+        perc_completed = round(len(completed_this_year)/goal.number_books*100, 2)
+        print(goal, completed_this_year, perc_completed)
+    except Goal.DoesNotExist:
+        goal, completed_this_year, perc_completed = None, None, None
+
     userbooks = OrderedDict([(READING, []), (COMPLETED, []), (TO_READ, [])])
     books_pages = []
     for book in books:
@@ -144,11 +161,15 @@ def user_page(request, username):
             pages = 0
         books_pages.append(pages)
 
-    return render(request, 'user.html', {'userbooks': userbooks,
-                                         'username': username,
-                                         'num_books_added': len(books),
-                                         'num_books_done': len(books_pages),
-                                         'num_pages_read': sum(books_pages)})
+    return render(request, 'user.html',
+                  {'userbooks': userbooks,
+                   'username': username,
+                   'num_books_added': len(books),
+                   'num_books_done': len(books_pages),
+                   'num_pages_read': sum(books_pages),
+                   'goal': goal,
+                   'completed_this_year': completed_this_year,
+                   'perc_completed': perc_completed})
 
 
 @xframe_options_exempt

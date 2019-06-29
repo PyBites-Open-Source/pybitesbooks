@@ -22,6 +22,7 @@ def set_goal(request):
             old_number = goal.number_books
 
             goal.number_books = num_books
+            goal.share = post.get('share', False)
             goal.save()
 
             action = 'added' if old_number == 0 else 'updated'

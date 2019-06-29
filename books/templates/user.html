@@ -26,6 +26,16 @@
         of which <strong class="mui--text-title">{{ num_books_done }}</strong> read 
         totalling <strong class="mui--text-title">{{ num_pages_read|intcomma }}</strong> pages.
       </div>
+
+      {% if goal %}
+        <br>
+        <div class="mui--text-subhead mui--text-accent">
+          Reading Goal {{ goal.year }}: <progress id="readingProgress" value="{{ perc_completed}}" max="100"
+            title="Reading goal {{perc_completed}}% achieved ({{completed_this_year|length}} books read out of {{goal.number_books}})">
+          </progress>
+        </div>
+      {% endif %}
+
     </div>
 
     <div class="mui-col-md-2">

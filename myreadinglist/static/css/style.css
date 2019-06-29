@@ -177,3 +177,8 @@ blockquote:after {
   top: 90px;
   left: 80px;
 }
+#readingProgress {
+  position: relative;
+  top: 5px;
+  left: 10px;
+}

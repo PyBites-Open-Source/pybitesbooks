@@ -11,6 +11,12 @@
   <div class="mui-textfield">
     <input name="numBooks" value="{{ goal.number_books }}" type="number">
   </div>
+  <div class="mui-checkbox">
+    <label>
+      <input name="share" type="checkbox" value="1" {% if goal.share %}checked{% endif %}>
+      Share progress on your profile page
+    </label>
+  </div>
   <button type="submit" value="1" class="mui-btn--primary mui-btn" name="updateGoal">{% if goal.number_books > 0 %}Update{% else %}Add{% endif %} goal</button>
 </form>
 
