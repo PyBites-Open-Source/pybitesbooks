@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tags %}
+
+{% block content %}
+
+<h2>Reading Goal for {{goal.year}}</h2>
+
+<form class="mui-form" id="addGoalForm" method="post">
+  {% csrf_token %}
+  <div class="mui-textfield">
+    <input name="numBooks" value="{{ goal.number_books }}" type="number">
+  </div>
+  <button type="submit" value="1" class="mui-btn--primary mui-btn" name="updateGoal">{% if goal.number_books > 0 %}Update{% else %}Add{% endif %} goal</button>
+</form>
+
+{% endblock %}

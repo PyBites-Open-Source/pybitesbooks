@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'myreadinglist',
     'books',
     'pomodoro',
+    'goal',
 ]
 
 MIDDLEWARE = [

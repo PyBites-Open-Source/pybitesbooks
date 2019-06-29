@@ -10,7 +10,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from .googlebooks import get_book_info
 from .forms import UserBookForm
 from .models import (UserBook, BookNote,
-                    READING, COMPLETED, TO_READ)
+                     READING, COMPLETED, TO_READ)
 
 
 def book_page(request, bookid):
