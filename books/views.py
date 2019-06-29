@@ -136,15 +136,14 @@ def user_page(request, username):
         goal = Goal.objects.get(year=date.today().year,
                                 user=user,
                                 share=True)
-        completed_this_year = {book.id for book in
-                               UserBook.objects.filter(
-                                   user=user,
-                                   completed__year=goal.year
-                               )}
-        perc_completed = round(len(completed_this_year)/goal.number_books*100, 2)
-        print(goal, completed_this_year, perc_completed)
+        completed_books_this_year = UserBook.objects.filter(
+                                        user=user,
+                                        status=COMPLETED,
+                                        completed__year=goal.year
+                                    ).order_by('-completed')
+        perc_completed = int(completed_books_this_year.count()/goal.number_books*100)
     except Goal.DoesNotExist:
-        goal, completed_this_year, perc_completed = None, None, None
+        goal, completed_books_this_year, perc_completed = None, None, None
 
     userbooks = OrderedDict([(READING, []), (COMPLETED, []), (TO_READ, [])])
     books_pages = []
@@ -168,7 +167,7 @@ def user_page(request, username):
                    'num_books_done': len(books_pages),
                    'num_pages_read': sum(books_pages),
                    'goal': goal,
-                   'completed_this_year': completed_this_year,
+                   'completed_books_this_year': completed_books_this_year,
                    'perc_completed': perc_completed})
 
 

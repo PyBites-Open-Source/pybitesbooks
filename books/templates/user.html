@@ -21,20 +21,20 @@
         Reading List
       </div>
       <br>
-      <div class="mui--text-subhead mui--text-accent-secondary">
-        Status: <strong class="mui--text-title">{{ num_books_added }}</strong> books added, 
-        of which <strong class="mui--text-title">{{ num_books_done }}</strong> read 
-        totalling <strong class="mui--text-title">{{ num_pages_read|intcomma }}</strong> pages.
-      </div>
-
       {% if goal %}
-        <br>
         <div class="mui--text-subhead mui--text-accent">
-          Reading Goal {{ goal.year }}: <progress id="readingProgress" value="{{ perc_completed}}" max="100"
-            title="Reading goal {{perc_completed}}% achieved ({{completed_this_year|length}} books read out of {{goal.number_books}})">
-          </progress>
+            {% if username == request.user.username %}You have{% else %}{{ username }} has{% endif %} read {{completed_books_this_year|length}} of {{ goal.number_books }} books this year.  {% if username == request.user.username %}<small><a href="{% url 'goal:set_goal' %}">{edit}</a></small>{% endif %}
+
+            <br><br>
+            <progress id="readingProgress" value="{{ perc_completed}}" max="100">
+            </progress>{{ perc_completed }}%
+            <br><br>
         </div>
       {% endif %}
+
+      <div class="mui--text-subhead mui--text-accent-secondary">
+        Total reading: <strong class="mui--text-title">{{ num_books_added }}</strong> books added, of which <strong class="mui--text-title">{{ num_books_done }}</strong> read totalling <strong class="mui--text-title">{{ num_pages_read|intcomma }}</strong> pages.
+      </div>
 
     </div>
 
@@ -58,30 +58,52 @@
 
 {% else %}
 
-  <ul class="mui-tabs__bar">
-    <li class="mui--is-active"><a data-mui-toggle="tab"
-    data-mui-controls="pane-default-1">Reading ({{ userbooks|get_item:'r'|length }})</a></li>
-    <li><a data-mui-toggle="tab" data-mui-controls="pane-default-2">Completed ({{ userbooks|get_item:'c'|length }})</a></li>
-    <li><a data-mui-toggle="tab" data-mui-controls="pane-default-3">Wants to read ({{ userbooks|get_item:'t'|length }})</a></li>
-    {% if request.user.username == username %}
-      <li><a data-mui-toggle="tab" data-mui-controls="pane-default-4">Widget</a></li>
-    {% endif %}
-  </ul>
+    <ul class="mui-tabs__bar">
+      {% if goal and completed_books_this_year %}
+        <li class="mui--is-active">
+          <a data-mui-toggle="tab"
+            data-mui-controls="pane-default-0">{{goal.year}} challenge</a>
+        </li>
+      {% endif %}
+      <li {% if not goal %}class="mui--is-active"{% endif %}>
+        <a data-mui-toggle="tab"
+          data-mui-controls="pane-default-1">Reading ({{ userbooks|get_item:'r'|length }})</a>
+      </li>
+      <li><a data-mui-toggle="tab" data-mui-controls="pane-default-2">Completed ({{ userbooks|get_item:'c'|length }})</a></li>
+      <li><a data-mui-toggle="tab" data-mui-controls="pane-default-3">Wants to read ({{ userbooks|get_item:'t'|length }})</a></li>
+      {% if request.user.username == username %}
+        <li><a data-mui-toggle="tab" data-mui-controls="pane-default-4">Widget</a></li>
+      {% endif %}
+    </ul>
 
-  {% for books in userbooks.values %}
-    <div class="mui-tabs__pane {% if forloop.counter == 1 %}mui--is-active{% endif %}" id="pane-default-{{ forloop.counter }}">
-      <br>
-
-      <div class="mui-panel">
-        {% for book in books %}
-          <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
-            <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.book.title }}">
-          </a>
-        {% endfor %}
+    {% if goal and completed_books_this_year %}
+      <div class="mui-tabs__pane mui--is-active" id="pane-default-0">
+        <br>
+        <div class="mui-panel">
+          {% for book in completed_books_this_year %}
+            <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
+              <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.book.title }}">
+            </a>
+          {% endfor %}
+        </div>
       </div>
+    {% endif %}
 
-    </div>
-  {% endfor %}
+    {% for books in userbooks.values %}
+      <div class="mui-tabs__pane {% if forloop.counter == 1 and not goal %}mui--is-active{% endif %}" id="pane-default-{{ forloop.counter }}">
+        <br>
+
+        <div class="mui-panel">
+          {% for book in books %}
+            <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
+              <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.book.title }}">
+            </a>
+          {% endfor %}
+        </div>
+
+      </div>
+    {% endfor %}
+  {% endif %}
 
   {% if request.user.username == username %}
     <div class="mui-tabs__pane" id="pane-default-4">
@@ -90,8 +112,5 @@
       <pre>&lt;iframe src="https://pbreadinglist.herokuapp.com/widget/{{ username }}" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;</pre>
     </div>
   {% endif %}
-
-
-{% endif %}
 
 {% endblock %}

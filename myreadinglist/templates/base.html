@@ -42,7 +42,7 @@
                 <span>Hey {{ user.username }}</span>
                 <li><a href="{% url 'user_page' username=user.username %}">My Books</a></li>
                 {% if user.is_authenticated %}
-                  <li><a href="{% url 'goal:set_goal' %}">Reading Goal</a></li>
+                  <li><a href="{% url 'goal:set_goal' %}">Reading Challenge</a></li>
                   <li><a href="{% url 'pomodoro:track_pomodoro' %}">5-Hour Challenge</a></li>
                 {% endif %}
                 {% if user.is_superuser %}

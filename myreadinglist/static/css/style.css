@@ -180,5 +180,10 @@ blockquote:after {
 #readingProgress {
   position: relative;
   top: 5px;
-  left: 10px;
+  margin-right: 10px;
+}
+
+progress[value] {
+  width: 90%;
+  height: 20px;
 }
