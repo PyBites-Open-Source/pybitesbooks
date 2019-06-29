@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -10,7 +12,10 @@ def set_goal(request):
     post = request.POST
     user = request.user
 
-    goal, created = Goal.objects.get_or_create(user=user)
+    # take the current year, so switches to new challenge
+    # when the new year starts
+    goal, _ = Goal.objects.get_or_create(user=user,
+                                         year=date.today().year)
 
     if 'updateGoal' in post:
         try:
