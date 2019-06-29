@@ -28,7 +28,13 @@
             <br><br>
             <progress id="readingProgress" value="{{ perc_completed}}" max="100">
             </progress>{{ perc_completed }}%
+
             <br><br>
+            {% if username == request.user.username %}
+              <a class="mui-btn mui-btn--small mui-btn--raised" href="https://twitter.com/intent/tweet?url=http://pbreadinglist.herokuapp.com{{ request.path }}&text=I%20read%20{{completed_books_this_year|length}}%20of%20{{ goal.number_books }}%20books%20this%20year%2C%20and%20now%20I%20Challenge%20You!%20Join%20me%20%40PyBites%20My%20Reading%20List&hashtags=books%2Csuccess" title="Share this achievement on Twitter" target="_blank" style="margin: 5px 8px 5px 0;">
+                  Share on Twitter</a>
+                <br><br>
+            {% endif %}
         </div>
       {% endif %}
 
