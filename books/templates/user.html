@@ -65,7 +65,7 @@
 {% else %}
 
     <ul class="mui-tabs__bar">
-      {% if goal and completed_books_this_year %}
+      {% if goal %}
         <li class="mui--is-active">
           <a data-mui-toggle="tab"
             data-mui-controls="pane-default-0">{{goal.year}} challenge</a>
@@ -82,7 +82,7 @@
       {% endif %}
     </ul>
 
-    {% if goal and completed_books_this_year %}
+    {% if goal %}
       <div class="mui-tabs__pane mui--is-active" id="pane-default-0">
         <br>
         <div class="mui-panel">
