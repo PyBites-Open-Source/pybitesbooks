@@ -56,10 +56,10 @@ class Command(BaseCommand):
         books_completed = '<br>'.join(
             [f'{ub.user.username}: {ub.book.title} ({ub.book.url})'
              for ub in
-             UserBook.objects.filter(
+             UserBook.objects.select_related('book', 'user').filter(
                 Q(inserted__gte=ONE_WEEK_AGO) |
                 Q(updated__gte=ONE_WEEK_AGO),
-                status=COMPLETED)]
+                status=COMPLETED).order_by('user__username')]
         )
 
         goals = Goal.objects.all()
