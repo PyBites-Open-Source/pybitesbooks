@@ -8,6 +8,7 @@ from books.models import UserBook
 from goal.models import Goal
 
 FRIDAY = 4
+ONE_WEEK_AGO = date.today() - timedelta(days=7)
 SUBJECT = 'weekly pbreadinglist stats'
 MSG = """
 Number of users: {users}
@@ -36,10 +37,8 @@ class Command(BaseCommand):
 
         num_users = User.objects.count()
 
-        one_week_ago = date.today() - timedelta(days=7)
-
         books_added = UserBook.objects.filter(
-            inserted__gte=one_week_ago
+            inserted__gte=ONE_WEEK_AGO
         ).count()
 
         goals = Goal.objects.all()
