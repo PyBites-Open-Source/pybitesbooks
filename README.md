@@ -15,6 +15,6 @@ Our simple reading app that gets you to read more. As Peter Drucker said: _What 
 
 ... are more than welcome, just [open an issue](https://github.com/pybites/pbreadinglist/issues) and/or [PR new features](https://github.com/pybites/pbreadinglist/pulls). 
 
-Not sure where we can take this, happy to [discuss on Slack](https://codechalleng.es/settings/). 
+Not sure where we can take this, happy to [discuss on Slack](https://join.slack.com/t/pybites/shared_invite/enQtNDAxODc0MjEyODM2LTNiZjljNTI2NGJiNWI0MTRkNjY4YzQ1ZWU4MmQzNWQyN2Q4ZTQzMTk0NzkyZTRmMThlNmQzYTk5Y2Y5ZDM4NDU). 
 
 Remember _leaders are readers_, enjoy the process, enjoy your reading!
