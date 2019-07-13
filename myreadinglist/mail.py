@@ -12,7 +12,7 @@ ALL = 'all'
 sg = sendgrid.SendGridAPIClient(apikey=config('SENDGRID_API_KEY'))
 
 
-def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=False):
+def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=True):
     # newlines get wrapped in email, use html
     body = body.replace('\n', '<br>')
 
