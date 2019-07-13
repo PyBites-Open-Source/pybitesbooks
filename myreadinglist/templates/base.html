@@ -44,6 +44,7 @@
                 {% if user.is_authenticated %}
                   <li><a href="{% url 'goal:set_goal' %}">Reading Challenge</a></li>
                   <li><a href="{% url 'pomodoro:track_pomodoro' %}">5-Hour Challenge</a></li>
+                  <li><a href="https://join.slack.com/t/pybites/shared_invite/enQtNDAxODc0MjEyODM2LTNiZjljNTI2NGJiNWI0MTRkNjY4YzQ1ZWU4MmQzNWQyN2Q4ZTQzMTk0NzkyZTRmMThlNmQzYTk5Y2Y5ZDM4NDU" target="_blank">Join PyBites Slack / #books</a></li>
                 {% endif %}
                 {% if user.is_superuser %}
                   <li><a href="{% url 'admin:index' %}">Admin</a></li>
