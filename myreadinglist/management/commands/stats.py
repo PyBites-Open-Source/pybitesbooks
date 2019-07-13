@@ -11,7 +11,7 @@ FRIDAY = 4
 SUBJECT = 'weekly pbreadinglist stats'
 MSG = """
 Number of users: {users}
-Number of books added last week: {books_added} ({books_edited} edited)
+Number of books added last week: {books_added}
 Reading goals: {goals}
 """
 
@@ -41,9 +41,6 @@ class Command(BaseCommand):
         books_added = UserBook.objects.filter(
             inserted__gte=one_week_ago
         ).count()
-        books_edited = UserBook.objects.filter(
-            updated__gte=one_week_ago
-        ).count()
 
         goals = Goal.objects.all()
         goals_out = ', '.join([f'{go.user.username} => {go.number_books}'
@@ -51,7 +48,6 @@ class Command(BaseCommand):
 
         msg = MSG.format(users=num_users,
                          books_added=books_added,
-                         books_edited=books_edited,
                          goals=goals_out)
 
         send_email('me', SUBJECT, msg)
