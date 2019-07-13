@@ -4,8 +4,6 @@ from django.conf import settings
 import sendgrid
 from sendgrid.helpers.mail import Email, Content, Mail
 
-from logs.models import EmailSent
-
 FROM_EMAIL = config('FROM_EMAIL')
 ADMIN_EMAIL = config('ADMIN_EMAIL')
 ME = 'me'
@@ -14,11 +12,7 @@ ALL = 'all'
 sg = sendgrid.SendGridAPIClient(apikey=config('SENDGRID_API_KEY'))
 
 
-def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=True, log=True):
-
-    # log message
-    to_email_for_log = to_email if log else ALL
-
+def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=False):
     # newlines get wrapped in email, use html
     body = body.replace('\n', '<br>')
 
@@ -48,6 +42,8 @@ def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=True, log=Tr
 
     if str(response.status_code)[0] != '2':
         # TODO logging
-        print('ERROR sending message, status_code {}'.format(response.status_code))
+        print('ERROR sending message, status_code {}'.format(
+            response.status_code)
+        )
 
     return response
