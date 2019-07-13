@@ -2,6 +2,7 @@ from datetime import date, timedelta
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from myreadinglist.mail import send_email
 from books.models import UserBook
@@ -9,11 +10,19 @@ from goal.models import Goal
 
 FRIDAY = 4
 ONE_WEEK_AGO = date.today() - timedelta(days=7)
+COMPLETED = 'c'
 SUBJECT = 'weekly pbreadinglist stats'
 MSG = """
-Number of users: {users}
-Number of books added last week: {books_added}
-Reading goals: {goals}
+Number of users: {num_users}
+(new users last week: {new_users})
+
+Number of books added last week: {books_clicked}
+
+Books completed last week:
+{books_completed}
+
+Reading goals:
+{goals}
 """
 
 
@@ -36,17 +45,31 @@ class Command(BaseCommand):
             return
 
         num_users = User.objects.count()
+        new_users = ', '.join(
+            [u.username for u in
+             User.objects.filter(date_joined__gte=ONE_WEEK_AGO)]
+        )
 
-        books_added = UserBook.objects.filter(
+        books_clicked = UserBook.objects.filter(
             inserted__gte=ONE_WEEK_AGO
         ).count()
+        books_completed = '<br>'.join(
+            [f'{ub.user.username}: {ub.book.title} ({ub.book.url})'
+             for ub in
+             UserBook.objects.filter(
+                Q(inserted__gte=ONE_WEEK_AGO) |
+                Q(updated__gte=ONE_WEEK_AGO),
+                status=COMPLETED)]
+        )
 
         goals = Goal.objects.all()
-        goals_out = ', '.join([f'{go.user.username} => {go.number_books}'
-                               for go in goals])
+        goals_out = '<br>'.join([f'{go.user.username} => {go.number_books}'
+                                 for go in goals])
 
-        msg = MSG.format(users=num_users,
-                         books_added=books_added,
+        msg = MSG.format(num_users=num_users,
+                         new_users=new_users,
+                         books_clicked=books_clicked,
+                         books_completed=books_completed,
                          goals=goals_out)
 
         send_email('me', SUBJECT, msg)
