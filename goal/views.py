@@ -17,7 +17,11 @@ def set_goal(request):
     goal, _ = Goal.objects.get_or_create(user=user,
                                          year=date.today().year)
 
-    if 'updateGoal' in post:
+    if 'deleteGoal' in post:
+        goal.delete()
+        messages.success(request, 'You deleted your goal')
+
+    elif 'updateGoal' in post:
         try:
             num_books = int(post.get('numBooks', 0))
         except ValueError:
