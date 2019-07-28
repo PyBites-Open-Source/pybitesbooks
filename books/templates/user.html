@@ -71,7 +71,7 @@
             data-mui-controls="pane-default-0">{{goal.year}} challenge</a>
         </li>
       {% endif %}
-      <li {% if not goal %}class="mui--is-active"{% endif %}>
+      <li {% if not share_goal %}class="mui--is-active"{% endif %}>
         <a data-mui-toggle="tab"
           data-mui-controls="pane-default-1">Reading ({{ userbooks|get_item:'r'|length }})</a>
       </li>
@@ -100,7 +100,7 @@
     {% endif %}
 
     {% for books in userbooks.values %}
-      <div class="mui-tabs__pane {% if forloop.counter == 1 and not goal %}mui--is-active{% endif %}" id="pane-default-{{ forloop.counter }}">
+      <div class="mui-tabs__pane {% if forloop.counter == 1 and not share_goal %}mui--is-active{% endif %}" id="pane-default-{{ forloop.counter }}">
         <br>
 
         <div class="mui-panel">
