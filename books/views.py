@@ -139,7 +139,12 @@ def user_page(request, username):
                                         status=COMPLETED,
                                         completed__year=goal.year
                                     ).order_by('-completed')
-        perc_completed = int(completed_books_this_year.count()/goal.number_books*100)
+
+        try:
+            perc_completed = int(completed_books_this_year.count()/goal.number_books*100)
+        except ZeroDivisionError:
+            perc_completed = 0
+
     except Goal.DoesNotExist:
         goal, completed_books_this_year, perc_completed = None, None, None
 
