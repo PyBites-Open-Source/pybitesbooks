@@ -72,4 +72,5 @@ class Command(BaseCommand):
                          books_completed=books_completed,
                          goals=goals_out)
 
-        send_email('me', SUBJECT, msg)
+        for to_email in 'me julian@pybit.es bob@pybit.es'.split():
+            send_email(to_email, SUBJECT, msg)
