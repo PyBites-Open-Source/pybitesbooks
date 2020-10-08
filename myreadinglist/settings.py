@@ -29,6 +29,8 @@ LOCAL = ENV.lower() == 'local'
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 if DEBUG:
     ALLOWED_HOSTS = ['*']
+    # bounce emails to console
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DOMAIN = config('DOMAIN', default='http://pbreadinglist.herokuapp.com/')
 
