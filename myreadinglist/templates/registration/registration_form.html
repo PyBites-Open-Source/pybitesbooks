@@ -14,18 +14,22 @@
   <div class="mui-textfield">
     {{ form.username.label }}
     {{ form.username }}
+    {{ form.username.errors }}
   </div>
   <div class="mui-textfield">
     {{ form.email.label }}
     {{ form.email }}
+    {{ form.email.errors }}
   </div>
   <div class="mui-textfield">
     {{ form.password1.label }}
     {{ form.password1 }}
+    {{ form.password1.errors }}
   </div>
   <div class="mui-textfield">
     {{ form.password2.label }}
     {{ form.password2 }}
+    {{ form.password2.errors }}
   </div>
 
   <input class="mui-btn mui-btn--primary" type="submit" value="{% trans 'Submit' %}" />
