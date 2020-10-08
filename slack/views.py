@@ -1,6 +1,7 @@
 import json
 import os
 
+from decouple import config
 from django.contrib.humanize.templatetags.humanize import naturalday
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -11,7 +12,7 @@ from api.views import (get_users,
 
 HOME = 'https://pbreadinglist.herokuapp.com'
 BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata"  # noqa
-SLACK_TOKEN = os.environ['SLACK_VERIFICATION_TOKEN']
+SLACK_TOKEN = config('SLACK_VERIFICATION_TOKEN')
 HELP_TEXT = ('```'
              '/book help          -> print this help message\n'
              '/book               -> get a random book added to PyBites Reading List\n'  # noqa E501
