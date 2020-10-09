@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^books/', include('books.urls', namespace='books')),
     url(r'^users/(?P<username>.*)$', book_views.user_page, name='user_page'),
     url(r'^widget/(?P<username>.*)$', book_views.user_page_widget, name='user_page_widget'),
-    url(r'^accounts/', include('registration.backends.hmac.urls')),
+    url(r'^accounts/', include('registration.backends.activation.urls')),
     url(r'^5hours/', include('pomodoro.urls')),
     url(r'^goal/', include('goal.urls')),
     url(r'hey-bob/', admin.site.urls),
