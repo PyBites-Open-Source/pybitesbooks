@@ -34,7 +34,8 @@ def get_user_last_book(username):
                 isbn=book.book.isbn,
                 pages=book.book.pages,
                 language=book.book.language,
-                description=book.book.description)
+                description=book.book.description,
+                imagesize=book.book.imagesize)
     return data
 
 
@@ -52,7 +53,9 @@ def get_user_books(username):
                     isbn=book.book.isbn,
                     pages=book.book.pages,
                     language=book.book.language,
-                    description=book.book.description)
+                    description=book.book.description,
+                    imagesize=book.book.imagesize)
+        
         data[book.status].append(data)
     return data
 
@@ -89,7 +92,8 @@ def get_random_book(grep=None):
                 isbn=book.book.isbn,
                 pages=book.book.pages,
                 language=book.book.language,
-                description=book.book.description)
+                description=book.book.description,
+                imagesize=book.book.imagesize)
 
     return data
 
@@ -119,7 +123,8 @@ def get_bookid(request, bookid):
                 isbn=book.isbn,
                 pages=book.pages,
                 language=book.language,
-                description=book.description)
+                description=book.description,
+                imagesize=book.imagesize)
 
     json_data = json.dumps(data, indent=4, default=str, sort_keys=False)
 

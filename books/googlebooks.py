@@ -1,4 +1,5 @@
 import requests
+from urllib import parse
 
 from books.models import Book, Search
 
@@ -32,6 +33,11 @@ def get_book_info(book_id):
         language = volinfo['language']
         description = volinfo.get('description', 'No description')
 
+        if 'imageLinks' in volinfo and 'small' in volinfo['imageLinks']:
+            image_size = parse.parse_qs(parse.urlparse(volinfo['imageLinks']['small']).query)['zoom'][0]
+        else:
+            image_size = '1'
+            
         book = Book(bookid=bookid,
                     title=title,
                     authors=authors,
@@ -40,7 +46,8 @@ def get_book_info(book_id):
                     isbn=isbn,
                     pages=pages,
                     language=language,
-                    description=description)
+                    description=description,
+                    imagesize=image_size)
         book.save()
 
         return book
