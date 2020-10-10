@@ -49,11 +49,11 @@
                 {% if user.is_superuser %}
                   <li><a href="{% url 'admin:index' %}">Admin</a></li>
                 {% endif %}
-                <li><a href="{% url 'auth_logout' %}">Logout</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
 
               {% else %}
 
-                <li><a href="{% url 'auth_login' %}"><i class="fa fa-user" aria-hidden="true"></i> Login</a></li>
+                <li><a href="{% url 'login' %}"><i class="fa fa-user" aria-hidden="true"></i> Login</a></li>
 
               {% endif %} 
 
