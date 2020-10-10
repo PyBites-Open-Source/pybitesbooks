@@ -17,7 +17,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('5hours/', include('pomodoro.urls')),
     path('goal/', include('goal.urls')),
-    path('hey-bob/', admin.site.urls),
+    path('super-reader/', admin.site.urls),
 ]
 
 if settings.DEBUG:
