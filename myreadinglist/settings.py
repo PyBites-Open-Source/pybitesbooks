@@ -34,10 +34,8 @@ if DEBUG:
 
 DOMAIN = config('DOMAIN', default='http://pbreadinglist.herokuapp.com/')
 
-
 # Application definition
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,12 +43,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+]
+EXTERNAL_APPS = [
+    'django_registration',
     'debug_toolbar',
+]
+OWN_APPS = [
     'myreadinglist',
     'books',
     'pomodoro',
     'goal',
 ]
+INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + OWN_APPS
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -140,10 +144,6 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
 
-# https://pybit.es/django-registration-app.html
-# https://github.com/pybites/django-registration/blob/master/register/settings.py
-ACCOUNT_ACTIVATION_DAYS = 7
-
 EMAIL_HOST_USER = config('SENDGRID_USERNAME')
 EMAIL_HOST= 'smtp.sendgrid.net'
 EMAIL_PORT = 587
@@ -168,3 +168,4 @@ LOGGING = {
 LOGIN_URL = 'index'
 LOGOUT_URL = 'index'
 LOGIN_REDIRECT_URL = 'index'
+ACCOUNT_ACTIVATION_DAYS = 7
