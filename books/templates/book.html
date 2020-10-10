@@ -80,7 +80,7 @@
 
                   {% else %}
 
-                    <a href="{% url 'auth_login' %}?next={{ request.get_full_path|urlencode }}"><i class="fa fa-user"></i> Add Book</a>
+                    <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}"><i class="fa fa-user"></i> Add Book</a>
 
                   {% endif %}
                 </td>
