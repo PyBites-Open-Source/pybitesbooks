@@ -19,6 +19,7 @@ class Book(models.Model):
     pages = models.CharField(max_length=5)
     language = models.CharField(max_length=2)
     description = models.TextField()
+    imagesize = models.CharField(max_length=2, default="1")
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 

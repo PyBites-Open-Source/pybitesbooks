@@ -14,10 +14,12 @@
   <div class="mui-textfield">
     {{ form.username.label }}
     {{ form.username }}
+    {{ form.username.errors }}
   </div>
   <div class="mui-textfield">
     {{ form.password.label }}
     {{ form.password }}
+    {{ form.password.errors }}
   </div>
 
   <input class="mui-btn mui-btn--primary" type="submit" value="{% trans 'Log in' %}" />
@@ -26,6 +28,6 @@
 
 <br><div class="mui-divider"></div><br>
 
-<p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
-<p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+<p>{% trans "Forgot password" %}? <a href="{% url 'password_reset' %}">{% trans "Reset it" %}</a>!</p>
+<p>{% trans "Not member" %}? <a href="{% url 'django_registration_register' %}">{% trans "Register" %}</a>!</p>
 {% endblock %}

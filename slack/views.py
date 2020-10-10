@@ -1,6 +1,7 @@
 import json
 import os
 
+from decouple import config
 from django.contrib.humanize.templatetags.humanize import naturalday
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -10,8 +11,8 @@ from api.views import (get_users,
                        get_random_book)
 
 HOME = 'https://pbreadinglist.herokuapp.com'
-BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata"  # noqa
-SLACK_TOKEN = os.environ['SLACK_VERIFICATION_TOKEN']
+BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom={imagesize}&source=gbs_gdata"  # noqa
+SLACK_TOKEN = config('SLACK_VERIFICATION_TOKEN')
 HELP_TEXT = ('```'
              '/book help          -> print this help message\n'
              '/book               -> get a random book added to PyBites Reading List\n'  # noqa E501
@@ -58,7 +59,7 @@ def _get_attachment(msg, book=None):
     else:
         return {"title": book['title'],
                 "title_link": book['url'],
-                "image_url": BOOK_THUMB.format(bookid=book['bookid']),
+                "image_url": BOOK_THUMB.format(bookid=book['bookid'], imagesize=book['imagesize']),
                 "text": msg,
                 "color": "#3AA3E3"}
 
