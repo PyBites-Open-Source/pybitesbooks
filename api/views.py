@@ -48,6 +48,7 @@ def get_user_books(username):
                     title=book.book.title,
                     url=book.book.url,
                     authors=book.book.authors,
+                    favorite=book.favorite,
                     published=book.book.published,
                     isbn=book.book.isbn,
                     pages=book.book.pages,
