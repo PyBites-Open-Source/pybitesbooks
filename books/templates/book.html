@@ -18,10 +18,10 @@
 
   <div class="mui-container-fluid">
 
-    <div class="mui-row">
+    <div class="mui-row" style='display: flex'>
 
-      <div class="mui-col-md-4">
-        <img src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=2&source=gbs_gdata" alt="{{ book.title }}">
+      <div class="mui-col-md-4" style='display: flex;justify-content: center;align-items: center'>
+        <img src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom={{ book.imagesize }}&source=gbs_gdata" alt="{{ book.title }}">
       </div>
       <div class="mui-col-md-8">
 
@@ -80,7 +80,7 @@
 
                   {% else %}
 
-                    <a href="{% url 'auth_login' %}?next={{ request.get_full_path|urlencode }}"><i class="fa fa-user"></i> Add Book</a>
+                    <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}"><i class="fa fa-user"></i> Add Book</a>
 
                   {% endif %}
                 </td>
