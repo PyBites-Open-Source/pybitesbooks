@@ -7,13 +7,11 @@
   <script>
     $(document).ready(function() {
     $(".js-favorite").change(function () {
-      user = $(this).attr("username");
       book = $(this).attr("bookid");
       checked = $(this).attr("checked");
       $.ajax({
         url: 'favorite/',
         data: {
-          'user': user,
           'book': book,
           'checked': checked
         }
@@ -110,7 +108,7 @@
             {% for book in completed_books_this_year %}
               <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
                 <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.book.title }}">
-                <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} username={{ username }} {% if book.favorite %} checked{% endif %}>
+                <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} {% if book.favorite %} checked{% endif %}>
               </a>
             {% endfor %}
           {% else %}
@@ -128,7 +126,7 @@
           {% for book in books %}
             <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}{% if book.status == 'c' %} - completed {{ book.completed|timesince }} ago{% endif %}">
               <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="cover img of {{ book.book.title }}">
-              <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} username={{ username }} {% if book.favorite %} checked{% endif %}>
+              <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} {% if book.favorite %} checked{% endif %}>
             </a>
           {% endfor %}
         </div>

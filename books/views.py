@@ -189,7 +189,7 @@ def user_page_widget(request, username):
 
 @login_required
 def user_favorite(request):
-    user = request.GET.get('user')
+    user = request.user
     book = request.GET.get('book')
     checked = True if request.GET.get('checked') == "true" else False
     UserBook.objects.filter(user__username=user,book__bookid=book).update(favorite=checked)
