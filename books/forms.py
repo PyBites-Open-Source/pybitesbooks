@@ -4,6 +4,10 @@ from django.forms import ModelForm
 from .models import UserBook, BookNote
 
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
 class UserBookForm(ModelForm):
 
     # def __init__(self, *args, **kwargs):
@@ -12,4 +16,6 @@ class UserBookForm(ModelForm):
     class Meta:
         model = UserBook
         fields = ['status', 'completed']
-        completed = forms.DateTimeField()
+        widgets = {
+            'completed': DateInput(),
+        }
