@@ -6,20 +6,24 @@
 {% block css %}
   <style>
     .js-favorite {
-      visibility:hidden;
-      font-size:30px;
-      cursor:pointer;
+      visibility: hidden;
+      font-size: 30px;
+      cursor: pointer;
       position: relative;
       color: orange;
     }
     .js-favorite:before {
       content: "\2606";
       position: absolute;
-      visibility:visible;
+      visibility: visible;
     }
     .js-favorite:checked:before {
       content: "\2605";
       position: relative;
+    }
+    .scrollbar {
+      overflow: auto;
+      white-space: nowrap;
     }
   </style>
 {% endblock %}
@@ -47,6 +51,28 @@
 {% block og_url %}{{ request.path }}{% endblock %}
 
 {% block content %}
+<div class="mui--text-display1">
+  Favorites
+</div>
+<div class="mui-appbar">
+  <div class="scrollbar">
+          {% if userbooks %}
+            {% for books in userbooks.values %}
+              {% for userbook in books %}
+              {% if userbook.favorite %}
+              <a href="{% url 'books:book_page' bookid=userbook.book.bookid %}" title="{{ userbook.book.title }}">
+                <img class="thumbNail" src="http://books.google.com/books?id={{ userbook.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ userbook.book.title }}">
+              </a>
+              {% endif %}
+              {% endfor %}
+            {% endfor %}
+          {% else %}
+            <p>No favorite books yet.</p>
+          {% endif %}
+  </div>
+</div>
+
+<br><div class="mui-divider"></div><br>
 
 <div class="mui-container-fluid">
   <div class="mui-row">
