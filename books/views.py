@@ -192,5 +192,7 @@ def user_favorite(request):
     user = request.user
     book = request.GET.get('book')
     checked = True if request.GET.get('checked') == "true" else False
-    UserBook.objects.filter(user__username=user, book__bookid=book).update(favorite=checked)
+    userbook = UserBook.objects.get(user__username=user, book__bookid=book)
+    userbook.favorite = checked
+    userbook.save()
     return JsonResponse({"status":"success"})
