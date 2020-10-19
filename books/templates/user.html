@@ -3,11 +3,76 @@
 {% load humanize %}
 {% load tags %}
 
+{% block css %}
+  <style>
+    .js-favorite {
+      visibility: hidden;
+      font-size: 30px;
+      cursor: pointer;
+      position: relative;
+      color: orange;
+    }
+    .js-favorite:before {
+      content: "\2606";
+      position: absolute;
+      visibility: visible;
+    }
+    .js-favorite:checked:before {
+      content: "\2605";
+      position: relative;
+    }
+    .scrollbar {
+      overflow: auto;
+      white-space: nowrap;
+    }
+  </style>
+{% endblock %}
+
+{% block javascript %}
+  <script>
+    $(document).ready(function() {
+    $(".js-favorite").change(function () {
+      book = $(this).attr("bookid");
+      checked = $(this).attr("checked");
+      $.ajax({
+        url: 'favorite/',
+        data: {
+          'book': book,
+          'checked': checked
+        }
+      });
+    });
+    });
+  </script>
+{% endblock %}
+
 {% block title %}{{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %} Reading List{% endblock %}
 {% block og_title %}{{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %} Reading List{% endblock %}
 {% block og_url %}{{ request.path }}{% endblock %}
 
 {% block content %}
+<div class="mui--text-display1">
+  Favorites
+</div>
+<div class="mui-appbar">
+  <div class="scrollbar">
+          {% if userbooks %}
+            {% for books in userbooks.values %}
+              {% for userbook in books %}
+                {% if userbook.favorite %}
+              <a href="{% url 'books:book_page' bookid=userbook.book.bookid %}" title="{{ userbook.book.title }}">
+                <img class="thumbNail" src="http://books.google.com/books?id={{ userbook.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ userbook.book.title }}">
+              </a>
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+          {% else %}
+            <p>No favorite books yet.</p>
+          {% endif %}
+  </div>
+</div>
+
+<br><div class="mui-divider"></div><br>
 
 <div class="mui-container-fluid">
   <div class="mui-row">
@@ -90,6 +155,7 @@
             {% for book in completed_books_this_year %}
               <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
                 <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.book.title }}">
+                <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} {% if book.favorite %} checked{% endif %}>
               </a>
             {% endfor %}
           {% else %}
@@ -107,6 +173,7 @@
           {% for book in books %}
             <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}{% if book.status == 'c' %} - completed {{ book.completed|timesince }} ago{% endif %}">
               <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="cover img of {{ book.book.title }}">
+              <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} {% if book.favorite %} checked{% endif %}>
             </a>
           {% endfor %}
         </div>
