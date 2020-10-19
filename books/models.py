@@ -34,6 +34,12 @@ class Book(models.Model):
     def __str__(self):
         return f'{self.id} {self.bookid} {self.title}'
 
+    def __repr__(self):
+        return (f"{self.__class__.__name__}('{self.id}', "
+                f"'{self.bookid}', '{self.title}', '{self.authors}', "
+                f"'{self.publisher}', '{self.published}', '{self.isbn}', "
+                f"'{self.pages}', '{self.language}', '{self.description}')")
+
 
 class Search(models.Model):
     term = models.CharField(max_length=100)

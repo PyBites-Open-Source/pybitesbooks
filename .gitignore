@@ -3,3 +3,4 @@ venv**
 *pyc
 *swp
 **.DS_Store
+**egg-info**
