@@ -156,11 +156,16 @@ def user_page(request, username):
 
     userbooks = OrderedDict([(READING, []), (COMPLETED, []), (TO_READ, [])])
     books_pages = []
+    user_has_favorites = False
+
     for book in books:
         userbooks[book.status].append(book)
 
         if not book.done_reading:
             continue
+
+        if book.favorite:
+            user_has_favorites = True
 
         # only count pages on books read
         try:
@@ -175,6 +180,7 @@ def user_page(request, username):
                    'num_books_added': len(books),
                    'num_books_done': len(books_pages),
                    'num_pages_read': sum(books_pages),
+                   'user_has_favorites': user_has_favorites,
                    'goal': goal,
                    'share_goal': share_goal,
                    'completed_books_this_year': completed_books_this_year,
