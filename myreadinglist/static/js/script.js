@@ -66,3 +66,9 @@ $(document).ready(function(){
     });
 
 });
+
+$(function() {
+    $( "#id_completed" ).datepicker({
+        dateFormat: "yy-mm-dd"
+    });
+});
