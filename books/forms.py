@@ -5,7 +5,7 @@ from .models import UserBook, BookNote
 
 
 class DateInput(forms.DateInput):
-    input_type = 'date'
+    input_type = 'text'
 
 
 class UserBookForm(ModelForm):
