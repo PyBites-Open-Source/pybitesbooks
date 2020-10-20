@@ -1,5 +1,7 @@
 import pytest
 
+pytestmark = pytest.mark.django_db
+
 
 @pytest.mark.parametrize("bookid, title", [
     ("nneBa6-mWfgC", "Coders at Work"),
