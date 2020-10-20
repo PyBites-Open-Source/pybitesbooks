@@ -1,7 +1,5 @@
 import pytest
 
-from books.models import Book
-
 
 @pytest.mark.parametrize("bookid, title", [
     ("nneBa6-mWfgC", "Coders at Work"),
