@@ -60,6 +60,7 @@ class UserBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=READ_STATUSES,
     default=COMPLETED)
+    favorite = models.BooleanField(default=False)
     completed = models.DateTimeField(default=timezone.now)
     inserted = models.DateTimeField(auto_now_add=True)  # != completed
     updated = models.DateTimeField(auto_now=True)

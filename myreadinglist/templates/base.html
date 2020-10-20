@@ -27,8 +27,10 @@
     <script src="//code.jquery.com/ui/1.8.24/jquery-ui.js"></script>
     <script src="{% static 'js/jquery.autocomplete.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    {% block javascript %}{% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.autocomplete.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    {% block css %}{% endblock %}
   </head>
   <body>
     <header class="mui-appbar mui--z1">

@@ -7,6 +7,8 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from .googlebooks import get_book_info
 from .forms import UserBookForm
@@ -196,3 +198,13 @@ def user_page_widget(request, username):
     user = get_object_or_404(User, username=username)
     books = UserBook.objects.select_related('book').filter(user=user, status='c')
     return render(request, 'widget.html', {'books': books})
+
+@login_required
+def user_favorite(request):
+    user = request.user
+    book = request.GET.get('book')
+    checked = True if request.GET.get('checked') == "true" else False
+    userbook = UserBook.objects.get(user__username=user, book__bookid=book)
+    userbook.favorite = checked
+    userbook.save()
+    return JsonResponse({"status":"success"})
