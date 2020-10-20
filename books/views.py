@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 from datetime import date
 
 from django.contrib import messages
@@ -15,6 +15,10 @@ from .forms import UserBookForm
 from .models import (UserBook, BookNote,
                      READING, COMPLETED, TO_READ)
 from goal.models import Goal
+
+UserStats = namedtuple('UserStats', ["num_books_added",
+                                     "num_books_done",
+                                     "num_pages_read"])
 
 
 def book_page(request, bookid):
@@ -140,7 +144,8 @@ def get_user_goal(user):
 
 
 def group_userbooks_by_status(books):
-    userbooks = OrderedDict([(READING, []), (COMPLETED, []), (TO_READ, [])])
+    userbooks = OrderedDict(
+        [(READING, []), (COMPLETED, []), (TO_READ, [])])
     books_pages = []
     for book in books:
         userbooks[book.status].append(book)
@@ -157,35 +162,30 @@ def user_page(request, username):
     user_books = UserBook.objects.select_related('book').filter(
         user=user).order_by('-updated').all()
 
+    completed_books_this_year, perc_completed = [], 0
     goal = get_user_goal(user)
-    completed_books_this_year = []
-    perc_completed = 0
+
     if goal is not None:
         completed_books_this_year = UserBook.objects.filter(
-                                        user=user,
-                                        status=COMPLETED,
-                                        completed__year=goal.year
-                                    ).order_by('-completed')
+            user=user, status=COMPLETED, completed__year=goal.year
+        ).order_by('-completed')
 
-        try:
+        if goal.number_books > 0:
             perc_completed = int(completed_books_this_year.count()/goal.number_books*100)
-        except ZeroDivisionError:
-            perc_completed = 0
 
     is_me = request.user.is_authenticated and request.user == user
     share_goal = goal and (goal.share or is_me)
 
     grouped_user_books = group_userbooks_by_status(user_books)
-    num_pages_read = get_num_pages_read(user_books)
-    num_books_added = len(user_books)
-    num_books_done = len(grouped_user_books[COMPLETED])
+
+    user_stats = UserStats(num_books_added=len(user_books),
+                           num_books_done=len(grouped_user_books[COMPLETED]),
+                           num_pages_read=get_num_pages_read(user_books))
 
     return render(request, 'user.html',
-                  {'userbooks': grouped_user_books,
+                  {'grouped_user_books': grouped_user_books,
                    'username': username,
-                   'num_books_added': num_books_added,
-                   'num_books_done': num_books_done,
-                   'num_pages_read': num_pages_read,
+                   'user_stats': user_stats,
                    'goal': goal,
                    'share_goal': share_goal,
                    'completed_books_this_year': completed_books_this_year,
