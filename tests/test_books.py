@@ -19,16 +19,19 @@ def test_homepage_shows_books(client, books, bookid, title):
     assert expected in response.content.decode()
 
 
-def test_book_page_logged_out(client, books):
+@pytest.mark.parametrize("snippet, is_in", [
+    ("<td>Peter Seibel</td>", True),
+    ("<td>Apress</td>", True),
+    ("<td>2009-09-16</td>", True),
+    ("<td>978143021948463</td>", True),
+    ("<td>Page Count</td><td>632</td>", True),
+    (('<form class="mui-form" id="addBookForm" '
+      'method="post">'), False),
+])
+def test_book_page_logged_out(client, books, snippet, is_in):
     response = client.get('/books/nneBa6-mWfgC')
     html = response.content.decode()
-    assert "<td>Peter Seibel</td>" in html
-    assert "<td>Apress</td>" in html
-    assert "<td>2009-09-16</td>" in html
-    assert "<td>978143021948463</td>" in html
-    assert "<td>Page Count</td><td>632</td>" in html
-    assert ('<form class="mui-form" id="addBookForm" '
-            'method="post">') not in html
+    assert snippet in html if is_in else snippet not in html
 
 
 def test_book_page_logged_in(login, books):
