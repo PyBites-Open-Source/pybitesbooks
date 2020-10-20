@@ -110,21 +110,26 @@ def book_page(request, bookid):
     # prepare book form (note form = multiple = best manual)
     if userbook:
         # make sure to bounce back previously entered form values
-        book_form = UserBookForm(initial=dict(status=userbook.status,
-                                              completed=userbook.completed))
+        book_form = UserBookForm(
+            initial=dict(status=userbook.status,
+                         completed=userbook.completed))
     else:
         book_form = UserBookForm()
 
     # all notes (do last as new note might have been added)
+    book_notes = BookNote.objects.select_related('user')
     if request.user.is_authenticated:
-        filter_criteria = Q(book=book) & (Q(user=request.user) | Q(public=True))
-        notes = BookNote.objects.select_related('user').filter(filter_criteria)
+        filter_criteria = (
+            Q(book=book) &
+            (Q(user=request.user) | Q(public=True))
+        )
+        notes = book_notes.filter(filter_criteria)
     else:
-        notes = BookNote.objects.select_related('user').filter(book=book, public=True)
+        notes = book_notes.filter(book=book, public=True)
     notes = notes.order_by('-edited').all()
 
-    book_users = UserBook.objects.select_related('user').filter(book=book,
-                                                                status=COMPLETED)
+    book_users = UserBook.objects.select_related('user').filter(
+        book=book, status=COMPLETED)
 
     return render(request, 'book.html', {'book': book,
                                          'notes': notes,
@@ -146,10 +151,10 @@ def get_user_goal(user):
 def group_userbooks_by_status(books):
     userbooks = OrderedDict(
         [(READING, []), (COMPLETED, []), (TO_READ, [])])
-    books_pages = []
     for book in books:
         userbooks[book.status].append(book)
     return userbooks
+
 
 def get_num_pages_read(books):
     return sum(
@@ -171,7 +176,8 @@ def user_page(request, username):
         ).order_by('-completed')
 
         if goal.number_books > 0:
-            perc_completed = int(completed_books_this_year.count()/goal.number_books*100)
+            perc_completed = int(
+                completed_books_this_year.count()/goal.number_books*100)
 
     is_me = request.user.is_authenticated and request.user == user
     share_goal = goal and (goal.share or is_me)
@@ -195,8 +201,10 @@ def user_page(request, username):
 @xframe_options_exempt
 def user_page_widget(request, username):
     user = get_object_or_404(User, username=username)
-    books = UserBook.objects.select_related('book').filter(user=user, status='c')
+    books = UserBook.objects.select_related('book').filter(
+        user=user, status='c')
     return render(request, 'widget.html', {'books': books})
+
 
 @login_required
 def user_favorite(request):
@@ -206,4 +214,4 @@ def user_favorite(request):
     userbook = UserBook.objects.get(user__username=user, book__bookid=book)
     userbook.favorite = checked
     userbook.save()
-    return JsonResponse({"status":"success"})
+    return JsonResponse({"status": "success"})
