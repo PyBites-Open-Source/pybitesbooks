@@ -127,31 +127,17 @@ def book_page(request, bookid):
                                          'book_users': book_users})
 
 
-def user_page(request, username):
-    user = get_object_or_404(User, username=username)
-    books = UserBook.objects.select_related('book').filter(user=user).order_by('-updated').all()
-
+def get_goal(user):
     try:
         goal = Goal.objects.get(year=date.today().year,
                                 user=user,
                                 number_books__gt=0)
-        completed_books_this_year = UserBook.objects.filter(
-                                        user=user,
-                                        status=COMPLETED,
-                                        completed__year=goal.year
-                                    ).order_by('-completed')
-
-        try:
-            perc_completed = int(completed_books_this_year.count()/goal.number_books*100)
-        except ZeroDivisionError:
-            perc_completed = 0
-
     except Goal.DoesNotExist:
-        goal, completed_books_this_year, perc_completed = None, None, None
+        goal = None
+    return goal
 
-    is_me = request.user.is_authenticated and request.user == user
-    share_goal = goal and (goal.share or is_me)
 
+def get_userbooks(books):
     userbooks = OrderedDict([(READING, []), (COMPLETED, []), (TO_READ, [])])
     books_pages = []
     for book in books:
@@ -166,6 +152,32 @@ def user_page(request, username):
         except ValueError:
             pages = 0
         books_pages.append(pages)
+    return userbooks, books_pages
+
+
+def user_page(request, username):
+    user = get_object_or_404(User, username=username)
+    books = UserBook.objects.select_related('book').filter(user=user).order_by('-updated').all()
+
+    goal = get_goal(user)
+    completed_books_this_year = []
+    perc_completed = 0
+    if goal:
+        completed_books_this_year = UserBook.objects.filter(
+                                        user=user,
+                                        status=COMPLETED,
+                                        completed__year=goal.year
+                                    ).order_by('-completed')
+
+        try:
+            perc_completed = int(completed_books_this_year.count()/goal.number_books*100)
+        except ZeroDivisionError:
+            perc_completed = 0
+
+    is_me = request.user.is_authenticated and request.user == user
+    share_goal = goal and (goal.share or is_me)
+
+    userbooks, books_pages = get_userbooks(books)
 
     return render(request, 'user.html',
                   {'userbooks': userbooks,
