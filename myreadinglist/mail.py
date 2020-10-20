@@ -18,13 +18,13 @@ def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=True):
     if settings.LOCAL:
         body = body.replace('<br>', '\n')
         print('local env - no email, only print send_email args:')
-        print('to_email: {}'.format(to_email.email))
-        print('subject: {}'.format(subject))
-        print('body: {}'.format(body))
-        print('from_email: {}'.format(from_email.email))
-        print('html: {}'.format(html))
+        print(f'to_email: {to_email.email}')
+        print(f'subject: {subject}')
+        print(f'body: {body}')
+        print(f'from_email: {from_email.email}')
+        print(f'html: {html}')
         print()
-        return
+        # return
 
     # newlines get wrapped in email, use html
     body = body.replace('\n', '<br>')
@@ -40,9 +40,7 @@ def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=True):
 
     if str(response.status_code)[0] != '2':
         # TODO logging
-        print('ERROR sending message, status_code {}'.format(
-            response.status_code)
-        )
+        print(f'ERROR sending message, status_code {response.status_code}')
 
     return response
 
