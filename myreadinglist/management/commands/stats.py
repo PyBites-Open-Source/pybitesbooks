@@ -9,7 +9,7 @@ from myreadinglist.mail import send_email
 from books.models import UserBook
 from goal.models import Goal
 
-PYBYTES_EMAIL_GROUP = config('PYBYTES_EMAIL_GROUP')
+PYBITES_EMAIL_GROUP = config('PYBITES_EMAIL_GROUP')
 FRIDAY = 4
 ONE_WEEK_AGO = date.today() - timedelta(days=7)
 COMPLETED = 'c'
@@ -74,5 +74,5 @@ class Command(BaseCommand):
                          books_completed=books_completed,
                          goals=goals_out)
 
-        for to_email in PYBYTES_EMAIL_GROUP.split():
+        for to_email in PYBITES_EMAIL_GROUP.split():
             send_email(to_email, SUBJECT, msg)

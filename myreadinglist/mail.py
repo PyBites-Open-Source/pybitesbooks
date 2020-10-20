@@ -5,9 +5,6 @@ import sendgrid
 from sendgrid.helpers.mail import To, From, Mail
 
 FROM_EMAIL = config('FROM_EMAIL')
-ADMIN_EMAIL = config('ADMIN_EMAIL')
-ME = 'me'
-ALL = 'all'
 PYBITES = 'PyBites'
 
 sg = sendgrid.SendGridAPIClient(api_key=config('SENDGRID_API_KEY'))
@@ -15,24 +12,22 @@ sg = sendgrid.SendGridAPIClient(api_key=config('SENDGRID_API_KEY'))
 
 def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=True):
     from_email = From(email=from_email, name=PYBITES)
-
-    to_email = ADMIN_EMAIL if to_email == ME else to_email
     to_email = To(to_email)
-
-    # newlines get wrapped in email, use html
-    body = body.replace('\n', '<br>')
 
     # if local no emails
     if settings.LOCAL:
+        body = body.replace('<br>', '\n')
         print('local env - no email, only print send_email args:')
-        print('to_email: {}'.format(to_email))
+        print('to_email: {}'.format(to_email.email))
         print('subject: {}'.format(subject))
         print('body: {}'.format(body))
-        print('from_email: {}'.format(from_email))
+        print('from_email: {}'.format(from_email.email))
         print('html: {}'.format(html))
         print()
         return
 
+    # newlines get wrapped in email, use html
+    body = body.replace('\n', '<br>')
     message = Mail(
         from_email=from_email,
         to_emails=to_email,
