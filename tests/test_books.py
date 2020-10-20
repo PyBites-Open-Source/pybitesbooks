@@ -11,11 +11,10 @@ pytestmark = pytest.mark.django_db
 ])
 def test_homepage_shows_books(client, books, bookid, title):
     response = client.get('/')
-    expected = ('<a href="/books/{bookid}"><img class="thumbNail" '
-                'src="http://books.google.com/books?id={bookid}&'
+    expected = (f'<a href="/books/{bookid}"><img class="thumbNail" '
+                f'src="http://books.google.com/books?id={bookid}&'
                 'printsec=frontcover&img=1&zoom=1&source=gbs_gdata" '
-                'alt="{title}"></a>').format(bookid=bookid,
-                                             title=title)
+                f'alt="{title}"></a>')
     assert expected in response.content.decode()
 
 
