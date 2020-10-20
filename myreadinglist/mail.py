@@ -24,7 +24,7 @@ def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=True):
         print(f'from_email: {from_email.email}')
         print(f'html: {html}')
         print()
-        # return
+        return
 
     # newlines get wrapped in email, use html
     body = body.replace('\n', '<br>')
