@@ -2,48 +2,48 @@ from decouple import config
 from django.conf import settings
 
 import sendgrid
-from sendgrid.helpers.mail import Email, Content, Mail
+from sendgrid.helpers.mail import To, From, Mail
 
 FROM_EMAIL = config('FROM_EMAIL')
-ADMIN_EMAIL = config('ADMIN_EMAIL')
-ME = 'me'
-ALL = 'all'
+PYBITES = 'PyBites'
 
-sg = sendgrid.SendGridAPIClient(apikey=config('SENDGRID_API_KEY'))
+sg = sendgrid.SendGridAPIClient(api_key=config('SENDGRID_API_KEY'))
 
 
 def send_email(to_email, subject, body, from_email=FROM_EMAIL, html=True):
-    # newlines get wrapped in email, use html
-    body = body.replace('\n', '<br>')
+    from_email = From(email=from_email, name=PYBITES)
+    to_email = To(to_email)
 
     # if local no emails
     if settings.LOCAL:
+        body = body.replace('<br>', '\n')
         print('local env - no email, only print send_email args:')
-        print('to_email: {}'.format(to_email))
-        print('subject: {}'.format(subject))
-        print('body: {}'.format(body))
-        print('from_email: {}'.format(from_email))
-        print('html: {}'.format(html))
+        print(f'to_email: {to_email.email}')
+        print(f'subject: {subject}')
+        print(f'body: {body}')
+        print(f'from_email: {from_email.email}')
+        print(f'html: {html}')
         print()
         return
 
-    from_email = Email(from_email)
+    # newlines get wrapped in email, use html
+    body = body.replace('\n', '<br>')
+    message = Mail(
+        from_email=from_email,
+        to_emails=to_email,
+        subject=subject,
+        plain_text_content=body if not html else None,
+        html_content=body if html else None
+    )
 
-    to_email = ADMIN_EMAIL if to_email == ME else to_email
-    to_email = Email(to_email)
-
-    type_ = html and "text/html" or "text/plain"
-
-    content = Content(type_, body)
-
-    mail = Mail(from_email, subject, to_email, content)
-
-    response = sg.client.mail.send.post(request_body=mail.get())
+    response = sg.send(message)
 
     if str(response.status_code)[0] != '2':
         # TODO logging
-        print('ERROR sending message, status_code {}'.format(
-            response.status_code)
-        )
+        print(f'ERROR sending message, status_code {response.status_code}')
 
     return response
+
+
+if __name__ == '__main__':
+    send_email('test-email@gmail.com', 'my subject', 'my message')

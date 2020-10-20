@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from decouple import config, Csv
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
@@ -8,6 +9,7 @@ from myreadinglist.mail import send_email
 from books.models import UserBook
 from goal.models import Goal
 
+PYBITES_EMAIL_GROUP = config('PYBITES_EMAIL_GROUP', cast=Csv())
 FRIDAY = 4
 ONE_WEEK_AGO = date.today() - timedelta(days=7)
 COMPLETED = 'c'
@@ -72,5 +74,5 @@ class Command(BaseCommand):
                          books_completed=books_completed,
                          goals=goals_out)
 
-        for to_email in 'me julian@pybit.es bob@pybit.es'.split():
+        for to_email in PYBITES_EMAIL_GROUP:
             send_email(to_email, SUBJECT, msg)
