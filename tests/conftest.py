@@ -1,7 +1,9 @@
+from itertools import cycle
+
 from django.contrib.auth.models import User
 import pytest
 
-from books.models import Book
+from books.models import Book, UserBook
 
 
 @pytest.fixture
@@ -51,13 +53,28 @@ def books(db):
                           "ascend to the throne of the world class? "
                           "The answer is YES!"))
     ]
-    Book.objects.bulk_create(books)
-    return Book.objects.all()
+    return Book.objects.bulk_create(books)
 
 
 @pytest.fixture
-def user(db, client):
+def user(db):
     username, password = "user1", 'bar'
-    user = User.objects.create_user(username=username, password=password)
-    client.login(username=username, password=password)
+    return User.objects.create_user(
+        username=username, password=password)
+
+
+@pytest.fixture
+def login(db, client, user):
+    client.force_login(user)
+    # client.login(username=user.username, password=user.password)
     return client
+
+
+@pytest.fixture
+def user_books(db, books, user):
+    statuses = cycle('r c'.split())
+    user_books = [
+        UserBook(user=user, book=book, status=next(statuses))
+        for book in books
+    ]
+    return UserBook.objects.bulk_create(user_books)

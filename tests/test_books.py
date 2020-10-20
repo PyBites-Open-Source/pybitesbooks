@@ -31,8 +31,25 @@ def test_book_page_logged_out(client, books):
             'method="post">') not in html
 
 
-def test_book_page_logged_in(user, books):
-    response = user.get('/books/nneBa6-mWfgC')
+def test_book_page_logged_in(login, books):
+    response = login.get('/books/nneBa6-mWfgC')
     html = response.content.decode()
     assert ('<form class="mui-form" id="addBookForm" '
             'method="post">') in html
+
+
+def test_user_profile_page(client, user, user_books):
+    response = client.get(f'/users/{user.username}')
+    html = response.content.decode()
+    required_content = [
+        "Reading (2)", "Completed (2)", "Wants to read (0)",
+        "wow you read 2 books!",
+        "World Class - completed",
+        "Unlimited Power - completed",
+        ('Total reading: <strong class="mui--text-title">'
+         '4</strong> books added'),
+        ('of which <strong class="mui--text-title">2</strong>'
+         ' read totalling '),
+        '<strong class="mui--text-title">729</strong> pages.'
+    ]
+    assert all(content in html for content in required_content)
