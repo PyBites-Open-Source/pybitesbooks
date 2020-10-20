@@ -66,7 +66,6 @@ def user(db):
 @pytest.fixture
 def login(db, client, user):
     client.force_login(user)
-    # client.login(username=user.username, password=user.password)
     return client
 
 
