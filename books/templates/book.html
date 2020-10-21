@@ -73,7 +73,7 @@
                       <input type="hidden" name="addOrEditBook" value="{{ book.id }}">
                       <button type="submit" value="1" class="mui-btn--primary mui-btn" name="bookSubmit">{% if userbook %}Edit{% else %}Add{% endif %}</button>
                       {% if userbook %}
-                        <button type="submit" value="1" class="mui-btn--accent mui-btn" name="deleteBook">Delete</button>
+                        <button type="submit" value="1" class="mui-btn--accent mui-btn" name="deleteBook" onclick="return ConfirmAction('Are you sure you want to remove this book from your list?');">Delete</button>
                       {% endif %}
 
                     </form>
@@ -182,7 +182,7 @@
           <input type="hidden" name="noteid" value="{{ note.id }}">
           <input type="hidden" name="noteSubmit" value="1">
           <button type="submit" value="1" class="mui-btn--primary mui-btn" name="editNote">Edit</button>
-          <button type="submit" value="1" class="mui-btn--accent mui-btn" name="deleteNote">Delete</button>
+          <button type="submit" value="1" class="mui-btn--accent mui-btn" name="deleteNote" onclick="return ConfirmAction('Are you sure you want to delete this note?');">Delete</button>
         </form>
 
       {% else %}

@@ -48,6 +48,16 @@ function logPomodoro(){
 }
 
 
+function ConfirmAction(msg){
+  // triggers a popup to make sure user is ok with a destructive operation
+  if(confirm(msg)){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
 $(document).ready(function(){
     $("#searchTitles").autocomplete( "/query_books/", { minChars:3 });  
     
