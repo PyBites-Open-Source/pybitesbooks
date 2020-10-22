@@ -38,3 +38,4 @@ jobs:
         DEBUG: True
         DATABASE_URL: sqlite:///test.db
         ENV: local
+        ALLOWED_HOSTS: localhost
