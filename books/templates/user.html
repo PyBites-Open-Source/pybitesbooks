@@ -3,49 +3,6 @@
 {% load humanize %}
 {% load tags %}
 
-{% block css %}
-  <style>
-    .js-favorite {
-      visibility: hidden;
-      font-size: 30px;
-      cursor: pointer;
-      position: relative;
-      color: orange;
-    }
-    .js-favorite:before {
-      content: "\2606";
-      position: absolute;
-      visibility: visible;
-    }
-    .js-favorite:checked:before {
-      content: "\2605";
-      position: relative;
-    }
-    .scrollbar {
-      overflow: auto;
-      white-space: nowrap;
-    }
-  </style>
-{% endblock %}
-
-{% block javascript %}
-  <script>
-    $(document).ready(function() {
-    $(".js-favorite").change(function () {
-      book = $(this).attr("bookid");
-      checked = $(this).attr("checked");
-      $.ajax({
-        url: 'favorite/',
-        data: {
-          'book': book,
-          'checked': checked
-        }
-      });
-    });
-    });
-  </script>
-{% endblock %}
-
 {% block title %}{{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %} Reading List{% endblock %}
 {% block og_title %}{{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %} Reading List{% endblock %}
 {% block og_url %}{{ request.path }}{% endblock %}
