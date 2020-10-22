@@ -55,7 +55,7 @@
   <div class="mui--text-display1">
     Favorites
   </div>
-  <div class="mui-appbar">
+  <div class="mui-text-display1">
     <div class="scrollbar">
       {% for favorite in favorites %}
         <a href="{% url 'books:book_page' bookid=favorite.book.bookid %}" title="{{ favorite.book.title }}">
