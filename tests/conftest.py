@@ -10,7 +10,8 @@ from books.models import Book, UserBook
 def books(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         books = [
-            Book(bookid="nneBa6-mWfgC",
+            Book(pk=1,  # required for sqlite test DB
+                 bookid="nneBa6-mWfgC",
                  title="Coders at Work",
                  authors="Peter Seibel",
                  publisher="Apress",
@@ -20,7 +21,8 @@ def books(django_db_setup, django_db_blocker):
                  language="en",
                  description=("<p>Peter Seibel interviews 15 of the most "
                               "interesting computer programmers alive ...")),
-            Book(bookid="__CvAFrcWY0C",
+            Book(pk=2,
+                 bookid="__CvAFrcWY0C",
                  title="Unlimited Power",
                  authors="Tony Robbins",
                  publisher="Simon and Schuster",
@@ -30,7 +32,8 @@ def books(django_db_setup, django_db_blocker):
                  language="en",
                  description=("<p>Anthony Robbins calls it the "
                               "new science of personal achievement ...")),
-            Book(bookid="3V_6DwAAQBAJ",
+            Book(pk=3,
+                 bookid="3V_6DwAAQBAJ",
                  title="Power Vs. Force",
                  authors="David R. Hawkins",
                  publisher="Hay House, Inc",
@@ -41,7 +44,8 @@ def books(django_db_setup, django_db_blocker):
                  description=("Imagine—what if you had access to a simple "
                               "yes-or-no answer to any question you wished "
                               "to ask? ...")),
-            Book(bookid="bK1ktwAACAAJ",
+            Book(pk=4,
+                 bookid="bK1ktwAACAAJ",
                  title="177 Mental Toughness Secrets of the World Class",
                  authors="Steve Siebold",
                  publisher="London House Press",
