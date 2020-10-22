@@ -56,8 +56,8 @@
 </div>
 <div class="mui-appbar">
   <div class="scrollbar">
-          {% if userbooks %}
-            {% for books in userbooks.values %}
+          {% if grouped_user_books %}
+            {% for books in grouped_user_books.values %}
               {% for userbook in books %}
                 {% if userbook.favorite %}
               <a href="{% url 'books:book_page' bookid=userbook.book.bookid %}" title="{{ userbook.book.title }}">
@@ -104,17 +104,17 @@
       {% endif %}
 
       <div class="mui--text-subhead mui--text-accent-secondary">
-        Total reading: <strong class="mui--text-title">{{ num_books_added }}</strong> books added, of which <strong class="mui--text-title">{{ num_books_done }}</strong> read totalling <strong class="mui--text-title">{{ num_pages_read|intcomma }}</strong> pages.
+        Total reading: <strong class="mui--text-title">{{ user_stats.num_books_added }}</strong> books added, of which <strong class="mui--text-title">{{ user_stats.num_books_done }}</strong> read totalling <strong class="mui--text-title">{{ user_stats.num_pages_read|intcomma }}</strong> pages.
       </div>
 
     </div>
 
     <div class="mui-col-md-2">
       <div class="badge">
-        <a href="#" title="wow you read {{ num_books_done }} books!">
+        <a href="#" title="wow you read {{ user_stats.num_books_done }} books!">
           <img src="{% static 'img/book-badge.png' %}" class="bookBadge" alt="book badge">
         </a>
-        <span class="numBooks">{{ num_books_done }}</span>
+        <span class="numBooks">{{ user_stats.num_books_done }}</span>
       </div>
     </div>
   </div>
@@ -122,7 +122,7 @@
 
 <br><div class="mui-divider"></div><br>
 
-{% if not num_books_added %}
+{% if not user_stats.num_books_added %}
   <div class="mui--text-title">
     {% if username == request.user.username %}You{% else %}{{ username }}{% endif %} did not add any books yet.
   </div>
@@ -138,10 +138,10 @@
       {% endif %}
       <li {% if not share_goal %}class="mui--is-active"{% endif %}>
         <a data-mui-toggle="tab"
-          data-mui-controls="pane-default-1">Reading ({{ userbooks|get_item:'r'|length }})</a>
+          data-mui-controls="pane-default-1">Reading ({{ grouped_user_books|get_item:'r'|length }})</a>
       </li>
-      <li><a data-mui-toggle="tab" data-mui-controls="pane-default-2">Completed ({{ userbooks|get_item:'c'|length }})</a></li>
-      <li><a data-mui-toggle="tab" data-mui-controls="pane-default-3">Wants to read ({{ userbooks|get_item:'t'|length }})</a></li>
+      <li><a data-mui-toggle="tab" data-mui-controls="pane-default-2">Completed ({{ grouped_user_books|get_item:'c'|length }})</a></li>
+      <li><a data-mui-toggle="tab" data-mui-controls="pane-default-3">Wants to read ({{ grouped_user_books|get_item:'t'|length }})</a></li>
       {% if request.user.username == username %}
         <li><a data-mui-toggle="tab" data-mui-controls="pane-default-4">Widget</a></li>
       {% endif %}
@@ -165,7 +165,7 @@
       </div>
     {% endif %}
 
-    {% for books in userbooks.values %}
+    {% for books in grouped_user_books.values %}
       <div class="mui-tabs__pane {% if forloop.counter == 1 and not share_goal %}mui--is-active{% endif %}" id="pane-default-{{ forloop.counter }}">
         <br>
 

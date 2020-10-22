@@ -11,7 +11,7 @@ urlpatterns = [
     path('api/', include('api.urls', namespace='api')),
     path('slack/', include('slack.urls', namespace='slack')),
     path('books/', include('books.urls', namespace='books')),
-    path(r'users/favorite/', book_views.user_favorite, name='favorite'),
+    path('users/favorite/', book_views.user_favorite, name='favorite'),
     path('users/<str:username>', book_views.user_page, name='user_page'),
     path('widget/<str:username>', book_views.user_page_widget, name='user_page_widget'),
     path('accounts/', include('django_registration.backends.activation.urls')),
