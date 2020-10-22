@@ -8,28 +8,22 @@
 {% block og_url %}{{ request.path }}{% endblock %}
 
 {% block content %}
-<div class="mui--text-display1">
-  Favorites
-</div>
-<div class="mui-appbar">
-  <div class="scrollbar">
-          {% if grouped_user_books %}
-            {% for books in grouped_user_books.values %}
-              {% for userbook in books %}
-                {% if userbook.favorite %}
-              <a href="{% url 'books:book_page' bookid=userbook.book.bookid %}" title="{{ userbook.book.title }}">
-                <img class="thumbNail" src="http://books.google.com/books?id={{ userbook.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ userbook.book.title }}">
-              </a>
-                {% endif %}
-              {% endfor %}
-            {% endfor %}
-          {% else %}
-            <p>No favorite books yet.</p>
-          {% endif %}
+{% if favorites %}
+  <div class="mui--text-display1">
+    Favorites
   </div>
-</div>
+  <div class="mui-text-display1">
+    <div class="scrollbar">
+      {% for favorite in favorites %}
+        <a href="{% url 'books:book_page' bookid=favorite.book.bookid %}" title="{{ favorite.book.title }}">
+          <img class="thumbNail" src="http://books.google.com/books?id={{ favorite.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ favorite.book.title }}">
+        </a>
+      {% endfor %}
+    </div>
+  </div>
 
-<br><div class="mui-divider"></div><br>
+  <br><div class="mui-divider"></div><br>
+{% endif %}
 
 <div class="mui-container-fluid">
   <div class="mui-row">

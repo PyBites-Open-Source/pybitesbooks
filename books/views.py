@@ -183,6 +183,7 @@ def user_page(request, username):
     share_goal = goal and (goal.share or is_me)
 
     grouped_user_books = group_userbooks_by_status(user_books)
+    favorites = [book for book in user_books if book.favorite]
 
     user_stats = UserStats(num_books_added=len(user_books),
                            num_books_done=len(grouped_user_books[COMPLETED]),
@@ -195,7 +196,8 @@ def user_page(request, username):
                    'goal': goal,
                    'share_goal': share_goal,
                    'completed_books_this_year': completed_books_this_year,
-                   'perc_completed': perc_completed})
+                   'perc_completed': perc_completed,
+                   'favorites': favorites, })
 
 
 @xframe_options_exempt
