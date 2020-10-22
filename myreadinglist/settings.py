@@ -33,6 +33,13 @@ if DEBUG:
     ALLOWED_HOSTS = ['*']
     # bounce emails to console
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST_USER = config('SENDGRID_USERNAME')
+    EMAIL_HOST= 'smtp.sendgrid.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_PASSWORD = config('SENDGRID_PASSWORD')
+
 
 DOMAIN = config('DOMAIN', default='http://pbreadinglist.herokuapp.com/')
 
@@ -145,12 +152,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
-
-EMAIL_HOST_USER = config('SENDGRID_USERNAME')
-EMAIL_HOST= 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = config('SENDGRID_PASSWORD')
 
 LOGGING = {
     'version': 1,
