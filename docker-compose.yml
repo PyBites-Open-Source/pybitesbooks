@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+    web:
+        depends_on: 
+            - db
+        build: .
+        ports:
+            - "8000:8000"
+        env_file:
+            - .env-compose
+
+    db:
+        # Stolen from https://medium.com/analytics-vidhya/getting-started-with-postgresql-using-docker-compose-34d6b808c47c
+        image: "postgres" # use latest official postgres version
+        env_file:
+            - .env-compose
+        volumes:
+            - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+        ports:
+            - 5432:5432
+
+volumes:
+    database-data: # named volumes can be managed easier using docker-compose
+
+
