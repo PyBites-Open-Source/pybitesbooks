@@ -12,7 +12,7 @@ from api.views import (get_users,
 
 HOME = 'https://pbreadinglist.herokuapp.com'
 BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom={imagesize}&source=gbs_gdata"  # noqa
-SLACK_TOKEN = config('SLACK_VERIFICATION_TOKEN')
+SLACK_TOKEN = config('SLACK_VERIFICATION_TOKEN', default='')
 HELP_TEXT = ('```'
              '/book help          -> print this help message\n'
              '/book               -> get a random book added to PyBites Reading List\n'  # noqa E501
