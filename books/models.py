@@ -34,6 +34,12 @@ class Book(models.Model):
     def __str__(self):
         return f'{self.id} {self.bookid} {self.title}'
 
+    def __repr__(self):
+        return (f"{self.__class__.__name__}('{self.id}', "
+                f"'{self.bookid}', '{self.title}', '{self.authors}', "
+                f"'{self.publisher}', '{self.published}', '{self.isbn}', "
+                f"'{self.pages}', '{self.language}', '{self.description}')")
+
 
 class Search(models.Model):
     term = models.CharField(max_length=100)
@@ -54,6 +60,7 @@ class UserBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=READ_STATUSES,
     default=COMPLETED)
+    favorite = models.BooleanField(default=False)
     completed = models.DateTimeField(default=timezone.now)
     inserted = models.DateTimeField(auto_now_add=True)  # != completed
     updated = models.DateTimeField(auto_now=True)

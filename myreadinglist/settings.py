@@ -14,6 +14,8 @@ import os
 
 from decouple import config, Csv
 import dj_database_url
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,6 +33,13 @@ if DEBUG:
     ALLOWED_HOSTS = ['*']
     # bounce emails to console
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST_USER = config('SENDGRID_USERNAME')
+    EMAIL_HOST= 'smtp.sendgrid.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_PASSWORD = config('SENDGRID_PASSWORD')
+
 
 DOMAIN = config('DOMAIN', default='http://pbreadinglist.herokuapp.com/')
 
@@ -144,12 +153,6 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
 
-EMAIL_HOST_USER = config('SENDGRID_USERNAME')
-EMAIL_HOST= 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = config('SENDGRID_PASSWORD')
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -170,3 +173,9 @@ LOGOUT_URL = 'index'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 ACCOUNT_ACTIVATION_DAYS = 7
+
+if not DEBUG:
+    sentry_sdk.init(
+        dsn=os.environ.get('SENTRY_DSN'),
+        integrations=[DjangoIntegration()]
+    )

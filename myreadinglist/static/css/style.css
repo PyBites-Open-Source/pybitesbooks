@@ -187,3 +187,24 @@ progress[value] {
   width: 90%;
   height: 20px;
 }
+
+.js-favorite {
+  visibility: hidden;
+  font-size: 30px;
+  cursor: pointer;
+  position: relative;
+  color: orange;
+}
+.js-favorite:before {
+  content: "\2606";
+  position: absolute;
+  visibility: visible;
+}
+.js-favorite:checked:before {
+  content: "\2605";
+  position: relative;
+}
+.scrollbar {
+  overflow: auto;
+  white-space: nowrap;
+}

@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 from datetime import date
 
 from django.contrib import messages
@@ -7,12 +7,18 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from .googlebooks import get_book_info
 from .forms import UserBookForm
 from .models import (UserBook, BookNote,
                      READING, COMPLETED, TO_READ)
 from goal.models import Goal
+
+UserStats = namedtuple('UserStats', ["num_books_added",
+                                     "num_books_done",
+                                     "num_pages_read"])
 
 
 def book_page(request, bookid):
@@ -104,21 +110,26 @@ def book_page(request, bookid):
     # prepare book form (note form = multiple = best manual)
     if userbook:
         # make sure to bounce back previously entered form values
-        book_form = UserBookForm(initial=dict(status=userbook.status,
-                                              completed=userbook.completed))
+        book_form = UserBookForm(
+            initial=dict(status=userbook.status,
+                         completed=userbook.completed))
     else:
         book_form = UserBookForm()
 
     # all notes (do last as new note might have been added)
+    book_notes = BookNote.objects.select_related('user')
     if request.user.is_authenticated:
-        filter_criteria = Q(book=book) & (Q(user=request.user) | Q(public=True))
-        notes = BookNote.objects.select_related('user').filter(filter_criteria)
+        filter_criteria = (
+            Q(book=book) &
+            (Q(user=request.user) | Q(public=True))
+        )
+        notes = book_notes.filter(filter_criteria)
     else:
-        notes = BookNote.objects.select_related('user').filter(book=book, public=True)
+        notes = book_notes.filter(book=book, public=True)
     notes = notes.order_by('-edited').all()
 
-    book_users = UserBook.objects.select_related('user').filter(book=book,
-                                                                status=COMPLETED)
+    book_users = UserBook.objects.select_related('user').filter(
+        book=book, status=COMPLETED)
 
     return render(request, 'book.html', {'book': book,
                                          'notes': notes,
@@ -127,60 +138,82 @@ def book_page(request, bookid):
                                          'book_users': book_users})
 
 
-def user_page(request, username):
-    user = get_object_or_404(User, username=username)
-    books = UserBook.objects.select_related('book').filter(user=user).order_by('-updated').all()
-
+def get_user_goal(user):
     try:
         goal = Goal.objects.get(year=date.today().year,
                                 user=user,
                                 number_books__gt=0)
-        completed_books_this_year = UserBook.objects.filter(
-                                        user=user,
-                                        status=COMPLETED,
-                                        completed__year=goal.year
-                                    ).order_by('-completed')
-
-        try:
-            perc_completed = int(completed_books_this_year.count()/goal.number_books*100)
-        except ZeroDivisionError:
-            perc_completed = 0
-
     except Goal.DoesNotExist:
-        goal, completed_books_this_year, perc_completed = None, None, None
+        goal = None
+    return goal
+
+
+def group_userbooks_by_status(books):
+    userbooks = OrderedDict(
+        [(READING, []), (COMPLETED, []), (TO_READ, [])])
+    for book in books:
+        userbooks[book.status].append(book)
+    return userbooks
+
+
+def get_num_pages_read(books):
+    return sum(
+        int(book.book.pages) if str(book.book.pages).isdigit() else 0
+        for book in books if book.done_reading)
+
+
+def user_page(request, username):
+    user = get_object_or_404(User, username=username)
+    user_books = UserBook.objects.select_related('book').filter(
+        user=user).order_by('-updated').all()
+
+    completed_books_this_year, perc_completed = [], 0
+    goal = get_user_goal(user)
+
+    if goal is not None:
+        completed_books_this_year = UserBook.objects.filter(
+            user=user, status=COMPLETED, completed__year=goal.year
+        ).order_by('-completed')
+
+        if goal.number_books > 0:
+            perc_completed = int(
+                completed_books_this_year.count()/goal.number_books*100)
 
     is_me = request.user.is_authenticated and request.user == user
     share_goal = goal and (goal.share or is_me)
 
-    userbooks = OrderedDict([(READING, []), (COMPLETED, []), (TO_READ, [])])
-    books_pages = []
-    for book in books:
-        userbooks[book.status].append(book)
+    grouped_user_books = group_userbooks_by_status(user_books)
+    favorites = [book for book in user_books if book.favorite]
 
-        if not book.done_reading:
-            continue
-
-        # only count pages on books read
-        try:
-            pages = int(book.book.pages) or 0
-        except ValueError:
-            pages = 0
-        books_pages.append(pages)
+    user_stats = UserStats(num_books_added=len(user_books),
+                           num_books_done=len(grouped_user_books[COMPLETED]),
+                           num_pages_read=get_num_pages_read(user_books))
 
     return render(request, 'user.html',
-                  {'userbooks': userbooks,
+                  {'grouped_user_books': grouped_user_books,
                    'username': username,
-                   'num_books_added': len(books),
-                   'num_books_done': len(books_pages),
-                   'num_pages_read': sum(books_pages),
+                   'user_stats': user_stats,
                    'goal': goal,
                    'share_goal': share_goal,
                    'completed_books_this_year': completed_books_this_year,
-                   'perc_completed': perc_completed})
+                   'perc_completed': perc_completed,
+                   'favorites': favorites, })
 
 
 @xframe_options_exempt
 def user_page_widget(request, username):
     user = get_object_or_404(User, username=username)
-    books = UserBook.objects.select_related('book').filter(user=user, status='c')
+    books = UserBook.objects.select_related('book').filter(
+        user=user, status='c')
     return render(request, 'widget.html', {'books': books})
+
+
+@login_required
+def user_favorite(request):
+    user = request.user
+    book = request.GET.get('book')
+    checked = True if request.GET.get('checked') == "true" else False
+    userbook = UserBook.objects.get(user__username=user, book__bookid=book)
+    userbook.favorite = checked
+    userbook.save()
+    return JsonResponse({"status": "success"})

@@ -37,7 +37,7 @@ def get_book_info(book_id):
             image_size = parse.parse_qs(parse.urlparse(volinfo['imageLinks']['small']).query)['zoom'][0]
         else:
             image_size = '1'
-            
+
         book = Book(bookid=bookid,
                     title=title,
                     authors=authors,
