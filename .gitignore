@@ -3,3 +3,11 @@ venv**
 *pyc
 *swp
 **.DS_Store
+.venv
+.vscode
+
+# For temp data in docker-compose
+database-data
+
+# Ensure you don't accidentally commit the real environment file.
+.env
