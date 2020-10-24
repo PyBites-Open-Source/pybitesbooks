@@ -84,6 +84,27 @@
     position: absolute;
     z-index: 99;
   }
+
+  .js-favorite {
+    visibility: hidden;
+    font-size: 30px;
+    cursor: pointer;
+    position: relative;
+    color: orange;
+  }
+  .js-favorite:before {
+    content: "\2606";
+    background: #fff;
+    opacity: 0.7;
+    position: absolute;
+    right: 47px;
+    bottom: 20px;
+    visibility: visible;
+  }
+  .js-favorite:checked:before {
+    content: "\2605";
+    position: relative;
+  }
 </style>
 </head>
 <body>
@@ -96,6 +117,9 @@
         <span class="hide">{{book.book.title}} ({{book.book.authors}})</span>
         <a class="tooltip" target="_blank" href="{{book.book.url}}" data-tooltip="{{book.book.title_and_authors}}">
             <img class="b-lazy" src=data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw== data-src="https://books.google.com/books?id={{book.book.bookid}}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{book.book.title_and_authors}}">
+            {% if book.favorite %}
+              <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} checked>
+            {% endif %}
         </a>
     </li>
   {% endfor %}
