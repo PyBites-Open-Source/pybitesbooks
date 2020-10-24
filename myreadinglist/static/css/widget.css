@@ -27,12 +27,6 @@ li img {
   height: 168px;
   width: 128px;
 }
-@media screen and (max-width: 480px) {
-  li img {
-    width: 64px;
-    height: 84px;
-  }
-}
 #search {
   background: #f2f2f2;
   border: 1px solid #ddd;
