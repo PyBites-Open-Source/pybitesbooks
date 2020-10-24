@@ -7,11 +7,29 @@
 {% block og_title %}{{ username|title }}{% if username|slice:"-1:" == "s" %}'{% else %}'s{% endif %} Reading List{% endblock %}
 {% block og_url %}{{ request.path }}{% endblock %}
 
+{% block css %}
+  <style>
+    #search {
+      background: #f2f2f2;
+      border: 1px solid #ddd;
+      width: 100%;
+    }
+    .qVal {
+      width: 90%;
+      margin: 10px;
+    }
+    .hide {
+      display: none;
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
 {% if favorites %}
   <div class="mui--text-display1">
-    Favorites
+    Favorite Books
   </div>
+  <br>
   <div class="mui-text-display1">
     <div class="scrollbar">
       {% for favorite in favorites %}
@@ -120,9 +138,20 @@
       <div class="mui-tabs__pane {% if forloop.counter == 1 and not share_goal %}mui--is-active{% endif %}" id="pane-default-{{ forloop.counter }}">
         <br>
 
-        <div class="mui-panel">
+        {% if forloop.counter == 2 and user_stats.num_books_done >= min_books_search %}
+          <div id="search">
+            <input id="filter" name="filter"
+              class="defaultText qVal" title="Filter books ... " />
+          </div>
+        {% endif %}
+
+        <div class="mui-panel"
+             {% if forloop.counter == 2 and user_stats.num_books_done >= min_books_search %}id="booksWrapper"{% endif %}
+        >
+
           {% for book in books %}
-            <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}{% if book.status == 'c' %} - completed {{ book.completed|timesince }} ago{% endif %}">
+            <a class="book" href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}{% if book.status == 'c' %} - completed {{ book.completed|timesince }} ago{% endif %}">
+              <span class="hide">{{book.book.title}} ({{book.book.authors}})</span>
               <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="cover img of {{ book.book.title }}">
               <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} {% if book.favorite %} checked{% endif %}>
             </a>
@@ -141,4 +170,9 @@
     </div>
   {% endif %}
 
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'js/blazy.min.js' %}"></script>
+  <script src="{% static 'js/search.js' %}"></script>
 {% endblock %}
