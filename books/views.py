@@ -19,6 +19,7 @@ from goal.models import Goal
 UserStats = namedtuple('UserStats', ["num_books_added",
                                      "num_books_done",
                                      "num_pages_read"])
+MIN_NUM_BOOKS_SHOW_SEARCH = 20
 
 
 def book_page(request, bookid):
@@ -165,7 +166,7 @@ def get_num_pages_read(books):
 def user_page(request, username):
     user = get_object_or_404(User, username=username)
     user_books = UserBook.objects.select_related('book').filter(
-        user=user).order_by('-updated').all()
+        user=user)
 
     completed_books_this_year, perc_completed = [], 0
     goal = get_user_goal(user)
@@ -173,7 +174,7 @@ def user_page(request, username):
     if goal is not None:
         completed_books_this_year = UserBook.objects.filter(
             user=user, status=COMPLETED, completed__year=goal.year
-        ).order_by('-completed')
+        )
 
         if goal.number_books > 0:
             perc_completed = int(
@@ -197,7 +198,8 @@ def user_page(request, username):
                    'share_goal': share_goal,
                    'completed_books_this_year': completed_books_this_year,
                    'perc_completed': perc_completed,
-                   'favorites': favorites, })
+                   'favorites': favorites,
+                   'min_books_search': MIN_NUM_BOOKS_SHOW_SEARCH})
 
 
 @xframe_options_exempt
