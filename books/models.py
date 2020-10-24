@@ -1,8 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-
-from myreadinglist.settings import DOMAIN
 
 READING = 'r'
 COMPLETED = 'c'
@@ -31,7 +30,7 @@ class Book(models.Model):
 
     @property
     def url(self):
-        return f'{DOMAIN}/books/{self.bookid}'
+        return f'{settings.DOMAIN}/books/{self.bookid}'
 
     def __str__(self):
         return f'{self.id} {self.bookid} {self.title}'

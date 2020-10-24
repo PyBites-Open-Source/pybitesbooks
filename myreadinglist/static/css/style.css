@@ -208,3 +208,14 @@ progress[value] {
   overflow: auto;
   white-space: nowrap;
 }
+
+.errorlist li {
+  list-style: none;
+  padding: 5px;
+}
+.errorlist {
+  color: red;
+  margin: 10px 0;
+  padding: 0;
+  border: 1px solid #ccc;
+}
