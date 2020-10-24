@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from myreadinglist.settings import DOMAIN
+
 READING = 'r'
 COMPLETED = 'c'
 TO_READ = 't'
@@ -29,7 +31,7 @@ class Book(models.Model):
 
     @property
     def url(self):
-        return f'http://pbreadinglist.herokuapp.com/books/{self.bookid}'
+        return f'{DOMAIN}/books/{self.bookid}'
 
     def __str__(self):
         return f'{self.id} {self.bookid} {self.title}'
@@ -73,7 +75,8 @@ class UserBook(models.Model):
         return f'{self.user} {self.book} {self.status} {self.completed}'
 
     class Meta:
-        ordering = ['-completed', '-id']
+        # -favorite - False sorts before True so need to reverse
+        ordering = ['-favorite', '-completed', '-id']
 
 
 class BookNote(models.Model):

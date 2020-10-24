@@ -40,8 +40,8 @@ else:
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = config('SENDGRID_PASSWORD')
 
-
-DOMAIN = config('DOMAIN', default='http://pbreadinglist.herokuapp.com/')
+PROD_DOMAIN = "http://pbreadinglist.herokuapp.com/"
+DOMAIN = config('DOMAIN', default=PROD_DOMAIN)
 
 # Application definition
 DJANGO_APPS = [

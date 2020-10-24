@@ -22,7 +22,7 @@ def get_book_info(book_id):
 
         bookid = book_id
         title = volinfo['title']
-        authors = ', '.join(volinfo['authors'])
+        authors = ', '.join(volinfo.get('authors', NOT_FOUND))
         publisher = volinfo.get('publisher', NOT_FOUND).strip('"')
         published = volinfo.get('publishedDate', NOT_FOUND)
 
