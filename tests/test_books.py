@@ -59,7 +59,7 @@ def test_user_profile_page(client, user, user_books, snippet):
     assert snippet in html
 
 
-def test_user_profile_page_no_favorites(client, user, user_books):
+def test_user_profile_page_no_favorites(client, user):
     response = client.get(f'/users/{user.username}')
     html = response.content.decode()
     assert 'Favorite Books' not in html
