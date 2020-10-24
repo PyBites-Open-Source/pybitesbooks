@@ -57,3 +57,29 @@ def test_user_profile_page(client, user, user_books, snippet):
     response = client.get(f'/users/{user.username}')
     html = response.content.decode()
     assert snippet in html
+
+
+def test_user_profile_page_no_favorites(client, user, user_books):
+    response = client.get(f'/users/{user.username}')
+    html = response.content.decode()
+    assert 'Favorite Books' not in html
+
+
+def test_user_profile_page_favorites(client, user, user_fav_books):
+    response = client.get(f'/users/{user.username}')
+    html = response.content.decode()
+    assert 'Favorite Books' in html
+
+
+@pytest.mark.parametrize("snippet, is_in", [
+    ("bookid=nneBa6-mWfgC  checked", False),
+    ("bookid=__CvAFrcWY0C  checked", False),
+    ("bookid=3V_6DwAAQBAJ  checked", False),
+    ("bookid=bK1ktwAACAAJ  checked", False),
+    ("bookid=jaM7DwAAQBAJ  checked", True),
+    ("bookid=UCJMRAAACAAJ  checked", True),
+])
+def test_user_profile_page_stars(client, user, user_fav_books, snippet, is_in):
+    response = client.get(f'/users/{user.username}')
+    html = response.content.decode()
+    assert snippet in html if is_in else snippet not in html
