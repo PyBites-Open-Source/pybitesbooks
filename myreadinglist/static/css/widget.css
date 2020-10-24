@@ -82,20 +82,14 @@ li img {
 .js-favorite {
   visibility: hidden;
   font-size: 30px;
-  cursor: pointer;
-  position: relative;
+  position: absolute;
   color: orange;
+  bottom: 170px;
+  left: 115px;
 }
 .js-favorite:before {
   content: "\2606";
+  visibility: visible;
   background: #fff;
   opacity: 0.7;
-  position: absolute;
-  right: 47px;
-  bottom: 20px;
-  visibility: visible;
-}
-.js-favorite:checked:before {
-  content: "\2605";
-  position: relative;
 }
