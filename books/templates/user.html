@@ -25,24 +25,6 @@
 {% endblock %}
 
 {% block content %}
-{% if favorites %}
-  <div class="mui--text-display1">
-    Favorite Books
-  </div>
-  <br>
-  <div class="mui-text-display1">
-    <div class="scrollbar">
-      {% for favorite in favorites %}
-        <a href="{% url 'books:book_page' bookid=favorite.book.bookid %}" title="{{ favorite.book.title }}">
-          <img class="thumbNail" src="http://books.google.com/books?id={{ favorite.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ favorite.book.title }}">
-        </a>
-      {% endfor %}
-    </div>
-  </div>
-
-  <br><div class="mui-divider"></div><br>
-{% endif %}
-
 <div class="mui-container-fluid">
   <div class="mui-row">
     <div class="mui-col-md-10">
