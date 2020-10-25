@@ -62,6 +62,36 @@ def books(django_db_setup, django_db_blocker):
 
 
 @pytest.fixture(scope="module")
+def two_books(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        books = [
+            Book(pk=5,
+                 bookid="jaM7DwAAQBAJ",
+                 title="Ender's Game",
+                 authors="Orson Scott Card",
+                 publisher="Tom Doherty Associates",
+                 published="2017-10-17",
+                 isbn="9780765394866",
+                 pages=448,
+                 language="en",
+                 description=("This engaging, collectible, miniature hardcover"
+                              " of the Orson Scott Card classic ...")),
+            Book(pk=6,
+                 bookid="UCJMRAAACAAJ",
+                 title="Elantris",
+                 authors="Brandon Sanderson",
+                 publisher="Gollancz",
+                 published="2011",
+                 isbn="9780575097445",
+                 pages=656,
+                 language="en",
+                 description=("Elantris was built on magic and it thrived. "
+                              "But then the magic began to fade ..."))
+        ]
+        return Book.objects.bulk_create(books)
+
+
+@pytest.fixture(scope="module")
 def user(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         username, password = "user1", 'bar'
@@ -82,5 +112,17 @@ def user_books(django_db_setup, django_db_blocker, books, user):
         user_books = [
             UserBook(user=user, book=book, status=next(statuses))
             for book in books
+        ]
+        return UserBook.objects.bulk_create(user_books)
+
+
+@pytest.fixture(scope="module")
+def user_fav_books(django_db_setup, django_db_blocker, two_books, user):
+    with django_db_blocker.unblock():
+        statuses = cycle('r c'.split())
+        user_books = [
+            UserBook(user=user, book=book, status=next(statuses),
+                     favorite=True)
+            for book in two_books
         ]
         return UserBook.objects.bulk_create(user_books)

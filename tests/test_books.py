@@ -57,3 +57,18 @@ def test_user_profile_page(client, user, user_books, snippet):
     response = client.get(f'/users/{user.username}')
     html = response.content.decode()
     assert snippet in html
+
+
+@pytest.mark.parametrize("snippet", [
+    'nneBa6-mWfgC >',
+    '__CvAFrcWY0C >',
+    '3V_6DwAAQBAJ >',
+    'bK1ktwAACAAJ >',
+    'jaM7DwAAQBAJ  checked>',
+    'UCJMRAAACAAJ  checked>',
+])
+def test_user_profile_page_stars(client, user, user_fav_books, snippet):
+    response = client.get(f'/users/{user.username}')
+    html = response.content.decode()
+    assert (f'<input class="js-favorite" title="favorite"'
+            f' type="checkbox" bookid={snippet}') in html
