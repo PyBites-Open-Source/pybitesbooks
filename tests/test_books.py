@@ -70,5 +70,5 @@ def test_user_profile_page(client, user, user_books, snippet):
 def test_user_profile_page_stars(client, user, user_fav_books, snippet):
     response = client.get(f'/users/{user.username}')
     html = response.content.decode()
-    assert (f'input class="js-favorite" title="favorite"'
+    assert (f'<input class="js-favorite" title="favorite"'
             f' type="checkbox" bookid={snippet}') in html
