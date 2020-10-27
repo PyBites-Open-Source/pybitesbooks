@@ -1,5 +1,7 @@
 asgiref==3.2.10
 attrs==20.2.0
+beautifulsoup4==4.9.3
+bs4==0.0.1
 certifi==2020.6.20
 chardet==3.0.4
 confusable-homoglyphs==3.2.0
@@ -24,6 +26,7 @@ requests==2.24.0
 sendgrid==6.4.7
 sentry-sdk==0.19.1
 six==1.15.0
+soupsieve==2.0.1
 sqlparse==0.4.1
 starkbank-ecdsa==1.1.0
 toml==0.10.1
