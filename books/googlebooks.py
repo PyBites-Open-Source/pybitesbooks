@@ -1,3 +1,6 @@
+import re
+
+import bs4
 import requests
 from urllib import parse
 
@@ -7,12 +10,14 @@ BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
 SEARCH_URL = BASE_URL + '?q={}'
 BOOK_URL = BASE_URL + '/{}'
 NOT_FOUND = 'Not found'
+PLAY_URL = "https://play.google.com/store/books/details?id="
 
-def get_book_info(book_id):
+
+def get_book_info(book_id, refresh=False):
     ''' cache book info in db '''
-    book = Book.objects.filter(bookid=book_id)
-    if book:
-        return book[0]
+    books = Book.objects.filter(bookid=book_id)
+    if books and not refresh:
+        return books.last()
 
     else:
         query = BOOK_URL.format(book_id)
@@ -38,6 +43,8 @@ def get_book_info(book_id):
         else:
             image_size = '1'
 
+        similar_bookids = ','.join(get_similar_books(bookid))
+
         book = Book(bookid=bookid,
                     title=title,
                     authors=authors,
@@ -47,7 +54,8 @@ def get_book_info(book_id):
                     pages=pages,
                     language=language,
                     description=description,
-                    imagesize=image_size)
+                    imagesize=image_size,
+                    similar_bookids=similar_bookids)
         book.save()
 
         return book
@@ -64,6 +72,19 @@ def search_books(term, request):
 
     query = SEARCH_URL.format(term)
     return requests.get(query).json()
+
+
+def get_similar_books(bookid):
+    resp = requests.get(f"{PLAY_URL}{bookid}")
+    soup = bs4.BeautifulSoup(resp.content, 'html.parser')
+    div = soup.find(text="Similar ebooks")
+    if div is None:
+        return {}
+    links = div.find_all_next('a')
+    ids = {re.sub(r'.*id=', '', link.attrs['href'])
+           for link in links
+           if "/store/books/details/" in link.attrs['href']}
+    return ids
 
 
 if __name__ == '__main__':

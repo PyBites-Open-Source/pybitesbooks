@@ -83,8 +83,20 @@
                     <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}"><i class="fa fa-user"></i> Add Book</a>
 
                   {% endif %}
-                </td>
 
+                  {% if book.similar_books %}
+                    <br><br>
+                    <div class="mui--text-headline">Similar books</div>
+                    {% if book.similar_books %}
+                      {% for bookid in book.similar_books %}
+                        <a href="{% url 'books:book_page' bookid=bookid %}">
+                          <img class="thumbNail" src="http://books.google.com/books?id={{ bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="similar book {{ bookid }}">
+                        </a>
+                      {% endfor %}
+                    {% endif %}
+                  {% endif %}
+
+                </td>
               </tr>
 
             </tbody>

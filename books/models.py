@@ -23,6 +23,15 @@ class Book(models.Model):
     imagesize = models.CharField(max_length=2, default="1")
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
+    # could be m2m but keeping it simple, just comma separated list
+    # of google bookids (they only need to link to pages)
+    similar_bookids = models.TextField(null=True, blank=True)
+
+    @property
+    def similar_books(self):
+        if not self.similar_bookids:
+            return []
+        return self.similar_bookids.split(',')
 
     @property
     def title_and_authors(self):

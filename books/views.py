@@ -25,8 +25,10 @@ MIN_NUM_BOOKS_SHOW_SEARCH = 20
 def book_page(request, bookid):
     post = request.POST
 
-    # get book info
-    book = get_book_info(bookid)
+    # get book info, ?r in URL forces refresh of book cache
+    refresh = 'r' in request.GET
+    book = get_book_info(bookid, refresh=refresh)
+
     userbook = None
     if request.user.is_authenticated:
         try:
