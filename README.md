@@ -2,7 +2,9 @@
 
 > What gets measured gets managed. - Peter Drucker 
 
-Our simple yet effective reading app. (Warning: it can be addictive and will cause you to read more!) 
+Our simple yet effective reading app: [PyBites Books](https://pybitesbooks.com)
+
+(Warning: it can be addictive and will cause you to read more!) 
 
 ## Setup
 
