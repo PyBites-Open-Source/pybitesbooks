@@ -13,7 +13,7 @@ PYBITES_EMAIL_GROUP = config('PYBITES_EMAIL_GROUP', cast=Csv())
 FRIDAY = 4
 ONE_WEEK_AGO = date.today() - timedelta(days=7)
 COMPLETED = 'c'
-SUBJECT = 'weekly pbreadinglist stats'
+SUBJECT = 'Weekly PyBites Books stats'
 MSG = """
 Number of users: {num_users}
 (new users last week: {new_users})

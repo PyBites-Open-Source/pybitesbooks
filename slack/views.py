@@ -10,12 +10,12 @@ from api.views import (get_users,
                        get_user_last_book,
                        get_random_book)
 
-HOME = 'https://pbreadinglist.herokuapp.com'
+HOME = 'https://pybitesbooks.com'
 BOOK_THUMB = "https://books.google.com/books?id={bookid}&printsec=frontcover&img=1&zoom={imagesize}&source=gbs_gdata"  # noqa
 SLACK_TOKEN = config('SLACK_VERIFICATION_TOKEN', default='')
 HELP_TEXT = ('```'
              '/book help          -> print this help message\n'
-             '/book               -> get a random book added to PyBites Reading List\n'  # noqa E501
+             '/book               -> get a random book added to PyBites Books\n'  # noqa E501
              '/book grep          -> get a random book filtered on "grep" (if added)\n'  # noqa E501
              '/book user          -> get usernames and their most recent book read\n'
              '/book user username -> get the last book "username" added\n'

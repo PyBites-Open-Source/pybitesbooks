@@ -1,8 +1,8 @@
-# PyBites Reading List
+# PyBites Books
 
 > What gets measured gets managed. - Peter Drucker 
 
-Our simple yet effective reading app: [PyBites Books](https://pybitesbooks.com)
+Our simple yet effective reading tracking app: [PyBites Books](https://pybitesbooks.com)
 
 (Warning: it can be addictive and will cause you to read more!) 
 
@@ -10,7 +10,7 @@ Our simple yet effective reading app: [PyBites Books](https://pybitesbooks.com)
 
 1. Create a [virtual env](https://pybit.es/the-beauty-of-virtualenv.html) and activate it (`source venv/bin/activate`)
 2. Install the dependencies: `pip install -r requirements.txt`
-3. Create a database, e.g. `myreadinglist` and define the full DB URL for the next step, e.g. `DATABASE_URL=postgres://postgres:password@0.0.0.0:5432/myreadinglist`.
+3. Create a database, e.g. `pybites_books` and define the full DB URL for the next step, e.g. `DATABASE_URL=postgres://postgres:password@0.0.0.0:5432/pybites_books`.
 4. Set this env variable together with `SECRET_KEY` in a file called `.env` in the root of the project: `cp .env-template .env && vi .env`. That's the bare minium. If you want to have email working create a [Sendgrid](https://sendgrid.com/) account obtaining an API key. Same for Slack integration, this requires a `SLACK_VERIFICATION_TOKEN`. The other variables have sensible defaults.
 5. Sync the DB: `python manage.py migrate`.
 6. And finally run the app server: `python manage.py runserver`.

@@ -42,7 +42,7 @@ if DEBUG:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-PROD_DOMAIN = "http://pbreadinglist.herokuapp.com/"
+PROD_DOMAIN = "https://pybitesbooks.com/"
 DOMAIN = config('DOMAIN', default=PROD_DOMAIN)
 
 # Application definition

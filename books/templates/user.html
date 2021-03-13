@@ -47,7 +47,7 @@
 
             <br><br>
             {% if username == request.user.username %}
-              <a class="mui-btn mui-btn--small mui-btn--raised" href="https://twitter.com/intent/tweet?url=http://pbreadinglist.herokuapp.com{{ request.path }}&text=I%20read%20{{completed_books_this_year|length}}%20of%20{{ goal.number_books }}%20books%20this%20year%2C%20and%20now%20I%20Challenge%20You!%20Join%20me%20%40PyBites%20My%20Reading%20List&hashtags=books%2Csuccess" title="Share this achievement on Twitter" target="_blank" style="margin: 5px 8px 5px 0;">
+              <a class="mui-btn mui-btn--small mui-btn--raised" href="https://twitter.com/intent/tweet?url=http://pybitesbooks.com{{ request.path }}&text=I%20read%20{{completed_books_this_year|length}}%20of%20{{ goal.number_books }}%20books%20this%20year%2C%20and%20now%20I%20Challenge%20You!%20Join%20me%20%40PyBites%20My%20Reading%20List&hashtags=books%2Csuccess" title="Share this achievement on Twitter" target="_blank" style="margin: 5px 8px 5px 0;">
                   Share on Twitter</a>
                 <br><br>
             {% endif %}
@@ -148,7 +148,7 @@
     <div class="mui-tabs__pane" id="pane-default-4">
       <br>
       <p>Embed the books you have read on your website or blog (<a href="https://bobbelderbos.com/books/" target="_blank">example</a>). Use this code:</p>
-      <pre>&lt;iframe src="https://pbreadinglist.herokuapp.com/widget/{{ username }}" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;</pre>
+      <pre>&lt;iframe src="https://pybitesbooks.com/widget/{{ username }}" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;</pre>
     </div>
   {% endif %}
 
