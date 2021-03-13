@@ -40,3 +40,4 @@ jobs:
         ENV: local
         ALLOWED_HOSTS: localhost
         SENDGRID_API_KEY: 123
+        FROM_EMAIL: pybites@example.com
