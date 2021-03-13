@@ -39,3 +39,4 @@ jobs:
         DATABASE_URL: sqlite:///test.db
         ENV: local
         ALLOWED_HOSTS: localhost
+        SENDGRID_API_KEY: 123
