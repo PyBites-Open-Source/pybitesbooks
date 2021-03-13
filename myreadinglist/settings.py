@@ -29,16 +29,18 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ENV = config('ENV', default='heroku')
 LOCAL = ENV.lower() == 'local'
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = config('FROM_EMAIL')
+
 if DEBUG:
-    ALLOWED_HOSTS = ['*']
-    # bounce emails to console
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
-    EMAIL_HOST_USER = config('SENDGRID_USERNAME')
-    EMAIL_HOST= 'smtp.sendgrid.net'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = config('SENDGRID_PASSWORD')
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 PROD_DOMAIN = "http://pbreadinglist.herokuapp.com/"
 DOMAIN = config('DOMAIN', default=PROD_DOMAIN)

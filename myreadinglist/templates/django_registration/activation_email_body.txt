@@ -1,5 +1,5 @@
 {% load i18n %}
-{% trans "Activate account at" %} {{ site.name }}:
+{% trans "Welcome to PyBites Books! Please confirm your account" %}:
 
 http://{{ site.domain }}{% url 'django_registration_activate' activation_key %}
 
