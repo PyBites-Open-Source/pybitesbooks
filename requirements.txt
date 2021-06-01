@@ -27,5 +27,5 @@ six==1.15.0
 sqlparse==0.4.1
 starkbank-ecdsa==1.1.0
 toml==0.10.1
-urllib3==1.25.10
+urllib3==1.26.5
 whitenoise==5.2.0
