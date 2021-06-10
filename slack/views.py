@@ -1,5 +1,4 @@
 import json
-import os
 
 from decouple import config
 from django.contrib.humanize.templatetags.humanize import naturalday
@@ -35,14 +34,14 @@ def _validate_token(request):
 def _create_user_output(user_books):
     users = []
     for user, books in user_books.items():
-        last_book = (books and sorted(books,
-                                      key=lambda x: x.completed)[-1]
-                     or 'no books read yet')
+        if books:
+            last_book = sorted(books, key=lambda x: x.completed)[-1]
+        else:
+            last_book = 'no books read yet'
         users.append((user, last_book))
 
     col1, col2 = 'User', f'Last read -> {HOME}'
     msg = [f'{col1:<19}: {col2}']
-    msg.append('-' * 74)  # slack pre line length it seems
 
     for user, last_book in sorted(users,
                                   key=lambda x: x[1].completed,
@@ -51,6 +50,7 @@ def _create_user_output(user_books):
         title = len(title) > 32 and title[:32] + ' ...' or f'{title:<36}'
         msg.append(f'{user:<19}: {title} ({naturalday(last_book.completed)})')
     return '```' + '\n'.join(msg) + '```'
+
 
 def _get_attachment(msg, book=None):
     if book is None:
@@ -62,6 +62,7 @@ def _get_attachment(msg, book=None):
                 "image_url": BOOK_THUMB.format(bookid=book['bookid'], imagesize=book['imagesize']),
                 "text": msg,
                 "color": "#3AA3E3"}
+
 
 @csrf_exempt
 def get_book(request):
@@ -87,7 +88,7 @@ def get_book(request):
         # 0 or multiple words
         if len(text) == 0:
             book = COMMANDS['rand']()
-            headline = f'Here is a random title for your reading list:'
+            headline = 'Here is a random title for your reading list:'
 
         elif len(text) == 2 and text[0] == 'user':
             username = text[-1]

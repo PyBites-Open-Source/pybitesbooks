@@ -121,8 +121,7 @@ def book_page(request, bookid):
     book_notes = BookNote.objects.select_related('user')
     if request.user.is_authenticated:
         filter_criteria = (
-            Q(book=book) &
-            (Q(user=request.user) | Q(public=True))
+            Q(book=book) & (Q(user=request.user) | Q(public=True))
         )
         notes = book_notes.filter(filter_criteria)
     else:
@@ -178,7 +177,7 @@ def user_page(request, username):
 
         if goal.number_books > 0:
             perc_completed = int(
-                completed_books_this_year.count()/goal.number_books*100)
+                completed_books_this_year.count() / goal.number_books * 100)
 
     is_me = request.user.is_authenticated and request.user == user
     share_goal = goal and (goal.share or is_me)

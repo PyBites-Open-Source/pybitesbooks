@@ -8,6 +8,7 @@ SEARCH_URL = BASE_URL + '?q={}'
 BOOK_URL = BASE_URL + '/{}'
 NOT_FOUND = 'Not found'
 
+
 def get_book_info(book_id):
     ''' cache book info in db '''
     book = Book.objects.filter(bookid=book_id)
@@ -67,10 +68,7 @@ def search_books(term, request):
 
 
 if __name__ == '__main__':
-    from pprint import pprint as pp
-    #pp(get_book_info('PvwDFlJUYHcC'))
     term = 'python for finance'
-    #pp(search_books(term))
     for item in search_books(term)['items']:
         try:
             id_ = item['id']

@@ -59,9 +59,9 @@ class Command(BaseCommand):
             [f'{ub.user.username}: {ub.book.title} ({ub.book.url})'
              for ub in
              UserBook.objects.select_related('book', 'user').filter(
-                Q(inserted__gte=ONE_WEEK_AGO) |
-                Q(updated__gte=ONE_WEEK_AGO),
-                status=COMPLETED).order_by('user__username')]
+                 Q(inserted__gte=ONE_WEEK_AGO) | Q(updated__gte=ONE_WEEK_AGO),
+                 status=COMPLETED
+             ).order_by('user__username')]
         )
 
         goals = Goal.objects.all()

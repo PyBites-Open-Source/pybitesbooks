@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from .models import UserBook, BookNote
+from .models import UserBook
 
 
 class DateInput(forms.DateInput):

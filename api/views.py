@@ -56,7 +56,6 @@ def get_user_books(username):
                     language=book.book.language,
                     description=book.book.description,
                     imagesize=book.book.imagesize)
-        
         data[book.status].append(data)
     return data
 
