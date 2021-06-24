@@ -1,10 +1,10 @@
 # PyBites Books
 
-> What gets measured managed. - Peter Drucker
+> What measured gets managed. - Peter Drucker
 
 Our simple yet effective tracking app: [PyBites Books](https://pybitesbooks.com)
 
-(Warning => it can be addictive and will cause you to read more!)
+(Warning: it can be addictive and will cause you to read more!)
 
 ## Setup
 
