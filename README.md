@@ -1,10 +1,10 @@
 # PyBites Books
 
-> What gets measured gets managed. - Peter Drucker 
+> What gets measured managed. - Peter Drucker
 
-Our simple yet effective reading tracking app: [PyBites Books](https://pybitesbooks.com)
+Our simple yet effective tracking app: [PyBites Books](https://pybitesbooks.com)
 
-(Warning: it can be addictive and will cause you to read more!) 
+(Warning => it can be addictive and will cause you to read more!)
 
 ## Setup
 
@@ -17,9 +17,9 @@ Our simple yet effective reading tracking app: [PyBites Books](https://pybitesbo
 
 ## Local Via docker-compose
 
-You can use docker / docker compose to run both the postgresql database as well as the app itself. This makes local testing a lot easier, and allows you to worry less about environmental details.  
+You can use docker / docker compose to run both the postgresql database as well as the app itself. This makes local testing a lot easier, and allows you to worry less about environmental details.
 
-To run, simply run the below command.  This should spin up the db, and then the application which you can reach at http://0.0.0.0:8000.  
+To run, simply run the below command.  This should spin up the db, and then the application which you can reach at http://0.0.0.0:8000.
 
 `docker-compose rm && docker-compose build && docker-compose up`
 
@@ -31,8 +31,8 @@ This has environment variables set so that you can get up and running easily.  T
 
 ## Contributions
 
-... are more than welcome, just [open an issue](https://github.com/pybites/pbreadinglist/issues) and/or [PR new features](https://github.com/pybites/pbreadinglist/pulls). 
+... are more than welcome, just [open an issue](https://github.com/pybites/pbreadinglist/issues) and/or [PR new features](https://github.com/pybites/pbreadinglist/pulls).
 
-Love books, join [our Slack #books channel](https://pybit.es/pages/community.html). 
+Love books, join [our Slack #books channel](https://pybit.es/pages/community.html).
 
 Remember _leaders are readers_, read every day!
