@@ -11,4 +11,4 @@ class UserList(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['-inserted']
+        ordering = ['name']
