@@ -51,6 +51,15 @@ class Search(models.Model):
         return self.term
 
 
+class UserList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    inserted = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
 class UserBook(models.Model):
     READ_STATUSES = (
         (READING, 'I am reading this book'),
@@ -63,6 +72,7 @@ class UserBook(models.Model):
                               default=COMPLETED)
     favorite = models.BooleanField(default=False)
     completed = models.DateTimeField(default=timezone.now)
+    booklists = models.ManyToManyField(UserList, related_name='booklists')
     inserted = models.DateTimeField(auto_now_add=True)  # != completed
     updated = models.DateTimeField(auto_now=True)
 
