@@ -54,7 +54,6 @@ def book_page(request, bookid):
         userbook, created = UserBook.objects.get_or_create(book=book,
                                                            user=request.user)
         userbook.booklists.set(booklists)
-        # userbook.save()
 
         action = None
         if created:
