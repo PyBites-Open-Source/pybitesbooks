@@ -15,6 +15,7 @@ from .forms import UserBookForm
 from .models import (UserBook, BookNote,
                      READING, COMPLETED, TO_READ)
 from goal.models import Goal
+from lists.models import UserList
 
 UserStats = namedtuple('UserStats', ["num_books_added",
                                      "num_books_done",
@@ -130,12 +131,14 @@ def book_page(request, bookid):
 
     book_users = UserBook.objects.select_related('user').filter(
         book=book, status=COMPLETED)
+    user_lists = UserList.objects.filter(user=request.user)
 
     return render(request, 'book.html', {'book': book,
                                          'notes': notes,
                                          'userbook': userbook,
                                          'book_form': book_form,
-                                         'book_users': book_users})
+                                         'book_users': book_users,
+                                         'user_lists': user_lists})
 
 
 def get_user_goal(user):

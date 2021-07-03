@@ -64,6 +64,7 @@ OWN_APPS = [
     'books',
     'pomodoro',
     'goal',
+    'lists',
 ]
 INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + OWN_APPS
 
