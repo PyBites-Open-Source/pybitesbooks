@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tags %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/widget.css' %}">
+{% endblock %}
+
+{% block content %}
+  <h2 class="mui--text-display1">{{ userlist.name|unslugify|title }} List</h2>
+  <br>
+
+  <div id="search">
+    <input id="filter" name="filter" class="defaultText qVal" title="Search Bookshelf ... " />
+  </div>
+  <ul id='booksWrapper'>
+    {% for book in books_on_list %}
+      <li class="book">
+          <span class="hide">{{book.book.title}} ({{book.book.authors}})</span>
+          <a class="tooltip" target="_blank" href="{{book.book.url}}" data-tooltip="{{book.book.title_and_authors}}">
+              <img class="b-lazy" src=data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw== data-src="https://books.google.com/books?id={{book.book.bookid}}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{book.book.title_and_authors}}">
+              {% if book.favorite %}
+                <input class="js-favorite" title="favorite" type="checkbox" bookid={{ book.book.bookid }} checked>
+              {% endif %}
+          </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <script src="{% static 'js/jquery_min.js' %}"></script>
+  <script src="{% static 'js/blazy.min.js' %}"></script>
+  <script src="{% static 'js/search.js' %}"></script>
+
+{% endblock %}

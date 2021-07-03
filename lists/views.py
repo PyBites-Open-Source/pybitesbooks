@@ -4,6 +4,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from django.utils.text import slugify
 
+from books.models import UserBook
 from .models import UserList
 from .mixins import OwnerRequiredMixin
 
@@ -17,8 +18,16 @@ class UserListDetailView(DetailView):
     slug_field = 'name'
     slug_url_kwarg = 'name'
 
-    # def get_queryset(self):
-    # TODO get all books on list
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        list_id = self.get_object().id
+        books_on_list = UserBook.objects.select_related(
+            "book"
+        ).filter(
+            booklists__id=list_id
+        ).order_by("book__title")
+        context['books_on_list'] = books_on_list
+        return context
 
 
 class UserListCreateView(CreateView):
