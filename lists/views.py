@@ -37,9 +37,8 @@ class UserListCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.name = slugify(form.instance.name)
-        new_value = form.cleaned_data['name']
-        if UserList.objects.filter(name=new_value).count() > 0:
-            form.add_error('name', 'You already have this list')
+        if UserList.objects.filter(name=form.instance.name).count() > 0:
+            form.add_error('name', 'This list already exists')
             return self.form_invalid(form)
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -53,11 +52,10 @@ class UserListUpdateView(OwnerRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.name = slugify(form.instance.name)
         old_value = UserList.objects.get(pk=self.object.pk).name
-        new_value = form.cleaned_data['name']
         # this if is there in case user saves existing value without change
-        if old_value != new_value:
-            if UserList.objects.filter(name=new_value).count() > 0:
-                form.add_error('name', 'You already have this list')
+        if old_value != form.instance.name:
+            if UserList.objects.filter(name=form.instance.name).count() > 0:
+                form.add_error('name', 'This list already exists')
                 return self.form_invalid(form)
         return super().form_valid(form)
 
