@@ -136,7 +136,10 @@ def book_page(request, bookid):
 
     book_users = UserBook.objects.select_related('user').filter(
         book=book, status=COMPLETED)
-    user_lists = UserList.objects.filter(user=request.user)
+
+    user_lists = []
+    if request.user.is_authenticated:
+        user_lists = UserList.objects.filter(user=request.user)
 
     userbook_lists = {}
     if userbook:
