@@ -12,7 +12,7 @@ class UserBookForm(ModelForm):
 
     class Meta:
         model = UserBook
-        fields = ['status', 'completed']
+        fields = ['status', 'completed', 'booklists']
         widgets = {
             'completed': DateInput(),
         }

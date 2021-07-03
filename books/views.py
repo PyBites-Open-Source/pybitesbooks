@@ -43,12 +43,18 @@ def book_page(request, bookid):
     if book_edit:
         status = post.get('status')
         completed = post.get('completed') or None
+
+        userlists = post.getlist("userlists[]", [])
+        booklists = UserList.objects.filter(name__in=userlists)
+
         if completed:
             completed = timezone.datetime.strptime(completed, '%Y-%m-%d')
 
         # this works without pk because Userbook has max 1 entry for user+book
         userbook, created = UserBook.objects.get_or_create(book=book,
                                                            user=request.user)
+        userbook.booklists.set(booklists)
+        # userbook.save()
 
         action = None
         if created:
@@ -133,9 +139,14 @@ def book_page(request, bookid):
         book=book, status=COMPLETED)
     user_lists = UserList.objects.filter(user=request.user)
 
+    userbook_lists = {}
+    if userbook:
+        userbook_lists = {ul.name for ul in userbook.booklists.all()}
+
     return render(request, 'book.html', {'book': book,
                                          'notes': notes,
                                          'userbook': userbook,
+                                         'userbook_lists': userbook_lists,
                                          'book_form': book_form,
                                          'book_users': book_users,
                                          'user_lists': user_lists})

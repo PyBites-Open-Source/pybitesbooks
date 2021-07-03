@@ -70,6 +70,23 @@
                         {{ book_form.completed }}
                       </div>
 
+                      {% if user_lists %}
+                        {% for ul in user_lists %}
+                          <div class="mui-checkbox">
+                            <label>
+                            <input type="checkbox"
+                              value="{{ ul.name }}"
+                              name="userlists[]"
+                              {% if ul.name in userbook_lists %}
+                              checked
+                              {% endif %}
+                            >
+                            {{ ul.name }}
+                            </label>
+                          </div>
+                        {% endfor %}
+                      {% endif %}
+
                       <input type="hidden" name="addOrEditBook" value="{{ book.id }}">
                       <button type="submit" value="1" class="mui-btn--primary mui-btn" name="bookSubmit">{% if userbook %}Update{% else %}Add{% endif %}</button>
                       {% if userbook %}
@@ -97,7 +114,7 @@
 
           <!-- Go to www.addthis.com/dashboard to customize your tools -->
           <div class="addthis_inline_share_toolbox_50et"></div>
-             
+
           {% if book_users %}
             <br><br><div class="mui-divider"></div><br>
 
@@ -139,8 +156,8 @@
         {% csrf_token %}
         <div class="mui-select">
           <select name="type_note">
-            <option value='n'>Note</option> 
-            <option value='q'>Quote</option> 
+            <option value='n'>Note</option>
+            <option value='q'>Quote</option>
           </select>
         </div>
         <div class="mui-textfield">
@@ -166,8 +183,8 @@
           {% csrf_token %}
           <div class="mui-select">
             <select name="type_note">
-              <option value='n' {% if note.type_note == 'n' %}selected{% endif %}>Note</option> 
-              <option value='q' {% if note.type_note == 'q' %}selected{% endif %}>Quote</option> 
+              <option value='n' {% if note.type_note == 'n' %}selected{% endif %}>Note</option>
+              <option value='q' {% if note.type_note == 'q' %}selected{% endif %}>Quote</option>
             </select>
           </div>
           <div class="mui-textfield">
