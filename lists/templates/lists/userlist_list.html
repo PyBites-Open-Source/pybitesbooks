@@ -13,10 +13,14 @@
     <tbody>
         {% for userlist in userlist_list %}
         <tr>
-          <td>{{ userlist.name }}</td>
+          <td><a href="{% url "lists-detail" name=userlist.name %}">{{ userlist.name }}</a></td>
           <td>{{ userlist.inserted|timesince }} ago</td>
-          <td><a class="mui-bDeleted mui-btn--small mui-btn--flat mui-btn--primary" href="{% url "lists-update" userlist.id %}">Edit</a></td>
-          <td><a class="mui-btn mui-btn--small mui-btn--flat mui-btn--danger" href="{% url "lists-delete" userlist.id %}">Delete</a></td>
+          {% if userlist.user == request.user %}
+            <td><a class="mui-bDeleted mui-btn--small mui-btn--flat mui-btn--primary" href="{% url "lists-update" userlist.id %}">Edit</a></td>
+            <td><a class="mui-btn mui-btn--small mui-btn--flat mui-btn--danger" href="{% url "lists-delete" userlist.id %}">Delete</a></td>
+          {% else %}
+            <td></td>
+          {% endif %}
         </tr>
         {% endfor %}
     </tbody>
