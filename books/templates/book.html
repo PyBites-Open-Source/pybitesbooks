@@ -71,6 +71,7 @@
                       </div>
 
                       {% if user_lists %}
+                        <p class="mui--text-dark-secondary">Add to one or more lists:</p>
                         {% for ul in user_lists %}
                           <div class="mui-checkbox">
                             <label>
@@ -85,13 +86,16 @@
                             </label>
                           </div>
                         {% endfor %}
+                        <a class="right" href="{% url "lists-view" %}" target="_blank">manage lists</a>
                       {% endif %}
 
-                      <input type="hidden" name="addOrEditBook" value="{{ book.id }}">
-                      <button type="submit" value="1" class="mui-btn--primary mui-btn" name="bookSubmit">{% if userbook %}Update{% else %}Add{% endif %}</button>
-                      {% if userbook %}
-                        <button type="submit" value="1" class="mui-btn--accent mui-btn" name="deleteBook" onclick="return ConfirmAction('Are you sure you want to remove this book from your list?');">Delete</button>
-                      {% endif %}
+                      <div class="clear">
+                        <input type="hidden" name="addOrEditBook" value="{{ book.id }}">
+                        <button type="submit" value="1" class="mui-btn--primary mui-btn" name="bookSubmit">{% if userbook %}Update{% else %}Add{% endif %}</button>
+                        {% if userbook %}
+                          <button type="submit" value="1" class="mui-btn--accent mui-btn" name="deleteBook" onclick="return ConfirmAction('Are you sure you want to remove this book from your list?');">Delete</button>
+                        {% endif %}
+                      </div>
 
                     </form>
 
