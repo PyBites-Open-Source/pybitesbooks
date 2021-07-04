@@ -145,13 +145,21 @@ def book_page(request, bookid):
     if userbook:
         userbook_lists = {ul.name for ul in userbook.booklists.all()}
 
+    book_on_lists = [
+        ul.userlist.name for ul in
+        UserBook.booklists.through.objects.select_related(
+            'userbook__book'
+        ).filter(userbook__book=book)
+    ]
+
     return render(request, 'book.html', {'book': book,
                                          'notes': notes,
                                          'userbook': userbook,
                                          'userbook_lists': userbook_lists,
                                          'book_form': book_form,
                                          'book_users': book_users,
-                                         'user_lists': user_lists})
+                                         'user_lists': user_lists,
+                                         'book_on_lists': book_on_lists})
 
 
 def get_user_goal(user):

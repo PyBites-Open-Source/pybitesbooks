@@ -221,6 +221,12 @@ progress[value] {
   padding: 0;
   border: 1px solid #ccc;
 }
+.clear {
+  clear: both;
+}
 .right {
   float: right;
+}
+.marginTop {
+  margin-top: 50px;
 }
