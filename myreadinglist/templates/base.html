@@ -57,7 +57,8 @@
                 <li><a href="{% url 'logout' %}">Logout</a></li>
 
               {% else %}
-
+                <li><a href="{% url 'lists-view' %}">Reading Lists</a></li>
+                <li><a href="https://pybit.es/community" target="_blank">PyBites #books channel</a></li>
                 <li><a href="{% url 'login' %}"><i class="fa fa-user" aria-hidden="true"></i> Login</a></li>
 
               {% endif %}
