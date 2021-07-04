@@ -219,3 +219,6 @@ progress[value] {
   padding: 0;
   border: 1px solid #ccc;
 }
+.right {
+  float: right;
+}

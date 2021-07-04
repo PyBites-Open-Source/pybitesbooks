@@ -203,6 +203,7 @@ def user_page(request, username):
     user_stats = UserStats(num_books_added=len(user_books),
                            num_books_done=len(grouped_user_books[COMPLETED]),
                            num_pages_read=get_num_pages_read(user_books))
+    user_lists = UserList.objects.filter(user=user)
 
     return render(request, 'user.html',
                   {'grouped_user_books': grouped_user_books,
@@ -212,7 +213,9 @@ def user_page(request, username):
                    'share_goal': share_goal,
                    'completed_books_this_year': completed_books_this_year,
                    'perc_completed': perc_completed,
-                   'min_books_search': MIN_NUM_BOOKS_SHOW_SEARCH})
+                   'min_books_search': MIN_NUM_BOOKS_SHOW_SEARCH,
+                   'is_me': is_me,
+                   'user_lists': user_lists})
 
 
 @xframe_options_exempt

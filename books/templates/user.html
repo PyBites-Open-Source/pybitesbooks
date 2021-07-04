@@ -58,6 +58,19 @@
         Total reading: <strong class="mui--text-title">{{ user_stats.num_books_added }}</strong> books added, of which <strong class="mui--text-title">{{ user_stats.num_books_done }}</strong> read totalling <strong class="mui--text-title">{{ user_stats.num_pages_read|intcomma }}</strong> pages.
       </div>
 
+      {% if user_lists %}
+        <div class="mui--text-subhead mui--text-dark-secondary">
+          Reading lists:
+          {% for ul in user_lists %}
+            <a href="{% url "lists-detail" name=ul.name %}">{{ ul.name }}</a>
+            {% if not forloop.last %} | {% endif %}
+          {% endfor %}
+          {% if is_me %}
+            | <a class="mui-btn mui-btn--small" href="{% url "lists-view" %}">+</a>
+          {% endif %}
+        </div>
+      {% endif %}
+
     </div>
 
     <div class="mui-col-md-2">

@@ -6,8 +6,17 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/widget.css' %}">
 {% endblock %}
 
+{% block title %}{{ userlist.name|unslugify|title }}{% endblock %}
+{% block og_title %}{{ userlist.name|unslugify|title }}{% endblock %}
+{% block og_url %}{{ request.path }}{% endblock %}
+
+{% block search %}{% endblock %}
+
 {% block content %}
-  <h2 class="mui--text-display1">{{ userlist.name|unslugify|title }}</h2>
+  <h2 class="mui--text-subhead mui--text-dark-secondary">
+    <a href="{% url "user_page" username=userlist.user.username %}">{{ userlist.user.username }}</a> > {{ userlist.name|unslugify|title }}
+    <small>(<a href="{% url "lists-view" %}">all lists</a>)</small>
+  </h2>
   <br>
 
   <div id="search">
@@ -26,8 +35,10 @@
       </li>
     {% endfor %}
   </ul>
+{% endblock %}
 
-  <script src="{% static 'js/jquery_min.js' %}"></script>
+{% block javascript %}
+
   <script src="{% static 'js/blazy.min.js' %}"></script>
   <script src="{% static 'js/search.js' %}"></script>
 
