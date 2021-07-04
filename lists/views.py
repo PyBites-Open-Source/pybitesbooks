@@ -4,13 +4,23 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from django.utils.text import slugify
+from decouple import config, Csv
 
 from books.models import UserBook
 from books.views import MIN_NUM_BOOKS_SHOW_SEARCH
 from .models import UserList
 from .mixins import OwnerRequiredMixin
 
-MAX_NUM_USER_LISTS = 10
+MAX_NUM_USER_LISTS, MAX_NUM_ADMIN_LISTS = 10, 100
+ADMIN_USERS = set(config('ADMIN_USERS', cast=Csv()))
+
+
+def get_max_books(request):
+    if not request.user.is_authenticated:
+        return 0
+    if request.user.username in ADMIN_USERS:
+        return MAX_NUM_ADMIN_LISTS
+    return MAX_NUM_USER_LISTS
 
 
 class UserListListView(ListView):
@@ -20,11 +30,12 @@ class UserListListView(ListView):
         context = super().get_context_data(**kwargs)
         num_lists_left = 0
         if self.request.user.is_authenticated:
+            max_num_user_lists = get_max_books(self.request)
             num_user_lists = UserList.objects.filter(
                 user=self.request.user).count()
-            num_lists_left = MAX_NUM_USER_LISTS - num_user_lists
+            num_lists_left = max_num_user_lists - num_user_lists
         context['num_lists_left'] = num_lists_left
-        context['max_num_user_lists'] = MAX_NUM_USER_LISTS
+        context['max_num_user_lists'] = max_num_user_lists
         return context
 
 
@@ -59,10 +70,11 @@ class UserListCreateView(LoginRequiredMixin, CreateView):
         if user_lists.filter(name=form.instance.name).count() > 0:
             form.add_error('name', 'This list already exists')
             return self.form_invalid(form)
-        if user_lists.filter(user=self.request.user).count() > MAX_NUM_USER_LISTS:
+        max_num_user_lists = get_max_books(self.request)
+        if user_lists.filter(user=self.request.user).count() > max_num_user_lists:
             form.add_error(
                 'name',
-                f'You can have {MAX_NUM_USER_LISTS} lists at most')
+                f'You can have {max_num_user_lists} lists at most')
             return self.form_invalid(form)
         form.instance.user = self.request.user
         return super().form_valid(form)
