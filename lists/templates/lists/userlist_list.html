@@ -5,7 +5,14 @@
 {% block content %}
 
   <div class="mui-container right">
-    <a class="mui-btn mui-btn--primary" href="{% url "lists-add" %}">Add a new list</a>
+    {% if num_lists_left > 0 %}
+      <a class="mui-btn mui-btn--primary" href="{% url "lists-add" %}">Add a new list ({{num_lists_left}} left)</a>
+    {% else %}
+      <div class="mui--text-subhead mui--text-dark-secondary">
+        <p>You hit the maximum number of reading lists ({{ max_num_user_lists }}),
+          delete one or more to create new ones.</p>
+      </div>
+    {% endif %}
   </div>
 
   <table class="mui-table mui-table--bordered">

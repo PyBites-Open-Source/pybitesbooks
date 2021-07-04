@@ -9,9 +9,20 @@ from books.views import MIN_NUM_BOOKS_SHOW_SEARCH
 from .models import UserList
 from .mixins import OwnerRequiredMixin
 
+MAX_NUM_USER_LISTS = 10
+
 
 class UserListListView(ListView):
     model = UserList
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        num_user_lists = UserList.objects.filter(
+            user=self.request.user).count()
+        num_lists_left = MAX_NUM_USER_LISTS - num_user_lists
+        context['num_lists_left'] = num_lists_left
+        context['max_num_user_lists'] = MAX_NUM_USER_LISTS
+        return context
 
 
 class UserListDetailView(DetailView):
@@ -39,8 +50,14 @@ class UserListCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.name = slugify(form.instance.name)
-        if UserList.objects.filter(name=form.instance.name).count() > 0:
+        user_lists = UserList.objects
+        if user_lists.filter(name=form.instance.name).count() > 0:
             form.add_error('name', 'This list already exists')
+            return self.form_invalid(form)
+        if user_lists.filter(user=self.request.user).count() > MAX_NUM_USER_LISTS:
+            form.add_error(
+                'name',
+                f'You can have {MAX_NUM_USER_LISTS} lists at most')
             return self.form_invalid(form)
         form.instance.user = self.request.user
         return super().form_valid(form)
