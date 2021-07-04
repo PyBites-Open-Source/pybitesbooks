@@ -45,15 +45,15 @@
               {% if user.is_authenticated %}
                 <span>Hey {{ user.username }}</span>
                 <li><a href="{% url 'user_page' username=user.username %}">My Books</a></li>
-                {% if user.is_authenticated %}
-                  <li><a href="{% url 'lists-view' %}">Reading Lists</a></li>
-                  <li><a href="{% url 'goal:set_goal' %}">Reading Challenge</a></li>
-                  <li><a href="{% url 'pomodoro:track_pomodoro' %}">5-Hour Challenge</a></li>
-                  <li><a href="https://pybit.es/community" target="_blank">PyBites #books channel</a></li>
-                {% endif %}
+                <li><a href="{% url 'lists-view' %}">Reading Lists</a></li>
+                <li><a href="{% url 'goal:set_goal' %}">Reading Challenge</a></li>
+                <li><a href="{% url 'pomodoro:track_pomodoro' %}">5-Hour Challenge</a></li>
+                <li><a href="https://pybit.es/community" target="_blank">PyBites #books channel</a></li>
+
                 {% if user.is_superuser %}
                   <li><a href="{% url 'admin:index' %}">Admin</a></li>
                 {% endif %}
+
                 <li><a href="{% url 'logout' %}">Logout</a></li>
 
               {% else %}
