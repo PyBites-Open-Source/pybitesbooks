@@ -20,7 +20,6 @@
         <tr>
           <th>List</th>
           <th>Added</th>
-          <th colspan="2">Edit List</th>
         </tr>
     </thead>
     <tbody>
@@ -28,12 +27,6 @@
         <tr>
           <td><a href="{% url "lists-detail" name=userlist.name %}">{{ userlist.name }}</a></td>
           <td>{{ userlist.inserted|timesince }} ago</td>
-          {% if userlist.user == request.user %}
-            <td><a class="mui-btn mui-btn--small mui-btn--flat mui-btn--primary" href="{% url "lists-update" userlist.id %}">Rename</a></td>
-            <td><a class="mui-btn mui-btn--small mui-btn--flat mui-btn--danger" href="{% url "lists-delete" userlist.id %}">Delete</a></td>
-          {% else %}
-            <td></td>
-          {% endif %}
         </tr>
         {% endfor %}
     </tbody>

@@ -32,14 +32,15 @@ class UserListDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        list_id = self.get_object().id
+        obj = self.get_object()
         books_on_list = UserBook.objects.select_related(
             "book"
         ).filter(
-            booklists__id=list_id
+            booklists__id=obj.id
         ).order_by("book__title")
         context['books_on_list'] = books_on_list
         context['min_num_books_show_search'] = MIN_NUM_BOOKS_SHOW_SEARCH
+        context['is_me'] = self.request.user == obj.user
         return context
 
 

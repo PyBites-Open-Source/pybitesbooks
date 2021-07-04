@@ -37,6 +37,13 @@
     {% endif %}
   </div>
 
+  {% if is_me %}
+    <div>
+      <a class="mui-btn mui-btn--small mui-btn--flat mui-btn--primary" href="{% url "lists-update" userlist.id %}">Rename list</a>
+      <a class="mui-btn mui-btn--small mui-btn--flat mui-btn--danger" href="{% url "lists-delete" userlist.id %}">Delete</a>
+    </div>
+  {% endif %}
+
 {% endblock %}
 
 {% block javascript %}

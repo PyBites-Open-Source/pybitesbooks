@@ -9,7 +9,7 @@
     <strong>{{ userlist.name }}</strong>
     <p>Are you sure you want to delete this list?</p>
     <input class="mui-btn mui-btn--danger" type="submit" value="Delete" />
-    <a class="mui-btn mui-btn--raised" href="{% url "lists-view" %}">Go Back</a>
+    <a class="mui-btn mui-btn--raised" href="{% url "lists-detail" userlist.name %}">Go Back</a>
   </form>
 
 {% endblock %}
