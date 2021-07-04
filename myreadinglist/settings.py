@@ -182,3 +182,5 @@ if not DEBUG:
         dsn=os.environ.get('SENTRY_DSN'),
         integrations=[DjangoIntegration()]
     )
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
