@@ -124,8 +124,16 @@ blockquote:after {
 }
 
 #navigation li {
-  margin-left: 10px;
-  padding: 5px 10px;
+  margin-left: 5px;
+  padding: 10px;
+}
+
+#navigation li:hover {
+  border-bottom: 1px solid #f2f2f2;
+}
+#navigation li a:hover {
+  text-decoration: none;
+  opacity: 0.85;
 }
 
 .userAvatar {
