@@ -176,9 +176,10 @@ LOGGING = {
         },
     },
 }
-LOGIN_URL = 'index'
-LOGOUT_URL = 'index'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
 ACCOUNT_ACTIVATION_DAYS = 7
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

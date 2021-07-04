@@ -5,12 +5,17 @@
 {% block content %}
 
   <div class="mui-container right">
-    {% if num_lists_left > 0 %}
-      <a class="mui-btn mui-btn--primary" href="{% url "lists-add" %}">Add a new list ({{num_lists_left}} left)</a>
+    {% if not request.user.is_authenticated %}
+      <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Login to add reading lists</a>
+    {% elif num_lists_left > 0 %}
+      <a class="mui-btn mui-btn--primary" href="{% url "lists-add" %}">
+        Add a new list ({{num_lists_left}} left)
+      </a>
     {% else %}
       <div class="mui--text-subhead mui--text-dark-secondary">
-        <p>You hit the maximum number of reading lists ({{ max_num_user_lists }}),
-          delete one or more to create new ones.</p>
+        <p>You hit the maximum number of reading lists
+           ({{ max_num_user_lists }}),
+           delete one or more to create new ones.</p>
       </div>
     {% endif %}
   </div>
@@ -19,13 +24,27 @@
     <thead>
         <tr>
           <th>List</th>
+          <th>By</th>
           <th>Added</th>
         </tr>
     </thead>
     <tbody>
         {% for userlist in userlist_list %}
         <tr>
-          <td><a href="{% url "lists-detail" name=userlist.name %}">{{ userlist.name }}</a></td>
+          <td>
+            <a href="{% url "lists-detail" name=userlist.name %}">
+              {{ userlist.name }}
+            </a>
+          </td>
+          <td>
+            <a href="{% url "user_page" userlist.user.username %}">
+              {% if request.user == userlist.user %}
+                me
+              {% else %}
+                {{ userlist.user.username }}
+              {% endif %}
+            </a>
+          </td>
           <td>{{ userlist.inserted|timesince }} ago</td>
         </tr>
         {% endfor %}

@@ -14,8 +14,10 @@
 
 {% block content %}
   <h2 class="mui--text-subhead mui--text-dark-secondary">
-    <a href="{% url "user_page" username=userlist.user.username %}">{{ userlist.user.username }}</a> > {{ userlist.name|unslugify|title }}
-    <small>(<a href="{% url "lists-view" %}">all lists</a>)</small>
+    Reading List <span class="mui--text-accent">
+      {{ userlist.name|unslugify|title }}
+    </span>
+    by <a href="{% url "user_page" username=userlist.user.username %}">{{ userlist.user.username }}</a>
   </h2>
 
   {% if books_on_list|length > min_num_books_show_search %}
@@ -37,12 +39,15 @@
     {% endif %}
   </div>
 
-  {% if is_me %}
-    <div>
+  <div>
+    <a class="mui-btn mui-btn--small mui-btn--flat mui-btn--primary" href="{% url "lists-view" %}">
+      {% if request.user.is_authenticated %}manage lists{% else %}all lists{% endif %}
+    </a>
+    {% if is_me %}
       <a class="mui-btn mui-btn--small mui-btn--flat mui-btn--primary" href="{% url "lists-update" userlist.id %}">Rename list</a>
       <a class="mui-btn mui-btn--small mui-btn--flat mui-btn--danger" href="{% url "lists-delete" userlist.id %}">Delete</a>
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 
 {% endblock %}
 

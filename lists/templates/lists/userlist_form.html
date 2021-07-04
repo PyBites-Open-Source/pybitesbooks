@@ -20,7 +20,7 @@
     {% endfor %}
 
     <input class="mui-btn mui-btn--primary" type="submit" value="{% if userlist %}Edit{% else %}New{% endif %}" />
-    <a class="mui-btn mui-btn--raised" href="{% url "lists-detail" userlist.name %}">Go Back</a>
+    <a class="mui-btn mui-btn--raised" href="{% url "lists-view" %}">Go Back</a>
   </form>
 
 {% endblock %}

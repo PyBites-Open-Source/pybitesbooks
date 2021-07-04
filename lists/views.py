@@ -1,7 +1,8 @@
-from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
+from django.urls import reverse_lazy
 from django.utils.text import slugify
 
 from books.models import UserBook
@@ -17,9 +18,11 @@ class UserListListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        num_user_lists = UserList.objects.filter(
-            user=self.request.user).count()
-        num_lists_left = MAX_NUM_USER_LISTS - num_user_lists
+        num_lists_left = 0
+        if self.request.user.is_authenticated:
+            num_user_lists = UserList.objects.filter(
+                user=self.request.user).count()
+            num_lists_left = MAX_NUM_USER_LISTS - num_user_lists
         context['num_lists_left'] = num_lists_left
         context['max_num_user_lists'] = MAX_NUM_USER_LISTS
         return context
@@ -40,11 +43,12 @@ class UserListDetailView(DetailView):
         ).order_by("book__title")
         context['books_on_list'] = books_on_list
         context['min_num_books_show_search'] = MIN_NUM_BOOKS_SHOW_SEARCH
-        context['is_me'] = self.request.user == obj.user
+        is_auth = self.request.user.is_authenticated
+        context['is_me'] = is_auth and self.request.user == obj.user
         return context
 
 
-class UserListCreateView(CreateView):
+class UserListCreateView(LoginRequiredMixin, CreateView):
     model = UserList
     fields = ['name']
     success_url = reverse_lazy('lists-view')
