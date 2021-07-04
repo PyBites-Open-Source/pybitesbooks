@@ -17,11 +17,14 @@
     <a href="{% url "user_page" username=userlist.user.username %}">{{ userlist.user.username }}</a> > {{ userlist.name|unslugify|title }}
     <small>(<a href="{% url "lists-view" %}">all lists</a>)</small>
   </h2>
-  <br>
 
-  <div id="search">
-    <input id="filter" name="filter" class="defaultText qVal" title="Search Bookshelf ... " />
-  </div>
+  {% if books_on_list|length > 20 %}
+    <br>
+    <div id="search">
+      <input id="filter" name="filter" class="defaultText qVal" title="Search Bookshelf ... " />
+    </div>
+  {% endif %}
+
   <ul id='booksWrapper'>
     {% for book in books_on_list %}
       <li class="book">
