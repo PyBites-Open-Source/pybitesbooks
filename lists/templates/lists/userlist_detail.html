@@ -2,15 +2,9 @@
 {% load static %}
 {% load tags %}
 
-{% block css %}
-  <link rel="stylesheet" type="text/css" href="{% static 'css/widget.css' %}">
-{% endblock %}
-
 {% block title %}{{ userlist.name|unslugify|title }}{% endblock %}
 {% block og_title %}{{ userlist.name|unslugify|title }}{% endblock %}
 {% block og_url %}{{ request.path }}{% endblock %}
-
-{% block search %}{% endblock %}
 
 {% block content %}
   <h2 class="mui--text-subhead mui--text-dark-secondary">

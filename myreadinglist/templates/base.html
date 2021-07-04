@@ -84,13 +84,11 @@
             {% endfor %}
           </div>
 
-          {% block search %}
-            <div class="mui-textfield">
-              <input class="form-control mr-sm-2" type="text" name="searchTitles", id="searchTitles"
-                placeholder="What are you reading?" accesskey='s'>
-            </div>
-            <br>
-          {% endblock %}
+          <div class="mui-textfield">
+            <input class="form-control mr-sm-2" type="text" name="searchTitles", id="searchTitles"
+              placeholder="What are you reading?" accesskey='s'>
+          </div>
+          <br>
 
           {% block content %}
           {% endblock %}
