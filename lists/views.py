@@ -5,6 +5,7 @@ from django.views.generic.list import ListView
 from django.utils.text import slugify
 
 from books.models import UserBook
+from books.views import MIN_NUM_BOOKS_SHOW_SEARCH
 from .models import UserList
 from .mixins import OwnerRequiredMixin
 
@@ -27,6 +28,7 @@ class UserListDetailView(DetailView):
             booklists__id=list_id
         ).order_by("book__title")
         context['books_on_list'] = books_on_list
+        context['min_num_books_show_search'] = MIN_NUM_BOOKS_SHOW_SEARCH
         return context
 
 
