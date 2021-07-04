@@ -193,7 +193,9 @@ progress[value] {
   font-size: 30px;
   cursor: pointer;
   position: relative;
-  color: orange;
+  color: #E26313;
+  bottom: 20px;
+  right: 30px;
 }
 .js-favorite:before {
   content: "\2606";
@@ -218,4 +220,13 @@ progress[value] {
   margin: 10px 0;
   padding: 0;
   border: 1px solid #ccc;
+}
+.clear {
+  clear: both;
+}
+.right {
+  float: right;
+}
+.marginTop {
+  margin-top: 50px;
 }

@@ -25,6 +25,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('5hours/', include('pomodoro.urls')),
     path('goal/', include('goal.urls')),
+    path('lists/', include('lists.urls')),
     path('super-reader/', admin.site.urls),
 ]
 

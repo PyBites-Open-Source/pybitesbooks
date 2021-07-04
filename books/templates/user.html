@@ -47,7 +47,7 @@
 
             <br><br>
             {% if username == request.user.username %}
-              <a class="mui-btn mui-btn--small mui-btn--raised" href="https://twitter.com/intent/tweet?url=http://pybitesbooks.com{{ request.path }}&text=I%20read%20{{completed_books_this_year|length}}%20of%20{{ goal.number_books }}%20books%20this%20year%2C%20and%20now%20I%20Challenge%20You!%20Join%20me%20%40PyBites%20My%20Reading%20List&hashtags=books%2Csuccess" title="Share this achievement on Twitter" target="_blank" style="margin: 5px 8px 5px 0;">
+              <a class="mui-btn mui-btn--small mui-btn--raised" href="https://twitter.com/intent/tweet?url=http://pybitesbooks.com{{ request.path }}&text=I%20read%20{{completed_books_this_year|length}}%20of%20{{ goal.number_books }}%20books%20this%20year%2C%20and%20now%20I%20Challenge%20You!%20Join%20me%20at%20%40PyBites%20%23Books&hashtags=PyBitesBooks%2CLoveReading%2CSelfDevelopment" title="Share this achievement on Twitter" target="_blank" style="margin: 5px 8px 5px 0;">
                   Share on Twitter</a>
                 <br><br>
             {% endif %}
@@ -57,6 +57,19 @@
       <div class="mui--text-subhead mui--text-accent-secondary">
         Total reading: <strong class="mui--text-title">{{ user_stats.num_books_added }}</strong> books added, of which <strong class="mui--text-title">{{ user_stats.num_books_done }}</strong> read totalling <strong class="mui--text-title">{{ user_stats.num_pages_read|intcomma }}</strong> pages.
       </div>
+
+      {% if user_lists %}
+        <div class="mui--text-subhead mui--text-dark-secondary">
+          Reading lists:
+          {% for ul in user_lists %}
+            <a href="{% url "lists-detail" name=ul.name %}">{{ ul.name }}</a>
+            {% if not forloop.last %} | {% endif %}
+          {% endfor %}
+          {% if is_me %}
+            | <a class="mui-btn mui-btn--small" href="{% url "lists-view" %}">+</a>
+          {% endif %}
+        </div>
+      {% endif %}
 
     </div>
 

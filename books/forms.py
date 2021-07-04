@@ -10,12 +10,9 @@ class DateInput(forms.DateInput):
 
 class UserBookForm(ModelForm):
 
-    # def __init__(self, *args, **kwargs):
-    #    super().__init__(*args, **kwargs)
-
     class Meta:
         model = UserBook
-        fields = ['status', 'completed']
+        fields = ['status', 'completed', 'booklists']
         widgets = {
             'completed': DateInput(),
         }

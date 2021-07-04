@@ -48,7 +48,7 @@
                 {% if user.is_authenticated %}
                   <li><a href="{% url 'goal:set_goal' %}">Reading Challenge</a></li>
                   <li><a href="{% url 'pomodoro:track_pomodoro' %}">5-Hour Challenge</a></li>
-                  <li><a href="https://join.slack.com/t/pybites/shared_invite/enQtNDAxODc0MjEyODM2LTNiZjljNTI2NGJiNWI0MTRkNjY4YzQ1ZWU4MmQzNWQyN2Q4ZTQzMTk0NzkyZTRmMThlNmQzYTk5Y2Y5ZDM4NDU" target="_blank">Join PyBites Slack / #books</a></li>
+                  <li><a href="https://pybit.es/community" target="_blank">PyBites #books channel</a></li>
                 {% endif %}
                 {% if user.is_superuser %}
                   <li><a href="{% url 'admin:index' %}">Admin</a></li>
@@ -59,7 +59,7 @@
 
                 <li><a href="{% url 'login' %}"><i class="fa fa-user" aria-hidden="true"></i> Login</a></li>
 
-              {% endif %} 
+              {% endif %}
 
             </ul>
           </td>
@@ -84,11 +84,13 @@
             {% endfor %}
           </div>
 
-          <div class="mui-textfield">
-            <input class="form-control mr-sm-2" type="text" name="searchTitles", id="searchTitles"
-              placeholder="What are you reading?" accesskey='s'>
-          </div>
-          <br>
+          {% block search %}
+            <div class="mui-textfield">
+              <input class="form-control mr-sm-2" type="text" name="searchTitles", id="searchTitles"
+                placeholder="What are you reading?" accesskey='s'>
+            </div>
+            <br>
+          {% endblock %}
 
           {% block content %}
           {% endblock %}
@@ -102,7 +104,7 @@
       <div class="mui-container mui--text-center">
         <p>
           <i>A reader lives a thousand lives before he dies, said Jojen. The man who never reads lives only one. - George R.R. Martin, A Dance with Dragons</i>
-          <br>Made with ♥ using <a href="https://www.muicss.com">MUICSS</a> by <a href="https://pybit.es" target="_blank">PyBites</a> | <a href="https://codechalleng.es" target="_blank">Want to Learn Python?</a>   
+          <br>Made with ♥ using <a href="https://www.muicss.com">MUICSS</a> by <a href="https://pybit.es" target="_blank">PyBites</a> | <a href="https://codechalleng.es" target="_blank">Want to Learn Python?</a>
         </p>
       </div>
     </footer>
@@ -111,7 +113,7 @@
       new WOW().init();
     </script>
 
-    <!-- Go to www.addthis.com/dashboard to customize your tools --> 
+    <!-- Go to www.addthis.com/dashboard to customize your tools -->
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5c0e40f59abcbb41"></script>
 
   </body>

@@ -15,6 +15,7 @@ from .forms import UserBookForm
 from .models import (UserBook, BookNote,
                      READING, COMPLETED, TO_READ)
 from goal.models import Goal
+from lists.models import UserList
 
 UserStats = namedtuple('UserStats', ["num_books_added",
                                      "num_books_done",
@@ -42,12 +43,17 @@ def book_page(request, bookid):
     if book_edit:
         status = post.get('status')
         completed = post.get('completed') or None
+
+        userlists = post.getlist("userlists[]", [])
+        booklists = UserList.objects.filter(name__in=userlists)
+
         if completed:
             completed = timezone.datetime.strptime(completed, '%Y-%m-%d')
 
         # this works without pk because Userbook has max 1 entry for user+book
         userbook, created = UserBook.objects.get_or_create(book=book,
                                                            user=request.user)
+        userbook.booklists.set(booklists)
 
         action = None
         if created:
@@ -131,11 +137,29 @@ def book_page(request, bookid):
     book_users = UserBook.objects.select_related('user').filter(
         book=book, status=COMPLETED)
 
+    user_lists = []
+    if request.user.is_authenticated:
+        user_lists = UserList.objects.filter(user=request.user)
+
+    userbook_lists = {}
+    if userbook:
+        userbook_lists = {ul.name for ul in userbook.booklists.all()}
+
+    book_on_lists = [
+        ul.userlist.name for ul in
+        UserBook.booklists.through.objects.select_related(
+            'userbook__book'
+        ).filter(userbook__book=book)
+    ]
+
     return render(request, 'book.html', {'book': book,
                                          'notes': notes,
                                          'userbook': userbook,
+                                         'userbook_lists': userbook_lists,
                                          'book_form': book_form,
-                                         'book_users': book_users})
+                                         'book_users': book_users,
+                                         'user_lists': user_lists,
+                                         'book_on_lists': book_on_lists})
 
 
 def get_user_goal(user):
@@ -187,6 +211,7 @@ def user_page(request, username):
     user_stats = UserStats(num_books_added=len(user_books),
                            num_books_done=len(grouped_user_books[COMPLETED]),
                            num_pages_read=get_num_pages_read(user_books))
+    user_lists = UserList.objects.filter(user=user)
 
     return render(request, 'user.html',
                   {'grouped_user_books': grouped_user_books,
@@ -196,7 +221,9 @@ def user_page(request, username):
                    'share_goal': share_goal,
                    'completed_books_this_year': completed_books_this_year,
                    'perc_completed': perc_completed,
-                   'min_books_search': MIN_NUM_BOOKS_SHOW_SEARCH})
+                   'min_books_search': MIN_NUM_BOOKS_SHOW_SEARCH,
+                   'is_me': is_me,
+                   'user_lists': user_lists})
 
 
 @xframe_options_exempt

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tags %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/widget.css' %}">
+{% endblock %}
+
+{% block title %}{{ userlist.name|unslugify|title }}{% endblock %}
+{% block og_title %}{{ userlist.name|unslugify|title }}{% endblock %}
+{% block og_url %}{{ request.path }}{% endblock %}
+
+{% block search %}{% endblock %}
+
+{% block content %}
+  <h2 class="mui--text-subhead mui--text-dark-secondary">
+    Reading List <span class="mui--text-accent">
+      {{ userlist.name|unslugify|title }}
+    </span>
+    by <a href="{% url "user_page" username=userlist.user.username %}">{{ userlist.user.username }}</a>
+  </h2>
+
+  {% if books_on_list|length > min_num_books_show_search %}
+    <br>
+    <div id="search">
+      <input id="filter" name="filter" class="defaultText qVal" title="Search Bookshelf ... " />
+    </div>
+  {% endif %}
+
+  <div class="mui-panel">
+    {% if books_on_list %}
+      {% for book in books_on_list %}
+        <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
+          <img class="thumbNail" src="http://books.google.com/books?id={{ book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.book.title }}">
+        </a>
+      {% endfor %}
+    {% else %}
+      <p>No books on this list yet.</p>
+    {% endif %}
+  </div>
+
+  <div>
+    <a class="mui-btn mui-btn--small mui-btn--flat mui-btn--primary" href="{% url "lists-view" %}">
+      {% if request.user.is_authenticated %}manage lists{% else %}all lists{% endif %}
+    </a>
+    {% if is_me %}
+      <a class="mui-btn mui-btn--small mui-btn--flat mui-btn--primary" href="{% url "lists-update" userlist.id %}">Rename list</a>
+      <a class="mui-btn mui-btn--small mui-btn--flat mui-btn--danger" href="{% url "lists-delete" userlist.id %}">Delete</a>
+    {% endif %}
+  </div>
+
+{% endblock %}
+
+{% block javascript %}
+
+  <script src="{% static 'js/blazy.min.js' %}"></script>
+  <script src="{% static 'js/search.js' %}"></script>
+
+{% endblock %}

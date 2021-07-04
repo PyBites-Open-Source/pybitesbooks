@@ -39,8 +39,13 @@ DEFAULT_FROM_EMAIL = config('FROM_EMAIL')
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    INTERNAL_IPS = ['127.0.0.1']
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    sentry_sdk.init(
+        dsn=os.environ.get('SENTRY_DSN'),
+        integrations=[DjangoIntegration()]
+    )
 
 PROD_DOMAIN = "https://pybitesbooks.com/"
 DOMAIN = config('DOMAIN', default=PROD_DOMAIN)
@@ -64,6 +69,7 @@ OWN_APPS = [
     'books',
     'pomodoro',
     'goal',
+    'lists',
 ]
 INSTALLED_APPS = DJANGO_APPS + EXTERNAL_APPS + OWN_APPS
 
@@ -170,14 +176,10 @@ LOGGING = {
         },
     },
 }
-LOGIN_URL = 'index'
-LOGOUT_URL = 'index'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
-ACCOUNT_ACTIVATION_DAYS = 7
 
-if not DEBUG:
-    sentry_sdk.init(
-        dsn=os.environ.get('SENTRY_DSN'),
-        integrations=[DjangoIntegration()]
-    )
+ACCOUNT_ACTIVATION_DAYS = 7
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from lists.models import UserList
+
 READING = 'r'
 COMPLETED = 'c'
 TO_READ = 't'
@@ -63,6 +65,7 @@ class UserBook(models.Model):
                               default=COMPLETED)
     favorite = models.BooleanField(default=False)
     completed = models.DateTimeField(default=timezone.now)
+    booklists = models.ManyToManyField(UserList, related_name='booklists')
     inserted = models.DateTimeField(auto_now_add=True)  # != completed
     updated = models.DateTimeField(auto_now=True)
 
