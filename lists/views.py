@@ -16,8 +16,6 @@ ADMIN_USERS = set(config('ADMIN_USERS', cast=Csv()))
 
 
 def get_max_books(request):
-    if not request.user.is_authenticated:
-        return 0
     if request.user.username in ADMIN_USERS:
         return MAX_NUM_ADMIN_LISTS
     return MAX_NUM_USER_LISTS
@@ -28,7 +26,7 @@ class UserListListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        num_lists_left = 0
+        max_num_user_lists, num_lists_left = 0, 0
         if self.request.user.is_authenticated:
             max_num_user_lists = get_max_books(self.request)
             num_user_lists = UserList.objects.filter(
