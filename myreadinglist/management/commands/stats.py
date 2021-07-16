@@ -1,9 +1,10 @@
-from datetime import date, timedelta
+from datetime import date
 from decouple import config, Csv
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.utils import timezone
 
 from myreadinglist.mail import send_email
 from books.models import UserBook
@@ -11,14 +12,14 @@ from goal.models import Goal
 
 PYBITES_EMAIL_GROUP = config('PYBITES_EMAIL_GROUP', cast=Csv())
 FRIDAY = 4
-ONE_WEEK_AGO = date.today() - timedelta(days=7)
+ONE_WEEK_AGO = timezone.now() - timezone.timedelta(days=7)
 COMPLETED = 'c'
 SUBJECT = 'Weekly PyBites Books stats'
 MSG = """
 Number of users: {num_users}
 (new users last week: {new_users})
 
-Number of books added last week: {books_clicked}
+Number of books clicked last week: {books_clicked}
 
 Books completed last week:
 {books_completed}
@@ -55,13 +56,16 @@ class Command(BaseCommand):
         books_clicked = UserBook.objects.filter(
             inserted__gte=ONE_WEEK_AGO
         ).count()
+
+        books_read_last_week = UserBook.objects.select_related(
+            'book', 'user'
+        ).filter(
+            Q(completed__gte=ONE_WEEK_AGO) & Q(status=COMPLETED)
+        ).order_by('user__username')
+
         books_completed = '<br>'.join(
-            [f'{ub.user.username}: {ub.book.title} ({ub.book.url})'
-             for ub in
-             UserBook.objects.select_related('book', 'user').filter(
-                 Q(inserted__gte=ONE_WEEK_AGO) | Q(updated__gte=ONE_WEEK_AGO),
-                 status=COMPLETED
-             ).order_by('user__username')]
+            f'{ub.user.username}: {ub.book.title} ({ub.book.url})'
+            for ub in books_read_last_week
         )
 
         goals = Goal.objects.all()
