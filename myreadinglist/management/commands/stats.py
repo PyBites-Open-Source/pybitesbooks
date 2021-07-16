@@ -1,9 +1,11 @@
+from collections import defaultdict
 from datetime import date
 from decouple import config, Csv
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from django.db.models.functions import Lower
 from django.db.models import Q
 from django.utils import timezone
 
@@ -25,8 +27,7 @@ Usage stats:
 New user profiles:
 {new_user_profiles}
 
-What books were completed last week?
-{books_completed}
+What books were completed last week? {books_completed}
 
 Most ambitious readers:
 {goals}
@@ -66,21 +67,32 @@ class Command(BaseCommand):
             'book', 'user'
         ).filter(
             Q(completed__gte=ONE_WEEK_AGO) & Q(status=COMPLETED)
-        ).order_by('user__username')
+        ).order_by(Lower('user__username'))
 
         num_books_completed = books_read_last_week.count()
         num_books_completed_pages = sum(
             int(ub.book.pages) for ub in books_read_last_week
         )
         new_user_profiles = '<br>'.join(
-            PROFILE_PAGE.format(username=uu.username)
+            (f"- {uu.username} > "
+             f"{PROFILE_PAGE.format(username=uu.username)}")
             for uu in new_users
         )
 
-        books_completed = '<br>'.join(
-            f'{ub.user.username}: {ub.book.title} > {ub.book.url}'
-            for ub in books_read_last_week
-        )
+
+        books_completed_per_user = defaultdict(list)
+        for ub in books_read_last_week:
+            books_completed_per_user[ub.user.username].append(ub.book)
+
+        books_completed = []
+        for username, user_books in books_completed_per_user.items():
+            books_completed.append(f"<br>- {username}:")
+            books_completed.append(
+                "".join(
+                    f'<br>  - {book.title} > {book.url}'
+                    for book in user_books
+                )
+            )
 
         goals = Goal.objects.filter(
             year=THIS_YEAR, number_books__gt=0
@@ -96,7 +108,7 @@ class Command(BaseCommand):
                          num_books_clicked=num_books_clicked,
                          num_books_completed=num_books_completed,
                          num_books_completed_pages=num_books_completed_pages,
-                         books_completed=books_completed,
+                         books_completed="".join(books_completed),
                          goals=goals_out)
 
         for to_email in PYBITES_EMAIL_GROUP:
