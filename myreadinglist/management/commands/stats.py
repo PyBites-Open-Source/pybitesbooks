@@ -1,6 +1,7 @@
 from datetime import date
 from decouple import config, Csv
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -16,17 +17,21 @@ ONE_WEEK_AGO = timezone.now() - timezone.timedelta(days=7)
 COMPLETED = 'c'
 SUBJECT = 'Weekly PyBites Books stats'
 MSG = """
-Number of users: {num_users}
-(new users last week: {new_users})
+Usage stats:
+- {num_total_users} total users ({num_new_users} new users joined last week).
+- {num_books_clicked} books were clicked.
+- {num_books_completed} books were completed (= {num_books_completed_pages} pages read).
 
-Number of books clicked last week: {books_clicked}
+New user profiles:
+{new_user_profiles}
 
-Books completed last week:
+What books were completed last week?
 {books_completed}
 
-Reading goals:
+Most ambitious readers:
 {goals}
 """
+PROFILE_PAGE = settings.DOMAIN + "/users/{username}"
 
 
 class Command(BaseCommand):
@@ -47,13 +52,12 @@ class Command(BaseCommand):
         if not run_now and date.today().weekday() != FRIDAY:
             return
 
-        num_users = User.objects.count()
-        new_users = ', '.join(
-            [u.username for u in
-             User.objects.filter(date_joined__gte=ONE_WEEK_AGO)]
-        )
+        all_users = User.objects.all()
+        new_users = all_users.filter(
+            date_joined__gte=ONE_WEEK_AGO)
+        num_new_users = new_users.count()
 
-        books_clicked = UserBook.objects.filter(
+        num_books_clicked = UserBook.objects.filter(
             inserted__gte=ONE_WEEK_AGO
         ).count()
 
@@ -63,8 +67,17 @@ class Command(BaseCommand):
             Q(completed__gte=ONE_WEEK_AGO) & Q(status=COMPLETED)
         ).order_by('user__username')
 
+        num_books_completed = books_read_last_week.count()
+        num_books_completed_pages = sum(
+            int(ub.book.pages) for ub in books_read_last_week
+        )
+        new_user_profiles = '<br>'.join(
+            PROFILE_PAGE.format(username=uu.username)
+            for uu in new_users
+        )
+
         books_completed = '<br>'.join(
-            f'{ub.user.username}: {ub.book.title} ({ub.book.url})'
+            f'{ub.user.username}: {ub.book.title} > {ub.book.url}'
             for ub in books_read_last_week
         )
 
@@ -72,9 +85,12 @@ class Command(BaseCommand):
         goals_out = '<br>'.join([f'{go.user.username} => {go.number_books}'
                                  for go in goals])
 
-        msg = MSG.format(num_users=num_users,
-                         new_users=new_users,
-                         books_clicked=books_clicked,
+        msg = MSG.format(num_total_users=all_users.count(),
+                         num_new_users=num_new_users,
+                         new_user_profiles=new_user_profiles,
+                         num_books_clicked=num_books_clicked,
+                         num_books_completed=num_books_completed,
+                         num_books_completed_pages=num_books_completed_pages,
                          books_completed=books_completed,
                          goals=goals_out)
 
