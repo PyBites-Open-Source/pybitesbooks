@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from myreadinglist.mail import send_email
 from books.models import UserBook
-from goal.models import Goal
+from goal.models import Goal, current_year
 
 PYBITES_EMAIL_GROUP = config('PYBITES_EMAIL_GROUP', cast=Csv())
 FRIDAY = 4
@@ -32,6 +32,7 @@ Most ambitious readers:
 {goals}
 """
 PROFILE_PAGE = settings.DOMAIN + "/users/{username}"
+THIS_YEAR = current_year()
 
 
 class Command(BaseCommand):
@@ -81,9 +82,13 @@ class Command(BaseCommand):
             for ub in books_read_last_week
         )
 
-        goals = Goal.objects.all()
-        goals_out = '<br>'.join([f'{go.user.username} => {go.number_books}'
-                                 for go in goals])
+        goals = Goal.objects.filter(
+            year=THIS_YEAR, number_books__gt=0
+        ).order_by("-number_books")
+        goals_out = '<br>'.join(
+            f'{goal.user.username:<30} | {goal.number_books}'
+            for goal in goals
+        )
 
         msg = MSG.format(num_total_users=all_users.count(),
                          num_new_users=num_new_users,
