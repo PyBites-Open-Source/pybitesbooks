@@ -114,7 +114,7 @@
     {% if share_goal %}
       <div class="mui-tabs__pane mui--is-active" id="pane-default-0">
         <br>
-        <div class="mui-panel">
+        <div class="mui-panel userbooks">
           {% if completed_books_this_year %}
             {% for book in completed_books_this_year %}
               <a href="{% url 'books:book_page' bookid=book.book.bookid %}" title="{{ book.book.title }}">
@@ -140,7 +140,7 @@
           </div>
         {% endif %}
 
-        <div class="mui-panel"
+        <div class="mui-panel userbooks"
              {% if forloop.counter == 2 and user_stats.num_books_done >= min_books_search %}id="booksWrapper"{% endif %}
         >
 
