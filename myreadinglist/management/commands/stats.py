@@ -29,7 +29,7 @@ New user profiles:
 
 What books were completed last week? {books_completed}
 
-Most ambitious readers:
+Most ambitious readers (# books to read goal this year):
 {goals}
 """
 PROFILE_PAGE = settings.DOMAIN + "/users/{username}"
@@ -86,10 +86,10 @@ class Command(BaseCommand):
 
         books_completed = []
         for username, user_books in books_completed_per_user.items():
-            books_completed.append(f"<br>- {username}:")
+            books_completed.append(f"<br>* {username}:")
             books_completed.append(
                 "".join(
-                    f'<br>  - {book.title} > {book.url}'
+                    f'<br>- {book.title} > {book.url}'
                     for book in user_books
                 )
             )
@@ -98,7 +98,7 @@ class Command(BaseCommand):
             year=THIS_YEAR, number_books__gt=0
         ).order_by("-number_books")
         goals_out = '<br>'.join(
-            f'{goal.user.username:<30} | {goal.number_books}'
+            f'{goal.user.username} > {goal.number_books}'
             for goal in goals
         )
 
