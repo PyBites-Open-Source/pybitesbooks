@@ -268,6 +268,15 @@ def import_books(request):
                 messages.error(request, error)
                 return redirect('books:import_books')
 
+        num_add_books = len(
+            [book for book in imported_books
+            if book.book_status == BookImportStatus.TO_BE_ADDED]
+        )
+        if num_add_books == 0:
+            error = "No new books to be imported"
+            messages.error(request, error)
+            return redirect('books:import_books')
+
     elif "save_import_submit" in post:
         books_to_add = post.getlist("books_to_add")
         read_statuses = post.getlist("read_statuses")

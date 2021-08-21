@@ -1,4 +1,5 @@
 from collections import namedtuple
+import concurrent.futures
 from datetime import datetime
 import csv
 from enum import Enum
@@ -37,11 +38,9 @@ def convert_goodreads_to_google_books(csv_upload, request):
         date_completed = datetime.strptime(
             row["Date Read"] or row["Date Added"], '%Y/%m/%d')
 
-        book = None
-        book_status = BookImportStatus.TO_BE_ADDED
-
         goodreads_id = row["Book Id"]
-        googlebooks_id = None
+        book_status = BookImportStatus.TO_BE_ADDED
+        book = None
 
         book_mapping, created = BookConversion.objects.get_or_create(
             goodreads_id=goodreads_id)
@@ -51,26 +50,21 @@ def convert_goodreads_to_google_books(csv_upload, request):
             google_book_response = search_books(
                 f"{title} {author}", request)
             try:
-                googlebooks_id = google_book_response["items"][0]["id"]
-                book_mapping.googlebooks_id = googlebooks_id
+                bookid = google_book_response["items"][0]["id"]
+                book_mapping.googlebooks_id = bookid
                 book_mapping.save()
             except KeyError:
                 continue
-        else:
-            googlebooks_id = book_mapping.googlebooks_id
 
-        if book_mapping.googlebooks_id is None:
+        if book_mapping.googlebooks_id:
+            book = get_book_info(book_mapping.googlebooks_id)
+        else:
             book_status = BookImportStatus.COULD_NOT_FIND
 
-        if googlebooks_id is not None:
-            book = get_book_info(googlebooks_id)
-
         if book is not None:
-            try:
-                UserBook.objects.get(user=request.user, book=book)
+            user_books = UserBook.objects.filter(user=request.user, book=book)
+            if user_books.count() > 0:
                 book_status = BookImportStatus.ALREADY_ADDED
-            except UserBook.DoesNotExist:
-                pass
 
         imported_books.append(
             ImportedBook(
