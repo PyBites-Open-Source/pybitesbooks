@@ -7,6 +7,7 @@ BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
 SEARCH_URL = BASE_URL + '?q={}'
 BOOK_URL = BASE_URL + '/{}'
 NOT_FOUND = 'Not found'
+DEFAULT_LANGUAGE = "en"
 
 
 def get_book_info(book_id):
@@ -30,8 +31,8 @@ def get_book_info(book_id):
         identifiers = volinfo.get('industryIdentifiers')
         isbn = identifiers[-1]['identifier'] if identifiers else NOT_FOUND
 
-        pages = volinfo['pageCount']
-        language = volinfo['language']
+        pages = volinfo.get('pageCount', 0)
+        language = volinfo.get('language', DEFAULT_LANGUAGE)
         description = volinfo.get('description', 'No description')
 
         if 'imageLinks' in volinfo and 'small' in volinfo['imageLinks']:

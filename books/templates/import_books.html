@@ -35,11 +35,17 @@
                 <td>
                   {{ imported_book.book_status.name }}
                 </td>
-                <td>
-                  <img width="50" src="http://books.google.com/books?id={{ imported_book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ imported_book.title }}">
-                </td>
-                <td><a href="{{imported_book.book.url}}" target="_blank">
-                    {{ imported_book.title }}</a></td>
+                {% if imported_book.book_status == not_found %}
+                  <td colspan="2"><i>{{ imported_book.title }}</i></td>
+                {% else %}
+                  <td>
+                    <img width="50" src="http://books.google.com/books?id={{ imported_book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ imported_book.title }}">
+                  </td>
+                  <td>
+                    <a href="{{imported_book.book.url}}" target="_blank">
+                      {{ imported_book.title }}</a>
+                  </td>
+                {% endif %}
                 <td>
                   {% if imported_book.book_status == to_add %}
                     <div class="mui-select">

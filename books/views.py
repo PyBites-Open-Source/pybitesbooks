@@ -263,8 +263,8 @@ def import_books(request):
             try:
                 imported_books = convert_goodreads_to_google_books(
                     files['file'], request)
-            except KeyError:
-                error = "Cannot import csv file, please try again"
+            except KeyError as exc:
+                error = f"Cannot import csv file: {exc}"
                 messages.error(request, error)
                 return redirect('books:import_books')
 
@@ -294,6 +294,7 @@ def import_books(request):
     context = {
         "import_form": import_form,
         "imported_books": imported_books,
+        "not_found": BookImportStatus.COULD_NOT_FIND,
         "to_add": BookImportStatus.TO_BE_ADDED,
         "all_read_statuses": GOOGLE_TO_GOODREADS_READ_STATUSES.items(),
     }

@@ -4,6 +4,7 @@ import csv
 from enum import Enum
 from io import StringIO
 
+from .decorators import timeit
 from .googlebooks import get_book_info, search_books
 from .models import UserBook, BookConversion
 
@@ -23,6 +24,7 @@ class BookImportStatus(Enum):
     COULD_NOT_FIND = 3
 
 
+@timeit
 def convert_goodreads_to_google_books(csv_upload, request):
     file = csv_upload.read().decode('utf-8')
     reader = csv.DictReader(StringIO(file), delimiter=',')
