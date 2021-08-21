@@ -270,7 +270,7 @@ def import_books(request):
 
         num_add_books = len(
             [book for book in imported_books
-            if book.book_status == BookImportStatus.TO_BE_ADDED]
+             if book.book_status == BookImportStatus.TO_BE_ADDED]
         )
         if num_add_books == 0:
             error = "No new books to be imported"
