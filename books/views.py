@@ -1,4 +1,4 @@
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict, namedtuple, defaultdict
 import csv
 from datetime import date, datetime
 from io import StringIO
@@ -23,6 +23,11 @@ UserStats = namedtuple('UserStats', ["num_books_added",
                                      "num_books_done",
                                      "num_pages_read"])
 MIN_NUM_BOOKS_SHOW_SEARCH = 20
+GOODREADS_STATUSES = {
+    "read": "c",
+    "currently-reading": "r",
+    "to-read": "t",
+}
 
 
 def book_page(request, bookid):
@@ -247,51 +252,46 @@ def user_favorite(request):
     return JsonResponse({"status": "success"})
 
 
-def handle_uploaded_file(csv_upload, request):
+def _insert_goodreads_books(csv_upload, request):
     file = csv_upload.read().decode('utf-8')
     reader = csv.DictReader(StringIO(file), delimiter=',')
-    books_added, books_already_there, books_failed = [], [], []
-    statuses = {
-        "read": "c",
-        "currently-reading": "r",
-        "to-read": "t",
-    }
+    upload_results = defaultdict(list)
+
     for row in reader:
         title = row["Title"]
         author = row["Author"]
-        term = f"{title} {author}"
-        status = row["Exclusive Shelf"]
-        completed_date = row["Date Read"] or row["Date Added"]
-        ret = search_books(term, request)
+        status = GOODREADS_STATUSES.get(row["Exclusive Shelf"], "c")
+        completed = datetime.strptime(
+            row["Date Read"] or row["Date Added"], '%Y/%m/%d')
+
+        google_book_response = search_books(f"{title} {author}", request)
         try:
-            book_id = ret["items"][0]["id"]
+            book_id = google_book_response["items"][0]["id"]
             book = get_book_info(book_id)
         except KeyError:
-            books_failed.append(title)
+            upload_results["failed"].append(title)
             continue
         userbook, created = UserBook.objects.get_or_create(
             user=request.user,
             book=book)
         if created:
-            userbook.status = statuses.get(status, "c")
-            userbook.completed = datetime.strptime(completed_date, '%Y/%m/%d')
+            userbook.status = status
+            userbook.completed = completed
             userbook.save()
-            books_added.append(title)
+            upload_results["added"].append(title)
         else:
-            books_already_there.append(title)
-    return books_added, books_already_there, books_failed
+            upload_results["already_there"].append(title)
+    return upload_results
 
 
 @login_required
 def import_books(request):
     post = request.POST
     files = request.FILES
-    books_added, books_already_there, books_failed = [], [], []
     if post:
         form = ImportBooksForm(post, files)
         if form.is_valid():
-            books_added, books_already_there, books_failed = (
-            handle_uploaded_file(files['file'], request))
+            upload_results = _insert_goodreads_books(files['file'], request)
     else:
         form = ImportBooksForm()
     context = {"form": form}
