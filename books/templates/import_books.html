@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tags %}
+
+{% block title %}Import books from other services{% endblock %}
+
+{% block content %}
+
+  <div class="mui-container-fluid">
+    <form class="mui-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="mui-btn--primary mui-btn"
+        name="import_books_submit">Import books</button>
+    </form>
+  </div>
+
+{% endblock %}

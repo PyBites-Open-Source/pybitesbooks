@@ -1,5 +1,7 @@
 from collections import OrderedDict, namedtuple
-from datetime import date
+import csv
+from datetime import date, datetime
+from io import StringIO
 
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -10,8 +12,8 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
-from .googlebooks import get_book_info
-from .forms import UserBookForm
+from .googlebooks import get_book_info, search_books
+from .forms import UserBookForm, ImportBooksForm
 from .models import (UserBook, BookNote,
                      READING, COMPLETED, TO_READ)
 from goal.models import Goal
@@ -243,3 +245,54 @@ def user_favorite(request):
     userbook.favorite = checked
     userbook.save()
     return JsonResponse({"status": "success"})
+
+
+def handle_uploaded_file(csv_upload, request):
+    file = csv_upload.read().decode('utf-8')
+    reader = csv.DictReader(StringIO(file), delimiter=',')
+    books_added, books_already_there, books_failed = [], [], []
+    statuses = {
+        "read": "c",
+        "currently-reading": "r",
+        "to-read": "t",
+    }
+    for row in reader:
+        title = row["Title"]
+        author = row["Author"]
+        term = f"{title} {author}"
+        status = row["Exclusive Shelf"]
+        completed_date = row["Date Read"] or row["Date Added"]
+        ret = search_books(term, request)
+        try:
+            book_id = ret["items"][0]["id"]
+            book = get_book_info(book_id)
+        except KeyError:
+            books_failed.append(title)
+            continue
+        userbook, created = UserBook.objects.get_or_create(
+            user=request.user,
+            book=book)
+        if created:
+            userbook.status = statuses.get(status, "c")
+            userbook.completed = datetime.strptime(completed_date, '%Y/%m/%d')
+            userbook.save()
+            books_added.append(title)
+        else:
+            books_already_there.append(title)
+    return books_added, books_already_there, books_failed
+
+
+@login_required
+def import_books(request):
+    post = request.POST
+    files = request.FILES
+    books_added, books_already_there, books_failed = [], [], []
+    if post:
+        form = ImportBooksForm(post, files)
+        if form.is_valid():
+            books_added, books_already_there, books_failed = (
+            handle_uploaded_file(files['file'], request))
+    else:
+        form = ImportBooksForm()
+    context = {"form": form}
+    return render(request, 'import_books.html', context)

@@ -8,6 +8,10 @@ class DateInput(forms.DateInput):
     input_type = 'text'
 
 
+class ImportBooksForm(forms.Form):
+    file = forms.FileField()
+
+
 class UserBookForm(ModelForm):
 
     class Meta:
