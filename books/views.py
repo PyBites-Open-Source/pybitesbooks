@@ -288,10 +288,12 @@ def import_books(request):
         ):
             completed_dt = pytz.utc.localize(
                 datetime.strptime(read_date, '%Y-%m-%d'))
+            book = Book.objects.filter(
+                bookid=bookid).order_by("inserted").last()
             user_books.append(
                 UserBook(
                     user=request.user,
-                    book=Book.objects.get(bookid=bookid),
+                    book=book,
                     status=read_status,
                     completed=completed_dt
                 )

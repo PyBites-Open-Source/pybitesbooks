@@ -59,7 +59,10 @@ def _process_row(row, request):
             pass
 
     if book_mapping.googlebooks_id:
-        book = get_book_info(book_mapping.googlebooks_id)
+        try:
+            book = get_book_info(book_mapping.googlebooks_id)
+        except KeyError:
+            book = None
     else:
         book_status = BookImportStatus.COULD_NOT_FIND
 
