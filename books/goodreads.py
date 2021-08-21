@@ -20,7 +20,10 @@ ImportedBook = namedtuple('ImportedBook',
 
 
 def process_rows_concurrently(rows, request):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=32) as executor:
+    """Nice but causes too many queries :(
+       https://developers.google.com/analytics/devguides/config/mgmt/v3/limits-quotas
+    """
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         future_to_row = {executor.submit(_process_row, row, request): row
                          for row in rows}
         for future in concurrent.futures.as_completed(future_to_row):
@@ -44,10 +47,10 @@ def _process_row(row, request):
     book_status = BookImportStatus.TO_BE_ADDED
     book = None
 
-    book_mapping, created = BookConversion.objects.get_or_create(
+    book_mapping, _ = BookConversion.objects.get_or_create(
         goodreads_id=goodreads_id)
 
-    if created:
+    if not book_mapping.googlebooks_id:
         # only query API for new book mappings
         term = f"{title} {author}"
         google_book_response = search_books(
@@ -57,7 +60,7 @@ def _process_row(row, request):
             book_mapping.googlebooks_id = bookid
             book_mapping.save()
         except KeyError:
-            pass
+            print("cannot get google books id", google_book_response)
 
     if book_mapping.googlebooks_id:
         try:
@@ -83,5 +86,8 @@ def _process_row(row, request):
 def convert_goodreads_to_google_books(csv_upload, request):
     file = csv_upload.read().decode('utf-8')
     reader = csv.DictReader(StringIO(file), delimiter=',')
-    imported_books = list(process_rows_concurrently(reader, request))
+    # imported_books = list(process_rows_concurrently(reader, request))
+    imported_books = []
+    for row in reader:
+        imported_books.append(_process_row(row, request))
     return imported_books
