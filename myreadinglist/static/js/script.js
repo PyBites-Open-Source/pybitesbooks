@@ -86,6 +86,10 @@ $(document).ready(function(){
         }
       });
     });
+
+    $(".deleteRow").click(function () {
+      $(this).parents("tr").remove();
+    });
 });
 
 

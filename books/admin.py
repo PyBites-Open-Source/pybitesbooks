@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (Book, Search, UserBook,
-                     BookNote, Badge)
+                     BookNote, Badge, BookConversion)
 
 
 class BookAdmin(admin.ModelAdmin):
@@ -24,8 +24,13 @@ class BadgeAdmin(admin.ModelAdmin):
     pass
 
 
+class BookConversionAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Book, BookAdmin)
 admin.site.register(Search, SearchAdmin)
 admin.site.register(UserBook, UserBookAdmin)
 admin.site.register(BookNote, BookNoteAdmin)
 admin.site.register(Badge, BadgeAdmin)
+admin.site.register(BookConversion, BookConversionAdmin)

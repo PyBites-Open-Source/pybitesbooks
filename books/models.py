@@ -45,7 +45,7 @@ class Book(models.Model):
 
 
 class Search(models.Model):
-    term = models.CharField(max_length=100)
+    term = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     inserted = models.DateTimeField(auto_now_add=True)
 
@@ -116,3 +116,11 @@ class Badge(models.Model):
 
     def __str__(self):
         return f'{self.books} -> {self.title}'
+
+
+class BookConversion(models.Model):
+    goodreads_id = models.CharField(max_length=20)
+    googlebooks_id = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.goodreads_id} -> {self.googlebooks_id}'

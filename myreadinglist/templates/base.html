@@ -48,8 +48,8 @@
                 <li><a href="{% url 'lists-view' %}">Reading Lists</a></li>
                 <li><a href="{% url 'goal:set_goal' %}">Reading Goal</a></li>
                 <li><a href="{% url 'pomodoro:track_pomodoro' %}">5-Hour Challenge</a></li>
-                <li><a href="{% url 'books:import_books' %}">Import Books</a></li>
                 <li><a href="https://pybit.es/community" target="_blank">PyBites #books channel</a></li>
+                <li><a href="{% url 'books:import_books' %}">Import goodreads books</a></li>
 
                 {% if user.is_superuser %}
                   <li><a href="{% url 'admin:index' %}">Admin</a></li>
@@ -87,11 +87,13 @@
             {% endfor %}
           </div>
 
-          <div class="mui-textfield">
-            <input class="form-control mr-sm-2" type="text" name="searchTitles", id="searchTitles"
-              placeholder="What are you reading?" accesskey='s'>
-          </div>
-          <br>
+          {% block search_books %}
+            <div class="mui-textfield">
+              <input class="form-control mr-sm-2" type="text" name="searchTitles", id="searchTitles"
+                placeholder="What are you reading?" accesskey='s'>
+            </div>
+            <br>
+          {% endblock %}
 
           {% block content %}
           {% endblock %}

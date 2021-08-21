@@ -1,5 +1,5 @@
 from collections import OrderedDict, namedtuple
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -9,11 +9,14 @@ from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+import pytz
 
-from .goodreads import convert_goodreads_to_google_books
+from .goodreads import (BookImportStatus,
+                        convert_goodreads_to_google_books,
+                        GOOGLE_TO_GOODREADS_READ_STATUSES)
 from .googlebooks import get_book_info
 from .forms import UserBookForm, ImportBooksForm
-from .models import (UserBook, BookNote,
+from .models import (Book, UserBook, BookNote,
                      READING, COMPLETED, TO_READ)
 from goal.models import Goal
 from lists.models import UserList
@@ -60,8 +63,8 @@ def book_page(request, bookid):
         if created:
             action = 'added'
         elif userbook.user != request.user:
-            messages.error('You can only edit your own books')
-            redirect('book_page')
+            messages.error(request, 'You can only edit your own books')
+            return redirect('book_page')
 
         if post.get('deleteBook'):
             action = 'deleted'
@@ -88,8 +91,8 @@ def book_page(request, bookid):
             try:
                 usernote = BookNote.objects.get(pk=noteid, user=request.user)
             except BookNote.DoesNotExist:
-                messages.error('Note does not exist for this user')
-                redirect('book_page')
+                messages.error(request, 'Note does not exist for this user')
+                return redirect('book_page')
 
             if usernote:
                 if post.get('deleteNote'):
@@ -250,12 +253,48 @@ def user_favorite(request):
 def import_books(request):
     post = request.POST
     files = request.FILES
-    if post:
-        form = ImportBooksForm(post, files)
-        if form.is_valid():
-            upload_results = convert_goodreads_to_google_books(
-                files['file'], request)
-    else:
-        form = ImportBooksForm()
-    context = {"form": form}
+    imported_books = []
+
+    import_form = ImportBooksForm()
+
+    if "import_books_submit" in post:
+        import_form = ImportBooksForm(post, files)
+        if import_form.is_valid():
+            try:
+                imported_books = convert_goodreads_to_google_books(
+                    files['file'], request)
+            except KeyError:
+                error = "Cannot import csv file, please try again"
+                messages.error(request, error)
+                return redirect('books:import_books')
+
+    elif "save_import_submit" in post:
+        books_to_add = post.getlist("books_to_add")
+        read_statuses = post.getlist("read_statuses")
+        dates = post.getlist("dates")
+
+        user_books = []
+        for bookid, read_status, read_date in zip(
+            books_to_add, read_statuses, dates
+        ):
+            completed_dt = pytz.utc.localize(
+                datetime.strptime(read_date, '%Y-%m-%d'))
+            user_books.append(
+                UserBook(
+                    user=request.user,
+                    book=Book.objects.get(bookid=bookid),
+                    status=read_status,
+                    completed=completed_dt
+                )
+            )
+        UserBook.objects.bulk_create(user_books)
+        messages.success(request, f"{len(user_books)} books inserted")
+        return redirect('user_page', username=request.user.username)
+
+    context = {
+        "import_form": import_form,
+        "imported_books": imported_books,
+        "to_add": BookImportStatus.TO_BE_ADDED,
+        "all_read_statuses": GOOGLE_TO_GOODREADS_READ_STATUSES.items(),
+    }
     return render(request, 'import_books.html', context)

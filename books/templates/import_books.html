@@ -4,15 +4,107 @@
 
 {% block title %}Import books from other services{% endblock %}
 
+{% block search_books %}{% endblock %}
+
 {% block content %}
 
   <div class="mui-container-fluid">
-    <form class="mui-form" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="mui-btn--primary mui-btn"
-        name="import_books_submit">Import books</button>
-    </form>
+
+    {% if imported_books %}
+      <h2>Please confirm which books you want to import:
+        <small><p class="right"><a href="{% url 'books:import_books' %}">Upload a new file</a></p></small>
+      </h2>
+
+      <br><div class="mui-divider"></div><br>
+
+      <form class="mui-form" method="post">
+        {% csrf_token %}
+        <table class="mui-table">
+          <thead>
+            <tr>
+              <th>Import status</th>
+              <th colspan="2">Book</th>
+              <th>Reading status</th>
+              <th>Date completed</th>
+              <th>Add</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for imported_book in imported_books %}
+              <tr>
+                <td>
+                  {{ imported_book.book_status.name }}
+                </td>
+                <td>
+                  <img width="50" src="http://books.google.com/books?id={{ imported_book.book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ imported_book.title }}">
+                </td>
+                <td><a href="{{imported_book.book.url}}" target="_blank">
+                    {{ imported_book.title }}</a></td>
+                <td>
+                  {% if imported_book.book_status == to_add %}
+                    <div class="mui-select">
+                      <select name="read_statuses">
+                        {% for status_char, readable_status in all_read_statuses %}
+                          <option value="{{ status_char }}"
+                            {% if imported_book.reading_status == readable_status %}
+                              selected
+                            {% endif %}>
+                            {{ readable_status }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% else %}
+                    {{ imported_book.reading_status }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if imported_book.book_status == to_add %}
+                    <div class="mui-select">
+                      <input type="date" name="dates"
+                          value="{{ imported_book.date_completed|date:"Y-m-d" }}">
+                    </div>
+                  {% else %}
+                    {{ imported_book.date_completed|date:"Y-m-d" }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if imported_book.book_status == to_add %}
+                    <div class="mui-checkbox">
+                      <img class="deleteRow" src="{% static 'img/close.png' %}" alt="x icon">
+                    </div>
+                    <input type="hidden" name="books_to_add"
+                      value="{{ imported_book.book.bookid }}">
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <button type="submit" class="mui-btn--primary mui-btn"
+          name="save_import_submit">Import books</button>
+        <br><br>
+      </form>
+
+    {% else %}
+
+      <h2>
+        Import your goodreads books export csv [<small><a href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590" target="_blank">info</a></small>]
+      </h2>
+      <form class="mui-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mui-textfield">
+          {{ import_form.file.errors }}
+          {{ import_form.file }}
+        </div>
+        <button type="submit" class="mui-btn--primary mui-btn"
+          name="import_books_submit">Match books</button>
+        <br><div class="mui-divider"></div><br>
+        <p>You will get the opportunity to mark the ones you want to import ...</p>
+      </form>
+
+    {% endif %}
+
   </div>
 
 {% endblock %}
