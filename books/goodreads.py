@@ -10,8 +10,8 @@ from .googlebooks import get_book_info, search_books
 from .models import UserBook, BookConversion
 
 GOOGLE_TO_GOODREADS_READ_STATUSES = {
-    "r": "read",
-    "c": "currently-reading",
+    "c": "read",
+    "r": "currently-reading",
     "t": "to-read",
 }
 ImportedBook = namedtuple('ImportedBook',
@@ -49,8 +49,9 @@ def _process_row(row, request):
 
     if created:
         # only query API for new book mappings
+        term = f"{title} {author}"
         google_book_response = search_books(
-            f"{title} {author}", request)
+            term, request)
         try:
             bookid = google_book_response["items"][0]["id"]
             book_mapping.googlebooks_id = bookid
