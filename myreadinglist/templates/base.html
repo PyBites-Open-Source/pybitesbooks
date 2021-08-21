@@ -49,7 +49,7 @@
                 <li><a href="{% url 'goal:set_goal' %}">Reading Goal</a></li>
                 <li><a href="{% url 'pomodoro:track_pomodoro' %}">5-Hour Challenge</a></li>
                 <li><a href="https://pybit.es/community" target="_blank">PyBites #books channel</a></li>
-                <li><a href="{% url 'books:import_books' %}">Import goodreads books</a></li>
+                <li><a href="{% url 'books:import_books' %}">Import Books</a></li>
 
                 {% if user.is_superuser %}
                   <li><a href="{% url 'admin:index' %}">Admin</a></li>
