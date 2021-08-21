@@ -4,6 +4,7 @@ from datetime import datetime
 import csv
 from enum import Enum
 from io import StringIO
+from time import sleep
 
 from .decorators import timeit
 from .googlebooks import get_book_info, search_books
@@ -36,7 +37,7 @@ class BookImportStatus(Enum):
     COULD_NOT_FIND = 3
 
 
-def _process_row(row, request):
+def _process_row(row, request, sleep_seconds):
     title = row["Title"]
     author = row["Author"]
     reading_status = row["Exclusive Shelf"]
@@ -53,6 +54,7 @@ def _process_row(row, request):
     if not book_mapping.googlebooks_id:
         # only query API for new book mappings
         term = f"{title} {author}"
+        sleep(sleep_seconds)
         google_book_response = search_books(
             term, request)
         try:
@@ -64,6 +66,7 @@ def _process_row(row, request):
 
     if book_mapping.googlebooks_id:
         try:
+            sleep(sleep_seconds)
             book = get_book_info(book_mapping.googlebooks_id)
         except KeyError:
             book = None
@@ -83,11 +86,11 @@ def _process_row(row, request):
 
 
 @timeit
-def convert_goodreads_to_google_books(csv_upload, request):
+def convert_goodreads_to_google_books(csv_upload, request, sleep_seconds=0):
     file = csv_upload.read().decode('utf-8')
     reader = csv.DictReader(StringIO(file), delimiter=',')
     # imported_books = list(process_rows_concurrently(reader, request))
     imported_books = []
     for row in reader:
-        imported_books.append(_process_row(row, request))
+        imported_books.append(_process_row(row, request, sleep_seconds))
     return imported_books
