@@ -39,4 +39,4 @@ def retrieve_google_books(file_content, username):
     email = User.objects.get(username=username).email
     send_email(email, SUBJECT, msg)
 
-    return f"{num_converted} books converted!"
+    return f"{num_converted} books processed!"
