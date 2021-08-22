@@ -15,7 +15,7 @@ We converted {num_converted} books for you. Please check out the preview selecti
 Cheers,
 The PyBites Team
 """  # noqa E501
-PREVIEW_PAGE = settings.DOMAIN + "/books/import_books/preview"
+PREVIEW_PAGE = f"{settings.DOMAIN}/books/import_books/preview"
 
 
 @shared_task
@@ -23,7 +23,7 @@ def retrieve_google_books(file_content, username):
     """Convert goodreads to google books, sleeping
        one second in between requests to not hit Google
        API rate limits. Sent user email when done
-       """
+    """
     books = convert_goodreads_to_google_books(
         file_content, username, sleep_seconds=1)
 
