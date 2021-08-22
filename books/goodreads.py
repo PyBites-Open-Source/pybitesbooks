@@ -6,7 +6,6 @@ from io import StringIO
 from django.contrib.auth.models import User
 import pytz
 
-from .decorators import timeit
 from .googlebooks import get_book_info, search_books
 from .models import UserBook, BookConversion, ImportedBook
 
@@ -88,7 +87,6 @@ def _cache_book_for_row(row, username, sleep_seconds):
     return imported_book
 
 
-@timeit
 def convert_goodreads_to_google_books(
     file_content, username, sleep_seconds=0
 ):

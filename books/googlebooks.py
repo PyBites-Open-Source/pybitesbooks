@@ -3,7 +3,6 @@ from time import sleep
 from urllib import parse
 
 from .models import Book, Search
-from .decorators import timeit
 
 BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
 SEARCH_URL = BASE_URL + '?q={}'
@@ -12,7 +11,6 @@ NOT_FOUND = 'Not found'
 DEFAULT_LANGUAGE = "en"
 
 
-@timeit
 def get_book_info(book_id, sleep_seconds=0):
     ''' cache book info in db '''
     book = Book.objects.filter(bookid=book_id)
@@ -61,7 +59,6 @@ def get_book_info(book_id, sleep_seconds=0):
         return book
 
 
-@timeit
 def search_books(term, request=None, sleep_seconds=0):
     ''' autocomplete = keep this one api live / no cache '''
     search = Search(term=term)
