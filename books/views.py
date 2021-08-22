@@ -261,7 +261,7 @@ def import_books(request):
     is_preview = request.path.endswith("preview")
     if is_preview:
         imported_books = ImportedBook.objects.filter(
-            user=request.user)
+            user=request.user).order_by('title')
         num_add_books = imported_books.filter(
             book_status=TO_ADD).count()
         if num_add_books == 0:
