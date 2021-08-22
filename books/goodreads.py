@@ -6,7 +6,7 @@ from io import StringIO
 from django.contrib.auth.models import User
 import pytz
 
-from .googlebooks import get_book_info, search_books
+from .googlebooks import get_book_info, search_books, DEFAULT_LANGUAGE
 from .models import UserBook, BookConversion, ImportedBook
 
 GOOGLE_TO_GOODREADS_READ_STATUSES = {
@@ -53,7 +53,10 @@ def _cache_book_for_row(row, username, sleep_seconds):
         # only query API for new book mappings
         term = f"{title} {author}"
         google_book_response = search_books(
-            term, sleep_seconds=sleep_seconds)
+            term,
+            sleep_seconds=sleep_seconds,
+            lang=DEFAULT_LANGUAGE
+        )
         try:
             bookid = google_book_response["items"][0]["id"]
             book_mapping.googlebooks_id = bookid

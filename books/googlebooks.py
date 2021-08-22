@@ -59,7 +59,7 @@ def get_book_info(book_id, sleep_seconds=0):
         return book
 
 
-def search_books(term, request=None, sleep_seconds=0):
+def search_books(term, request=None, sleep_seconds=0, lang=None):
     ''' autocomplete = keep this one api live / no cache '''
     search = Search(term=term)
     if request and request.user.is_authenticated:
@@ -67,6 +67,10 @@ def search_books(term, request=None, sleep_seconds=0):
     search.save()
 
     query = SEARCH_URL.format(term)
+
+    if lang is not None:
+        query += f"&langRestrict={lang}"
+
     if sleep_seconds > 0:
         sleep(sleep_seconds)
     return requests.get(query).json()
