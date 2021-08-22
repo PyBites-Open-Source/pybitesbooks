@@ -9,14 +9,11 @@ SUBJECT = "[PyBites Books] Your goodreads import has been processed"
 MESSAGE_TEMPLATE = """
 Hey {username},
 
-Your import of goodreads book is done, we converted {num_converted} books.
-
-Please check out the preview selecting the books you want to import:
-
+We converted {num_converted} books for you. Please check out the preview selecting the books you want to import:
 {url}
 
 Cheers,
-The PyBites Books Team
+The PyBites Team
 """  # noqa E501
 PREVIEW_PAGE = settings.DOMAIN + "/books/import_books/preview"
 
