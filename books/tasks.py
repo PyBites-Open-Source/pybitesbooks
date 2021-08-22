@@ -36,7 +36,7 @@ def retrieve_google_books(file_content, username):
         num_converted=num_converted,
         url=PREVIEW_PAGE
     )
-    email = User.objects.get(username).email
+    email = User.objects.get(username=username).email
     send_email(email, SUBJECT, msg)
 
     return f"{num_converted} books converted!"
