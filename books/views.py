@@ -12,12 +12,12 @@ from django.http import JsonResponse
 import pytz
 
 from .goodreads import (BookImportStatus,
-                        convert_goodreads_to_google_books,
                         GOOGLE_TO_GOODREADS_READ_STATUSES)
 from .googlebooks import get_book_info
 from .forms import UserBookForm, ImportBooksForm
 from .models import (Book, UserBook, BookNote, ImportedBook,
                      READING, COMPLETED, TO_READ)
+from .tasks import retrieve_google_books
 from goal.models import Goal
 from lists.models import UserList
 
@@ -299,10 +299,19 @@ def import_books(request):
             import_form = ImportBooksForm(post, files)
             if import_form.is_valid():
                 try:
-                    imported_books = (
-                        convert_goodreads_to_google_books(
-                            files['file'], request)
+                    file_content = (
+                        files['file'].read().decode('utf-8')
                     )
+                    username = request.user.username
+                    imported_books = (
+                        retrieve_google_books.delay(
+                            file_content, username
+                        )
+                    )
+                    msg = ("Converting books, you'll be "
+                           "notified when done.")
+                    messages.success(request, msg)
+                    return redirect('books:import_books')
                 except KeyError as exc:
                     error = f"Cannot import csv file: {exc}"
                     messages.error(request, error)

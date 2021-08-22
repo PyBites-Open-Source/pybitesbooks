@@ -58,13 +58,11 @@ def get_book_info(book_id):
 
 
 @timeit
-def search_books(term, request):
+def search_books(term, request=None):
     ''' autocomplete = keep this one api live / no cache '''
     search = Search(term=term)
-
-    if request.user.is_authenticated:
+    if request and request.user.is_authenticated:
         search.user = request.user
-
     search.save()
 
     query = SEARCH_URL.format(term)

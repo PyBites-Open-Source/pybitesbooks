@@ -5,6 +5,7 @@ from enum import Enum
 from io import StringIO
 from time import sleep
 
+from django.contrib.auth.models import User
 import pytz
 
 from .decorators import timeit
@@ -41,8 +42,8 @@ class BookImportStatus(Enum):
     COULD_NOT_FIND = 3
 
 
-def _cache_book_for_row(row, request, sleep_seconds):
-    user = request.user
+def _cache_book_for_row(row, username, sleep_seconds):
+    user = User.objects.get(username=username)
     title = row["Title"]
 
     # if import title is cached return it (this is done in
@@ -52,7 +53,6 @@ def _cache_book_for_row(row, request, sleep_seconds):
         imported_book = ImportedBook.objects.get(
             title=title,
             user=user)
-        print(f"retrieving cached {title}")
         return imported_book
     except ImportedBook.DoesNotExist:
         pass
@@ -73,8 +73,7 @@ def _cache_book_for_row(row, request, sleep_seconds):
         # only query API for new book mappings
         term = f"{title} {author}"
         sleep(sleep_seconds)
-        google_book_response = search_books(
-            term, request)
+        google_book_response = search_books(term)
         try:
             bookid = google_book_response["items"][0]["id"]
             book_mapping.googlebooks_id = bookid
@@ -110,14 +109,15 @@ def _cache_book_for_row(row, request, sleep_seconds):
 
 @timeit
 def convert_goodreads_to_google_books(
-    csv_upload, request, sleep_seconds=0
+    file_content, username, sleep_seconds=0
 ):
-    file = csv_upload.read().decode('utf-8')
-    reader = csv.DictReader(StringIO(file), delimiter=',')
+    # remove read().decode('utf-8') as it's not serializable
+    reader = csv.DictReader(
+        StringIO(file_content), delimiter=',')
 
     imported_books = []
     for row in reader:
-        book = _cache_book_for_row(row, request, sleep_seconds)
+        book = _cache_book_for_row(row, username, sleep_seconds)
         imported_books.append(book)
 
     return imported_books
