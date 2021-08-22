@@ -330,8 +330,9 @@ def import_books(request):
             retrieve_google_books.delay(
                 file_content, username)
 
-            msg = ("Converting books, you'll get "
-                   "an email when done.")
+            msg = ("Thanks, we're processing your goodreads csv file. "
+                   "We'll notify you by email when you can select "
+                   "books for import into your PyBites Books account.")
             messages.success(request, msg)
             return redirect('books:import_books')
 
