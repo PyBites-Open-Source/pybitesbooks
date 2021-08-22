@@ -253,16 +253,23 @@ def user_favorite(request):
 
 @login_required
 def import_books(request):
-    is_preview = request.path.endswith("preview")
     post = request.POST
     files = request.FILES
+    import_form = ImportBooksForm()
     imported_books = []
 
-    import_form = ImportBooksForm()
-    previously_imported_books = ImportedBook.objects.filter(
-        user=request.user)
+    is_preview = request.path.endswith("preview")
+    if is_preview:
+        imported_books = ImportedBook.objects.filter(
+            user=request.user)
+        num_add_books = imported_books.filter(
+            book_status=TO_ADD).count()
+        if num_add_books == 0:
+            error = "No new books to be imported"
+            messages.error(request, error)
+            return redirect('books:import_books')
 
-    if "save_import_submit" in post:
+    elif "save_import_submit" in post:
         books_to_add = post.getlist("books_to_add")
         read_statuses = post.getlist("read_statuses")
         dates = post.getlist("dates")
@@ -286,50 +293,36 @@ def import_books(request):
         UserBook.objects.bulk_create(user_books)
 
         # delete the cached items
-        previously_imported_books.delete()
+        ImportedBook.objects.filter(user=request.user).delete()
 
         messages.success(request, f"{len(user_books)} books inserted")
         return redirect('user_page', username=request.user.username)
 
-    elif "import_books_submit" in post or is_preview:
+    elif "import_books_submit" in post:
+        import_form = ImportBooksForm(post, files)
+        if import_form.is_valid():
+            try:
+                file_content = (
+                    files['file'].read().decode('utf-8')
+                )
+                username = request.user.username
 
-        if is_preview:
-            imported_books = previously_imported_books
-        else:
-            import_form = ImportBooksForm(post, files)
-            if import_form.is_valid():
-                try:
-                    file_content = (
-                        files['file'].read().decode('utf-8')
-                    )
-                    username = request.user.username
-                    imported_books = (
-                        retrieve_google_books.delay(
-                            file_content, username
-                        )
-                    )
-                    msg = ("Converting books, you'll be "
-                           "notified when done.")
-                    messages.success(request, msg)
-                    return redirect('books:import_books')
-                except KeyError as exc:
-                    error = f"Cannot import csv file: {exc}"
-                    messages.error(request, error)
-                    return redirect('books:import_books')
+                retrieve_google_books.delay(
+                    file_content, username)
 
-        num_add_books = len(
-            [book for book in imported_books
-             if book.book_status == TO_ADD]
-        )
-        if num_add_books == 0:
-            error = "No new books to be imported"
-            messages.error(request, error)
-            return redirect('books:import_books')
+                msg = ("Converting books, you'll get "
+                       "an email when done.")
+                messages.success(request, msg)
+                return redirect('books:import_books')
+
+            except KeyError as exc:
+                error = f"Cannot import csv file: {exc}"
+                messages.error(request, error)
+                return redirect('books:import_books')
 
     context = {
         "import_form": import_form,
         "imported_books": imported_books,
-        "previously_imported_books": previously_imported_books,
         "not_found": NOT_FOUND,
         "to_add": TO_ADD,
         "all_read_statuses": GOOGLE_TO_GOODREADS_READ_STATUSES.items(),
