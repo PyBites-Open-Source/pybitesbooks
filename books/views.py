@@ -270,23 +270,13 @@ def _is_valid_csv(file_content,
 
 @login_required
 def import_books(request):
+    is_preview = request.path.endswith("preview")
     post = request.POST
     files = request.FILES
     import_form = ImportBooksForm()
     imported_books = []
 
-    is_preview = request.path.endswith("preview")
-    if is_preview:
-        imported_books = ImportedBook.objects.filter(
-            user=request.user).order_by('title')
-        num_add_books = imported_books.filter(
-            book_status=TO_ADD).count()
-        if num_add_books == 0:
-            error = "No new books to be imported"
-            messages.error(request, error)
-            return redirect('books:import_books')
-
-    elif "save_import_submit" in post:
+    if "save_import_submit" in post:
         books_to_add = post.getlist("books_to_add")
         read_statuses = post.getlist("read_statuses")
         dates = post.getlist("dates")
@@ -339,6 +329,16 @@ def import_books(request):
             msg = ("Converting books, you'll get "
                    "an email when done.")
             messages.success(request, msg)
+            return redirect('books:import_books')
+
+    elif is_preview:
+        imported_books = ImportedBook.objects.filter(
+            user=request.user).order_by('title')
+        num_add_books = imported_books.filter(
+            book_status=TO_ADD).count()
+        if num_add_books == 0:
+            error = "No new books to be imported"
+            messages.error(request, error)
             return redirect('books:import_books')
 
     context = {
