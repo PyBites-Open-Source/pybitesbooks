@@ -1,4 +1,3 @@
-import concurrent.futures
 from datetime import datetime
 import csv
 from enum import Enum
@@ -16,23 +15,6 @@ GOOGLE_TO_GOODREADS_READ_STATUSES = {
     "r": "currently-reading",
     "t": "to-read",
 }
-
-
-def process_rows_concurrently(rows, request):
-    """Nice but causes too many queries :(
-       https://developers.google.com/analytics/devguides/config/mgmt/v3/limits-quotas
-    """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_row = {
-            executor.submit(
-                _cache_book_for_row, row, request
-            ): row
-            for row in rows
-        }
-        for future in concurrent.futures.as_completed(
-            future_to_row
-        ):
-            yield future.result()
 
 
 class BookImportStatus(Enum):
