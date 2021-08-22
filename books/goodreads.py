@@ -1,4 +1,3 @@
-from collections import namedtuple
 import concurrent.futures
 from datetime import datetime
 import csv
@@ -6,18 +5,17 @@ from enum import Enum
 from io import StringIO
 from time import sleep
 
+import pytz
+
 from .decorators import timeit
 from .googlebooks import get_book_info, search_books
-from .models import UserBook, BookConversion
+from .models import UserBook, BookConversion, ImportedBook
 
 GOOGLE_TO_GOODREADS_READ_STATUSES = {
     "c": "read",
     "r": "currently-reading",
     "t": "to-read",
 }
-ImportedBook = namedtuple('ImportedBook',
-                          ('title book reading_status '
-                           'date_completed book_status'))
 
 
 def process_rows_concurrently(rows, request):
@@ -25,9 +23,15 @@ def process_rows_concurrently(rows, request):
        https://developers.google.com/analytics/devguides/config/mgmt/v3/limits-quotas
     """
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_row = {executor.submit(_process_row, row, request): row
-                         for row in rows}
-        for future in concurrent.futures.as_completed(future_to_row):
+        future_to_row = {
+            executor.submit(
+                _cache_book_for_row, row, request
+            ): row
+            for row in rows
+        }
+        for future in concurrent.futures.as_completed(
+            future_to_row
+        ):
             yield future.result()
 
 
@@ -37,8 +41,22 @@ class BookImportStatus(Enum):
     COULD_NOT_FIND = 3
 
 
-def _process_row(row, request, sleep_seconds):
+def _cache_book_for_row(row, request, sleep_seconds):
+    user = request.user
     title = row["Title"]
+
+    # if import title is cached return it (this is done in
+    # the view but this instance is useful if user uploads
+    # a new csv file with only a few new titles)
+    try:
+        imported_book = ImportedBook.objects.get(
+            title=title,
+            user=user)
+        print(f"retrieving cached {title}")
+        return imported_book
+    except ImportedBook.DoesNotExist:
+        pass
+
     author = row["Author"]
     reading_status = row["Exclusive Shelf"]
     date_completed = datetime.strptime(
@@ -62,7 +80,7 @@ def _process_row(row, request, sleep_seconds):
             book_mapping.googlebooks_id = bookid
             book_mapping.save()
         except KeyError:
-            print("cannot get google books id", google_book_response)
+            print("cannot get G book:", google_book_response)
 
     if book_mapping.googlebooks_id:
         try:
@@ -74,23 +92,32 @@ def _process_row(row, request, sleep_seconds):
         book_status = BookImportStatus.COULD_NOT_FIND
 
     if book is not None:
-        user_books = UserBook.objects.filter(user=request.user, book=book)
+        user_books = UserBook.objects.filter(
+            user=user, book=book)
         if user_books.count() > 0:
             book_status = BookImportStatus.ALREADY_ADDED
 
-    return ImportedBook(title=title,
-                        book=book,
-                        reading_status=reading_status,
-                        date_completed=date_completed,
-                        book_status=book_status)
+    imported_book = ImportedBook.objects.create(
+        title=title,
+        book=book,
+        reading_status=reading_status,
+        date_completed=pytz.utc.localize(date_completed),
+        book_status=book_status.name,
+        user=user)
+
+    return imported_book
 
 
 @timeit
-def convert_goodreads_to_google_books(csv_upload, request, sleep_seconds=0):
+def convert_goodreads_to_google_books(
+    csv_upload, request, sleep_seconds=0
+):
     file = csv_upload.read().decode('utf-8')
     reader = csv.DictReader(StringIO(file), delimiter=',')
-    # imported_books = list(process_rows_concurrently(reader, request))
+
     imported_books = []
     for row in reader:
-        imported_books.append(_process_row(row, request, sleep_seconds))
+        book = _cache_book_for_row(row, request, sleep_seconds)
+        imported_books.append(book)
+
     return imported_books

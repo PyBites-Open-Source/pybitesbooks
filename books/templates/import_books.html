@@ -33,7 +33,7 @@
             {% for imported_book in imported_books %}
               <tr>
                 <td>
-                  {{ imported_book.book_status.name }}
+                  {{ imported_book.book_status }}
                 </td>
                 {% if imported_book.book_status == not_found %}
                   <td colspan="2"><i>{{ imported_book.title }}</i></td>
@@ -97,6 +97,12 @@
       <h2>
         Import your goodreads books export csv [<small><a href="https://help.goodreads.com/s/article/How-do-I-import-or-export-my-books-1553870934590" target="_blank">info</a></small>]
       </h2>
+
+      {% if previously_imported_books %}
+        <p style="color: green;">You already uploaded a csv file,
+          check it out <a href="{% url "books:import_books" %}/preview">here</a></p>
+      {% endif %}
+
       <form class="mui-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mui-textfield">

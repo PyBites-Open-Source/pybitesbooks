@@ -16,12 +16,14 @@ from .goodreads import (BookImportStatus,
                         GOOGLE_TO_GOODREADS_READ_STATUSES)
 from .googlebooks import get_book_info
 from .forms import UserBookForm, ImportBooksForm
-from .models import (Book, UserBook, BookNote,
+from .models import (Book, UserBook, BookNote, ImportedBook,
                      READING, COMPLETED, TO_READ)
 from goal.models import Goal
 from lists.models import UserList
 
 MIN_NUM_BOOKS_SHOW_SEARCH = 20
+TO_ADD = BookImportStatus.TO_BE_ADDED.name
+NOT_FOUND = BookImportStatus.COULD_NOT_FIND.name
 UserStats = namedtuple('UserStats', ["num_books_added",
                                      "num_books_done",
                                      "num_pages_read"])
@@ -251,33 +253,16 @@ def user_favorite(request):
 
 @login_required
 def import_books(request):
+    is_preview = request.path.endswith("preview")
     post = request.POST
     files = request.FILES
     imported_books = []
 
     import_form = ImportBooksForm()
+    previously_imported_books = ImportedBook.objects.filter(
+        user=request.user)
 
-    if "import_books_submit" in post:
-        import_form = ImportBooksForm(post, files)
-        if import_form.is_valid():
-            try:
-                imported_books = convert_goodreads_to_google_books(
-                    files['file'], request)
-            except KeyError as exc:
-                error = f"Cannot import csv file: {exc}"
-                messages.error(request, error)
-                return redirect('books:import_books')
-
-        num_add_books = len(
-            [book for book in imported_books
-             if book.book_status == BookImportStatus.TO_BE_ADDED]
-        )
-        if num_add_books == 0:
-            error = "No new books to be imported"
-            messages.error(request, error)
-            return redirect('books:import_books')
-
-    elif "save_import_submit" in post:
+    if "save_import_submit" in post:
         books_to_add = post.getlist("books_to_add")
         read_statuses = post.getlist("read_statuses")
         dates = post.getlist("dates")
@@ -299,14 +284,45 @@ def import_books(request):
                 )
             )
         UserBook.objects.bulk_create(user_books)
+
+        # delete the cached items
+        previously_imported_books.delete()
+
         messages.success(request, f"{len(user_books)} books inserted")
         return redirect('user_page', username=request.user.username)
+
+    elif "import_books_submit" in post or is_preview:
+
+        if is_preview:
+            imported_books = previously_imported_books
+        else:
+            import_form = ImportBooksForm(post, files)
+            if import_form.is_valid():
+                try:
+                    imported_books = (
+                        convert_goodreads_to_google_books(
+                            files['file'], request)
+                    )
+                except KeyError as exc:
+                    error = f"Cannot import csv file: {exc}"
+                    messages.error(request, error)
+                    return redirect('books:import_books')
+
+        num_add_books = len(
+            [book for book in imported_books
+             if book.book_status == TO_ADD]
+        )
+        if num_add_books == 0:
+            error = "No new books to be imported"
+            messages.error(request, error)
+            return redirect('books:import_books')
 
     context = {
         "import_form": import_form,
         "imported_books": imported_books,
-        "not_found": BookImportStatus.COULD_NOT_FIND,
-        "to_add": BookImportStatus.TO_BE_ADDED,
+        "previously_imported_books": previously_imported_books,
+        "not_found": NOT_FOUND,
+        "to_add": TO_ADD,
         "all_read_statuses": GOOGLE_TO_GOODREADS_READ_STATUSES.items(),
     }
     return render(request, 'import_books.html', context)
