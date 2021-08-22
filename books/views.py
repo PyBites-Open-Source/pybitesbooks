@@ -262,10 +262,7 @@ def _is_valid_csv(file_content,
     reader = csv.DictReader(
         StringIO(file_content), delimiter=',')
     header = next(reader)
-    for field in required_fields:
-        if field not in header:
-            return False
-    return True
+    return all(field in header for field in required_fields)
 
 
 @login_required
