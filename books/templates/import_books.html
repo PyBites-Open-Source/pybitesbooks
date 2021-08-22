@@ -6,6 +6,23 @@
 
 {% block search_books %}{% endblock %}
 
+{% block css %}
+  <style>
+    #search {
+      background: #f2f2f2;
+      border: 1px solid #ddd;
+      width: 100%;
+    }
+    .qVal {
+      width: 90%;
+      margin: 10px;
+    }
+    .hide {
+      display: none;
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
 
   <div class="mui-container-fluid">
@@ -19,6 +36,16 @@
 
       <form class="mui-form" method="post">
         {% csrf_token %}
+
+        <button type="submit" class="mui-btn--primary mui-btn"
+          name="save_import_submit">Import books</button>
+        <br><br>
+
+        <div id="search">
+          <input id="filter" name="filter"
+            class="defaultText qVal" title="Filter books ... " />
+        </div>
+
         <table class="mui-table">
           <thead>
             <tr>
@@ -29,9 +56,13 @@
               <th>Add</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="booksWrapper">
             {% for imported_book in imported_books %}
-              <tr>
+              <tr class="book">
+                  <td class="hide">
+                    {{ imported_book.book_status }}
+                    {{imported_book.title}}
+                  </td>
                 <td>
                   {{ imported_book.book_status }}
                 </td>
@@ -114,4 +145,8 @@
 
   </div>
 
+  {% block js %}
+    <script src="{% static 'js/blazy.min.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+  {% endblock %}
 {% endblock %}
