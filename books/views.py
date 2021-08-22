@@ -273,7 +273,14 @@ def import_books(request):
     import_form = ImportBooksForm()
     imported_books = []
 
-    if "save_import_submit" in post:
+    if "delete_import" in post:
+        num_deleted, _ = ImportedBook.objects.filter(
+            user=request.user).delete()
+        msg = f"Deleted import ({num_deleted} books)"
+        messages.success(request, msg)
+        return redirect('books:import_books')
+
+    elif "save_import_submit" in post:
         books_to_add = post.getlist("books_to_add")
         read_statuses = post.getlist("read_statuses")
         dates = post.getlist("dates")
