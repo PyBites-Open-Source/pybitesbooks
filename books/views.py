@@ -1,5 +1,7 @@
+import csv
 from collections import OrderedDict, namedtuple
 from datetime import date, datetime
+from io import StringIO
 
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -24,6 +26,10 @@ from lists.models import UserList
 MIN_NUM_BOOKS_SHOW_SEARCH = 20
 TO_ADD = BookImportStatus.TO_BE_ADDED.name
 NOT_FOUND = BookImportStatus.COULD_NOT_FIND.name
+REQUIRED_GOODREADS_FIELDS = (
+    "Title", "Author", "Exclusive Shelf",
+    "Date Read", "Date Added", "Book Id"
+)
 UserStats = namedtuple('UserStats', ["num_books_added",
                                      "num_books_done",
                                      "num_pages_read"])
@@ -251,6 +257,17 @@ def user_favorite(request):
     return JsonResponse({"status": "success"})
 
 
+def _is_valid_csv(file_content,
+                  required_fields=REQUIRED_GOODREADS_FIELDS):
+    reader = csv.DictReader(
+        StringIO(file_content), delimiter=',')
+    header = next(reader)
+    for field in required_fields:
+        if field not in header:
+            return False
+    return True
+
+
 @login_required
 def import_books(request):
     post = request.POST
@@ -301,24 +318,28 @@ def import_books(request):
     elif "import_books_submit" in post:
         import_form = ImportBooksForm(post, files)
         if import_form.is_valid():
-            try:
-                file_content = (
-                    files['file'].read().decode('utf-8')
+            file_content = (
+                files['file'].read().decode('utf-8')
+            )
+            if not _is_valid_csv(file_content):
+                error = (
+                    "Sorry, the provided csv file does "
+                    "not match the goodreads format ("
+                    "required fields: "
+                    f"{', '.join(REQUIRED_GOODREADS_FIELDS)})"
                 )
-                username = request.user.username
-
-                retrieve_google_books.delay(
-                    file_content, username)
-
-                msg = ("Converting books, you'll get "
-                       "an email when done.")
-                messages.success(request, msg)
-                return redirect('books:import_books')
-
-            except KeyError as exc:
-                error = f"Cannot import csv file: {exc}"
                 messages.error(request, error)
                 return redirect('books:import_books')
+
+            username = request.user.username
+
+            retrieve_google_books.delay(
+                file_content, username)
+
+            msg = ("Converting books, you'll get "
+                   "an email when done.")
+            messages.success(request, msg)
+            return redirect('books:import_books')
 
     context = {
         "import_form": import_form,
