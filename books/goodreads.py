@@ -3,7 +3,6 @@ from datetime import datetime
 import csv
 from enum import Enum
 from io import StringIO
-from time import sleep
 
 from django.contrib.auth.models import User
 import pytz
@@ -72,8 +71,8 @@ def _cache_book_for_row(row, username, sleep_seconds):
     if not book_mapping.googlebooks_id:
         # only query API for new book mappings
         term = f"{title} {author}"
-        sleep(sleep_seconds)
-        google_book_response = search_books(term)
+        google_book_response = search_books(
+            term, sleep_seconds=sleep_seconds)
         try:
             bookid = google_book_response["items"][0]["id"]
             book_mapping.googlebooks_id = bookid
@@ -83,8 +82,8 @@ def _cache_book_for_row(row, username, sleep_seconds):
 
     if book_mapping.googlebooks_id:
         try:
-            sleep(sleep_seconds)
-            book = get_book_info(book_mapping.googlebooks_id)
+            book = get_book_info(book_mapping.googlebooks_id,
+                                 sleep_seconds=sleep_seconds)
         except KeyError:
             book = None
     else:

@@ -1,4 +1,5 @@
 import requests
+from time import sleep
 from urllib import parse
 
 from .models import Book, Search
@@ -12,13 +13,16 @@ DEFAULT_LANGUAGE = "en"
 
 
 @timeit
-def get_book_info(book_id):
+def get_book_info(book_id, sleep_seconds=0):
     ''' cache book info in db '''
     book = Book.objects.filter(bookid=book_id)
     if book:
         return book[0]
 
     else:
+        if sleep_seconds > 0:
+            sleep(sleep_seconds)
+
         query = BOOK_URL.format(book_id)
         resp = requests.get(query).json()
 
@@ -58,7 +62,7 @@ def get_book_info(book_id):
 
 
 @timeit
-def search_books(term, request=None):
+def search_books(term, request=None, sleep_seconds=0):
     ''' autocomplete = keep this one api live / no cache '''
     search = Search(term=term)
     if request and request.user.is_authenticated:
@@ -66,6 +70,8 @@ def search_books(term, request=None):
     search.save()
 
     query = SEARCH_URL.format(term)
+    if sleep_seconds > 0:
+        sleep(sleep_seconds)
     return requests.get(query).json()
 
 
