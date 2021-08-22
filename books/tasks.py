@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from books.goodreads import convert_goodreads_to_google_books
 from myreadinglist.mail import send_email
 
-SUBJECT = "Your goodreads import has been processed"
+SUBJECT = "[PyBites Books] Your goodreads import has been processed"
 MESSAGE_TEMPLATE = """
 Hey {username},
 
