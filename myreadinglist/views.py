@@ -55,14 +55,10 @@ def query_books(request):
 
 
 def index(request):
-    last_searches = Book.objects.order_by('-inserted').all()[:100]
-
-    user_books = UserBook.objects.select_related('user').filter(
-        status=COMPLETED)
-    top_users = user_books.values('user__username').annotate(
-        count=Count('book'))
-    top_users = top_users.values(
-        'user__username', 'count').order_by('-count')
-
-    return render(request, 'index.html', {'last_searches': last_searches,
-                                          'top_users': top_users})
+    user_books = UserBook.objects.select_related(
+        'book', 'user'
+    ).filter(
+        status=COMPLETED
+    ).order_by("-inserted")[:100]
+    context = {"user_books": user_books}
+    return render(request, 'index.html', context)
