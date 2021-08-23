@@ -14,7 +14,7 @@ NOTE = 'n'
 
 class Book(models.Model):
     bookid = models.CharField(max_length=20)  # google bookid
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=300)
     authors = models.CharField(max_length=200)
     publisher = models.CharField(max_length=100)
     published = models.CharField(max_length=30)
@@ -130,7 +130,7 @@ class BookConversion(models.Model):
 
 class ImportedBook(models.Model):
     """Cache table for preview goodreads import data"""
-    title = models.CharField(max_length=200)
+    title = models.TextField()
     book = models.ForeignKey(Book, on_delete=models.CASCADE,
                              null=True, blank=True)
     reading_status = models.CharField(max_length=20)
