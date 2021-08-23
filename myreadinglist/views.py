@@ -6,7 +6,7 @@ from django.shortcuts import render
 from books.googlebooks import search_books
 from books.models import Book, UserBook, COMPLETED
 
-DEFAULT_THUMB = f'{settings.DOMAIN}static/img/book-badge.png'
+DEFAULT_THUMB = f'{settings.DOMAIN}/static/img/book-badge.png'
 BOOK_ENTRY = ('<span class="searchResWrapper">'
               '<span class="searchRes" id="{id}">'
               '<img class="bookThumb" src="{thumb}">'
