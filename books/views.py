@@ -38,8 +38,12 @@ UserStats = namedtuple('UserStats', ["num_books_added",
 def book_page(request, bookid):
     post = request.POST
 
-    # get book info
-    book = get_book_info(bookid)
+    try:
+        book = get_book_info(bookid)
+    except KeyError:
+        messages.error(request, f'Could not retrieve book {bookid}')
+        return redirect('index')
+
     userbook = None
     if request.user.is_authenticated:
         try:
