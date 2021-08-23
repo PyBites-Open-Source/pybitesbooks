@@ -47,7 +47,7 @@ else:
         integrations=[DjangoIntegration()]
     )
 
-PROD_DOMAIN = "https://pybitesbooks.com/"
+PROD_DOMAIN = "https://pybitesbooks.com"
 DOMAIN = config('DOMAIN', default=PROD_DOMAIN)
 
 # Application definition
