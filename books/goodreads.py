@@ -73,7 +73,7 @@ def _cache_book_for_row(row, username, sleep_seconds):
         if book is None:
             sleep(sleep_seconds)
             try:
-                book =  get_book_info_from_api(book_mapping.googlebooks_id)
+                book = get_book_info_from_api(book_mapping.googlebooks_id)
             except KeyError:
                 book = None
     else:
