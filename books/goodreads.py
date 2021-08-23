@@ -2,11 +2,14 @@ from datetime import datetime
 import csv
 from enum import Enum
 from io import StringIO
+from time import sleep
 
 from django.contrib.auth.models import User
 import pytz
 
-from .googlebooks import get_book_info, search_books, DEFAULT_LANGUAGE
+from .googlebooks import (get_book_info_from_cache,
+                          get_book_info_from_api,
+                          search_books, DEFAULT_LANGUAGE)
 from .models import UserBook, BookConversion, ImportedBook
 
 GOOGLE_TO_GOODREADS_READ_STATUSES = {
@@ -52,9 +55,10 @@ def _cache_book_for_row(row, username, sleep_seconds):
     if not book_mapping.googlebooks_id:
         # only query API for new book mappings
         term = f"{title} {author}"
+        # make sure we don't hit Google Books API rate limits
+        sleep(sleep_seconds)
         google_book_response = search_books(
             term,
-            sleep_seconds=sleep_seconds,
             lang=DEFAULT_LANGUAGE
         )
         try:
@@ -65,11 +69,13 @@ def _cache_book_for_row(row, username, sleep_seconds):
             print("cannot get G book:", google_book_response)
 
     if book_mapping.googlebooks_id:
-        try:
-            book = get_book_info(book_mapping.googlebooks_id,
-                                 sleep_seconds=sleep_seconds)
-        except KeyError:
-            book = None
+        book = get_book_info_from_cache(book_mapping.googlebooks_id)
+        if book is None:
+            sleep(sleep_seconds)
+            try:
+                book =  get_book_info_from_api(book_mapping.googlebooks_id)
+            except KeyError:
+                book = None
     else:
         book_status = BookImportStatus.COULD_NOT_FIND
 
