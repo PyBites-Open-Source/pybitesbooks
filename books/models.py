@@ -17,8 +17,8 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     authors = models.CharField(max_length=200)
     publisher = models.CharField(max_length=100)
-    published = models.CharField(max_length=20)
-    isbn = models.CharField(max_length=15)
+    published = models.CharField(max_length=30)
+    isbn = models.CharField(max_length=30)
     pages = models.CharField(max_length=5)
     language = models.CharField(max_length=2)
     description = models.TextField()
@@ -45,7 +45,7 @@ class Book(models.Model):
 
 
 class Search(models.Model):
-    term = models.CharField(max_length=100)
+    term = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     inserted = models.DateTimeField(auto_now_add=True)
 
@@ -116,3 +116,26 @@ class Badge(models.Model):
 
     def __str__(self):
         return f'{self.books} -> {self.title}'
+
+
+class BookConversion(models.Model):
+    """Cache table to store goodreads -> Google Books mapping"""
+    goodreads_id = models.CharField(max_length=20)
+    googlebooks_id = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.goodreads_id} -> {self.googlebooks_id}'
+
+
+class ImportedBook(models.Model):
+    """Cache table for preview goodreads import data"""
+    title = models.CharField(max_length=200)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE,
+                             null=True, blank=True)
+    reading_status = models.CharField(max_length=20)
+    date_completed = models.DateTimeField()
+    book_status = models.CharField(max_length=20)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user} -> {self.title}'

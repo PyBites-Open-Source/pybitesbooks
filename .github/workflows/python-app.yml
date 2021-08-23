@@ -42,3 +42,4 @@ jobs:
         SENDGRID_API_KEY: 123
         FROM_EMAIL: pybites@example.com
         ADMIN_USERS: pybites
+        CELERY_BROKER_URL: amqp://guest:guest@localhost

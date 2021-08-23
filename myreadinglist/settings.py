@@ -183,3 +183,6 @@ LOGOUT_REDIRECT_URL = 'index'
 
 ACCOUNT_ACTIVATION_DAYS = 7
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# Celery settings
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')

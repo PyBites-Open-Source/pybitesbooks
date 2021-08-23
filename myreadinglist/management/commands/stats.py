@@ -79,7 +79,6 @@ class Command(BaseCommand):
             for uu in new_users
         )
 
-
         books_completed_per_user = defaultdict(list)
         for ub in books_read_last_week:
             books_completed_per_user[ub.user.username].append(ub.book)
