@@ -65,17 +65,23 @@ def _cache_book_for_row(row, username, sleep_seconds):
             bookid = google_book_response["items"][0]["id"]
             book_mapping.googlebooks_id = bookid
             book_mapping.save()
-        except KeyError:
-            print("cannot get G book:", google_book_response)
+        except Exception as exc:
+            print(f"Could not find google book for goodreads id {goodreads_id}")
+            print("Exception:", exc)
+            print("Google api response:", google_book_response)
 
     if book_mapping.googlebooks_id:
-        book = get_book_info_from_cache(book_mapping.googlebooks_id)
+        bookid = book_mapping.googlebooks_id
+        book = get_book_info_from_cache(bookid)
         if book is None:
             sleep(sleep_seconds)
             try:
-                book = get_book_info_from_api(book_mapping.googlebooks_id)
-            except KeyError:
+                book = get_book_info_from_api(bookid)
+            except Exception as exc:
+                print(f"Could not retrieve info for google book id {bookid}")
+                print("Exception:", exc)
                 book = None
+                book_status = BookImportStatus.COULD_NOT_FIND
     else:
         book_status = BookImportStatus.COULD_NOT_FIND
 
