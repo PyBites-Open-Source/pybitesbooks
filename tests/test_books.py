@@ -4,12 +4,10 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.mark.parametrize("bookid, title", [
-    ("nneBa6-mWfgC", "Coders at Work"),
     ("__CvAFrcWY0C", "Unlimited Power"),
-    ("3V_6DwAAQBAJ", "Power Vs. Force"),
     ("bK1ktwAACAAJ", "177 Mental Toughness Secrets of the World Class"),
 ])
-def test_homepage_shows_books(client, books, bookid, title):
+def test_homepage_shows_user_completed_books(client, user_books, bookid, title):
     response = client.get('/')
     expected = (f'<a href="/books/{bookid}"><img class="thumbNail" '
                 f'src="http://books.google.com/books?id={bookid}&'
