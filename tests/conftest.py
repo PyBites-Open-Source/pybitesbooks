@@ -10,8 +10,7 @@ from books.models import Book, UserBook
 def books(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         books = [
-            Book(pk=1,  # required for sqlite test DB
-                 bookid="nneBa6-mWfgC",
+            Book(bookid="nneBa6-mWfgC",
                  title="Coders at Work",
                  authors="Peter Seibel",
                  publisher="Apress",
@@ -21,8 +20,7 @@ def books(django_db_setup, django_db_blocker):
                  language="en",
                  description=("<p>Peter Seibel interviews 15 of the most "
                               "interesting computer programmers alive ...")),
-            Book(pk=2,
-                 bookid="__CvAFrcWY0C",
+            Book(bookid="__CvAFrcWY0C",
                  title="Unlimited Power",
                  authors="Tony Robbins",
                  publisher="Simon and Schuster",
@@ -32,8 +30,7 @@ def books(django_db_setup, django_db_blocker):
                  language="en",
                  description=("<p>Anthony Robbins calls it the "
                               "new science of personal achievement ...")),
-            Book(pk=3,
-                 bookid="3V_6DwAAQBAJ",
+            Book(bookid="3V_6DwAAQBAJ",
                  title="Power Vs. Force",
                  authors="David R. Hawkins",
                  publisher="Hay House, Inc",
@@ -44,8 +41,7 @@ def books(django_db_setup, django_db_blocker):
                  description=("Imagine—what if you had access to a simple "
                               "yes-or-no answer to any question you wished "
                               "to ask? ...")),
-            Book(pk=4,
-                 bookid="bK1ktwAACAAJ",
+            Book(bookid="bK1ktwAACAAJ",
                  title="177 Mental Toughness Secrets of the World Class",
                  authors="Steve Siebold",
                  publisher="London House Press",
@@ -58,15 +54,15 @@ def books(django_db_setup, django_db_blocker):
                               "ascend to the throne of the world class? "
                               "The answer is YES!"))
         ]
-        return Book.objects.bulk_create(books)
+        Book.objects.bulk_create(books)
+        return Book.objects.all()
 
 
 @pytest.fixture(scope="module")
 def two_books(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         books = [
-            Book(pk=5,
-                 bookid="jaM7DwAAQBAJ",
+            Book(bookid="jaM7DwAAQBAJ",
                  title="Ender's Game",
                  authors="Orson Scott Card",
                  publisher="Tom Doherty Associates",
@@ -76,8 +72,7 @@ def two_books(django_db_setup, django_db_blocker):
                  language="en",
                  description=("This engaging, collectible, miniature hardcover"
                               " of the Orson Scott Card classic ...")),
-            Book(pk=6,
-                 bookid="UCJMRAAACAAJ",
+            Book(bookid="UCJMRAAACAAJ",
                  title="Elantris",
                  authors="Brandon Sanderson",
                  publisher="Gollancz",
@@ -88,7 +83,9 @@ def two_books(django_db_setup, django_db_blocker):
                  description=("Elantris was built on magic and it thrived. "
                               "But then the magic began to fade ..."))
         ]
-        return Book.objects.bulk_create(books)
+        Book.objects.bulk_create(books)
+        added_titles = ["Ender's Game", "Elantris"]
+        return Book.objects.filter(title__in=added_titles)
 
 
 @pytest.fixture(scope="module")
@@ -113,7 +110,8 @@ def user_books(django_db_setup, django_db_blocker, books, user):
             UserBook(user=user, book=book, status=next(statuses))
             for book in books
         ]
-        return UserBook.objects.bulk_create(user_books)
+        UserBook.objects.bulk_create(user_books)
+        return UserBook.objects.all()
 
 
 @pytest.fixture(scope="module")
@@ -125,4 +123,5 @@ def user_fav_books(django_db_setup, django_db_blocker, two_books, user):
                      favorite=True)
             for book in two_books
         ]
-        return UserBook.objects.bulk_create(user_books)
+        UserBook.objects.bulk_create(user_books)
+        return UserBook.objects.filter(favorite=True)
