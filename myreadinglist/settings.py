@@ -186,3 +186,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Celery settings
 CELERY_BROKER_URL = config('CELERY_BROKER_URL')
+
+# needed for big goodreads imports
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
