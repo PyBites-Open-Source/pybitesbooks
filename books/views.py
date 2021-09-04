@@ -289,7 +289,7 @@ def import_books(request):
         read_statuses = post.getlist("read_statuses")
         dates = post.getlist("dates")
 
-        user_books = []
+        new_user_book_count = 0
         for bookid, read_status, read_date in zip(
             books_to_add, read_statuses, dates
         ):
@@ -297,20 +297,25 @@ def import_books(request):
                 datetime.strptime(read_date, '%Y-%m-%d'))
             book = Book.objects.filter(
                 bookid=bookid).order_by("inserted").last()
-            user_books.append(
-                UserBook(
-                    user=request.user,
-                    book=book,
-                    status=read_status,
-                    completed=completed_dt
-                )
-            )
-        UserBook.objects.bulk_create(user_books)
+
+            # make sure we don't store books twice
+            user_book, created = UserBook.objects.get_or_create(
+                user=request.user,
+                book=book)
+
+            # if book is already in user's collection update status and
+            # completed date
+            user_book.status = read_status
+            user_book.completed = completed_dt
+            user_book.save()
+
+            if created:
+                new_user_book_count += 1
 
         # delete the cached items
         ImportedBook.objects.filter(user=request.user).delete()
 
-        messages.success(request, f"{len(user_books)} books inserted")
+        messages.success(request, f"{new_user_book_count} books inserted")
         return redirect('user_page', username=request.user.username)
 
     elif "import_books_submit" in post:
