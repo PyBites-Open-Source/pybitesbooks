@@ -9,4 +9,5 @@ urlpatterns = [
     path('random', views.random_book, name='random_book'),
     path('random/<str:grep>', views.random_book, name='random_book'),
     path('books/<str:bookid>', views.get_bookid, name='get_bookid'),
+    path('lists/<str:name>', views.get_book_list, name='get_book_list'),
 ]

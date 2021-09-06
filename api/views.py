@@ -109,7 +109,6 @@ def random_book(request, grep=None):
 
 def get_bookid(request, bookid):
     books = Book.objects.filter(bookid=bookid)
-    print(books)
     if not books:
         raise Http404
 
@@ -129,3 +128,31 @@ def get_bookid(request, bookid):
     json_data = json.dumps(data, indent=4, default=str, sort_keys=False)
 
     return HttpResponse(json_data, content_type='application/json')
+
+
+def get_book_list(request, name):
+    books = UserBook.objects.select_related(
+        "book"
+    ).filter(
+        booklists__name=name
+    ).order_by("book__title")
+
+    if not books:
+        raise Http404
+
+    data = []
+    for book in books:
+        book_obj = dict(
+            bookid=book.book.bookid,
+            title=book.book.title,
+            url=book.book.url,
+            authors=book.book.authors,
+            pages=book.book.pages,
+            description=book.book.description)
+        data.append(book_obj)
+
+    return HttpResponse(
+        json.dumps(
+            data, indent=4, default=str, sort_keys=False),
+        content_type='application/json'
+    )
