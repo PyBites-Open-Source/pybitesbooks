@@ -34,7 +34,7 @@ sendgrid==6.4.7
 sentry-sdk==0.19.1
 six==1.15.0
 sqlparse==0.4.2
-starkbank-ecdsa==1.1.0
+starkbank-ecdsa==2.0.1
 toml==0.10.1
 urllib3==1.26.5
 vine==5.0.0
