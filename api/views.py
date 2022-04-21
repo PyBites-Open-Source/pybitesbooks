@@ -45,18 +45,18 @@ def get_user_books(username):
     books = UserBook.objects.select_related('book').filter(user=user)
 
     for book in books:
-        data = dict(bookid=book.book.bookid,
-                    title=book.book.title,
-                    url=book.book.url,
-                    authors=book.book.authors,
-                    favorite=book.favorite,
-                    published=book.book.published,
-                    isbn=book.book.isbn,
-                    pages=book.book.pages,
-                    language=book.book.language,
-                    description=book.book.description,
-                    imagesize=book.book.imagesize)
-        data[book.status].append(data)
+        row = dict(bookid=book.book.bookid,
+                   title=book.book.title,
+                   url=book.book.url,
+                   authors=book.book.authors,
+                   favorite=book.favorite,
+                   published=book.book.published,
+                   isbn=book.book.isbn,
+                   pages=book.book.pages,
+                   language=book.book.language,
+                   description=book.book.description,
+                   imagesize=book.book.imagesize)
+        data[book.status].append(row)
     return data
 
 
