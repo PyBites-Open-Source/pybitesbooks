@@ -65,7 +65,7 @@ def user_books(request, username=None):
     if username is None:
         data = get_users()
     else:
-        data = get_user_books()
+        data = get_user_books(username)
 
     json_data = json.dumps(data, indent=4, default=str, sort_keys=False)
 
