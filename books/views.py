@@ -161,7 +161,7 @@ def book_page(request, bookid):
                 book=book, status=COMPLETED
             )
         },
-        key=lambda user: user.username
+        key=lambda user: user.username.lower()
     )
 
     user_lists = []
@@ -191,19 +191,27 @@ def book_page(request, bookid):
 
 def books_per_category(request, category_name):
     category = get_object_or_404(Category, name=category_name)
-    books = Book.objects.filter(
-        categories__id=category.id).order_by("title")
     user_books = UserBook.objects.select_related(
-        "book", "user").all()
+        "book", "user"
+    ).filter(
+        book__categories__id=category.id
+    ).all()
 
     users_by_bookid = defaultdict(set)
     for ub in user_books:
-        users_by_bookid[ub.book.bookid].add(ub.user)
+        bookid = ub.book.bookid
+        users_by_bookid[bookid].add(ub.user)
 
     users_by_bookid_sorted = {
-        bookid: sorted(users, key=lambda user: user.username)
+        bookid: sorted(users, key=lambda user: user.username.lower())
         for bookid, users in users_by_bookid.items()
     }
+
+    # only show books added by users (vs. just navigated)
+    # there are some dups in db unfortunately
+    books = sorted({ub.book for ub in user_books},
+                   key=lambda book: book.title.lower())
+
     context = {
         "category": category,
         "books": books,
