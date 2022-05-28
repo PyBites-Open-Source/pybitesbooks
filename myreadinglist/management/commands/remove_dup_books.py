@@ -16,4 +16,4 @@ class Command(BaseCommand):
                 continue
             books = Book.objects.filter(bookid=bookid)
             for book in books[1:]:
-                print(book.delete())
+                self.stdout.write(book.delete())
