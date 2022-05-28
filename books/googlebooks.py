@@ -55,19 +55,27 @@ def get_book_info_from_api(book_id):
     else:
         image_size = '1'
 
-    book = Book(bookid=bookid,
-                title=title,
-                authors=authors,
-                publisher=publisher,
-                published=published,
-                isbn=isbn,
-                pages=pages,
-                language=language,
-                description=description,
-                imagesize=image_size)
-    book.save()
-    book.categories.add(*category_objects)
-    book.save()
+    book, created = Book.objects.get_or_create(
+        bookid=bookid)
+
+    # make sure we don't created duplicates
+    if created:
+        book.title = title
+        book.authors = authors
+        book.publisher = publisher
+        book.published = published
+        book.isbn = isbn
+        book.pages = pages
+        book.language = language
+        book.description = description
+        book.imagesize = image_size
+        book.save()  # needed before we can add m2m
+
+    # if no categories yet add them
+    if category_objects and book.categories.count() == 0:
+        print("categories found, adding them")
+        book.categories.add(*category_objects)
+        book.save()
 
     return book
 

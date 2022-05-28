@@ -11,6 +11,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         books = Book.objects.all()
-        for book in books:
+        for book in books[:10]:
+            print(book.bookid, book.title)
             resp = get_book_info_from_api(book.bookid)
             breakpoint()
+            sleep(0.5)
