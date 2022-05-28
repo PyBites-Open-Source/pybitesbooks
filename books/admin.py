@@ -2,14 +2,18 @@ from django.conf import settings
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import (Book, Search, UserBook,
+from .models import (Category, Book, Search, UserBook,
                      BookNote, Badge, BookConversion,
                      ImportedBook)
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+
+
 class BookAdmin(admin.ModelAdmin):
     list_display = ("bookid", "title", "authors", "publisher", "pages", "inserted")
-    search_fields = ("title", "authors", "publisher")
+    search_fields = ("bookid", "title", "authors", "publisher")
 
 
 class SearchAdmin(admin.ModelAdmin):
@@ -19,7 +23,7 @@ class SearchAdmin(admin.ModelAdmin):
 
 class UserBookAdmin(admin.ModelAdmin):
     list_display = ("user", "book", "status", "favorite", "completed", "inserted")
-    search_fields = ("user__username", "book__title",)
+    search_fields = ("user__username", "book__title", "book__bookid",)
     list_filter = ("status", "favorite")
 
 
@@ -60,6 +64,7 @@ class ImportedBookAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
 
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Book, BookAdmin)
 admin.site.register(Search, SearchAdmin)
 admin.site.register(UserBook, UserBookAdmin)

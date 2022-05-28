@@ -12,8 +12,18 @@ QUOTE = 'q'
 NOTE = 'n'
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "categories"
+
+
 class Book(models.Model):
-    bookid = models.CharField(max_length=20)  # google bookid
+    bookid = models.CharField(max_length=20, unique=True)  # google bookid
     title = models.CharField(max_length=300)
     authors = models.CharField(max_length=200)
     publisher = models.CharField(max_length=100)
@@ -25,6 +35,7 @@ class Book(models.Model):
     imagesize = models.CharField(max_length=2, default="1")
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
+    categories = models.ManyToManyField(Category, related_name='categories')
 
     @property
     def title_and_authors(self):
@@ -51,6 +62,9 @@ class Search(models.Model):
 
     def __str__(self):
         return self.term
+
+    class Meta:
+        verbose_name_plural = "searches"
 
 
 class UserBook(models.Model):

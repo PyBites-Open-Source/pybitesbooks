@@ -1,5 +1,5 @@
 import csv
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict, namedtuple, defaultdict
 from datetime import date, datetime
 from io import StringIO
 
@@ -17,7 +17,7 @@ from .goodreads import (BookImportStatus,
                         GOOGLE_TO_GOODREADS_READ_STATUSES)
 from .googlebooks import get_book_info
 from .forms import UserBookForm, ImportBooksForm
-from .models import (Book, UserBook, BookNote, ImportedBook,
+from .models import (Category, Book, UserBook, BookNote, ImportedBook,
                      READING, COMPLETED, TO_READ)
 from .tasks import retrieve_google_books
 from goal.models import Goal
@@ -150,8 +150,19 @@ def book_page(request, bookid):
         notes = book_notes.filter(book=book, public=True)
     notes = notes.order_by('-edited').all()
 
-    book_users = UserBook.objects.select_related('user').filter(
-        book=book, status=COMPLETED)
+    # userbooks has some dup, make sure we deduplicate
+    # them for template display
+    book_users = sorted(
+        {
+            ub.user for ub in
+            UserBook.objects.select_related(
+                'user'
+            ).filter(
+                book=book, status=COMPLETED
+            )
+        },
+        key=lambda user: user.username.lower()
+    )
 
     user_lists = []
     if request.user.is_authenticated:
@@ -176,6 +187,37 @@ def book_page(request, bookid):
                                          'book_users': book_users,
                                          'user_lists': user_lists,
                                          'book_on_lists': book_on_lists})
+
+
+def books_per_category(request, category_name):
+    category = get_object_or_404(Category, name=category_name)
+    user_books = UserBook.objects.select_related(
+        "book", "user"
+    ).filter(
+        book__categories__id=category.id
+    ).all()
+
+    users_by_bookid = defaultdict(set)
+    for ub in user_books:
+        bookid = ub.book.bookid
+        users_by_bookid[bookid].add(ub.user)
+
+    users_by_bookid_sorted = {
+        bookid: sorted(users, key=lambda user: user.username.lower())
+        for bookid, users in users_by_bookid.items()
+    }
+
+    # only show books added by users (vs. just navigated)
+    # there are some dups in db unfortunately
+    books = sorted({ub.book for ub in user_books},
+                   key=lambda book: book.title.lower())
+
+    context = {
+        "category": category,
+        "books": books,
+        "users_by_bookid": users_by_bookid_sorted,
+    }
+    return render(request, 'category.html', context)
 
 
 def get_user_goal(user):

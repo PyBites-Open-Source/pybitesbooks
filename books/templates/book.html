@@ -119,11 +119,19 @@
           <!-- Go to www.addthis.com/dashboard to customize your tools -->
           <div class="addthis_inline_share_toolbox_50et"></div>
 
+          {% if book.categories.count > 0 %}
+            <ul id="bookCategories">
+            {% for category in book.categories.all %}
+              <li class="tag"><a href="{% url 'books:books_per_category' category.name %}">{{ category.name }}</a></li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+
           {% if book_users %}
             <h3 class="clear marginTop mui--text-body2">Read by:</h3>
 
-            {% for bu in book_users %}
-              <a class="mui--text-title userAvatar userAvatarSmall" href="{% url 'user_page' username=bu.user.username %}" style="{{ bu.user.id|user2rgb }}">{{ bu.user.username|slice:":2"|upper }}</a>
+            {% for user in book_users %}
+              <a class="mui--text-title userAvatar userAvatarSmall" href="{% url 'user_page' username=user.username %}" style="{{ user.id|user2rgb }}">{{ user.username|slice:":2"|upper }}</a>
             {% endfor %}
 
           {% endif %}

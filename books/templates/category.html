@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tags %}
+
+{% block title %}{{ category.name }}{% endblock %}
+{% block og_title %}{{ category.name }}{% endblock %}
+{% block og_url %}{{ request.path }}{% endblock %}
+
+{% block content %}
+
+<div class="mui-container">
+  <h2><i>{{ category.name }}</i> books:</h2>
+  {% for book in books %}
+    <div class="mui-panel bookCard" style="float: left;">
+
+      <a href="{% url 'books:book_page' bookid=book.bookid %}" title="{{ book.title }}">
+        <img src="http://books.google.com/books?id={{ book.bookid }}&printsec=frontcover&img=1&zoom=1&source=gbs_gdata" alt="{{ book.title }}">
+      </a>
+
+      <div class="readers">
+        {% with users_by_bookid|get_item:book.bookid as users %}
+          {% for user in users %}
+            <a class="mui--text-title userAvatar userAvatarSmall" href="{% url 'user_page' username=user.username %}" style="{{ user.id|user2rgb }}">{{ user.username|slice:":2"|upper }}</a>
+          {% endfor %}
+        {% endwith %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
