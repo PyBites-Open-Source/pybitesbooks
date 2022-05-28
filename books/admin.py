@@ -2,9 +2,13 @@ from django.conf import settings
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import (Book, Search, UserBook,
+from .models import (Category, Book, Search, UserBook,
                      BookNote, Badge, BookConversion,
                      ImportedBook)
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name",)
 
 
 class BookAdmin(admin.ModelAdmin):

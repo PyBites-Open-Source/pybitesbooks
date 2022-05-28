@@ -12,6 +12,13 @@ QUOTE = 'q'
 NOTE = 'n'
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.name
+
+
 class Book(models.Model):
     bookid = models.CharField(max_length=20)  # google bookid
     title = models.CharField(max_length=300)
@@ -25,6 +32,7 @@ class Book(models.Model):
     imagesize = models.CharField(max_length=2, default="1")
     inserted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
+    categories = models.ManyToManyField(Category, related_name='categories')
 
     @property
     def title_and_authors(self):
