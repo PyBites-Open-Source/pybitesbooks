@@ -1,7 +1,7 @@
 import requests
 from urllib import parse
 
-from .models import Book, Search
+from .models import Category, Book, Search
 
 BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
 SEARCH_URL = BASE_URL + '?q={}'
@@ -42,6 +42,14 @@ def get_book_info_from_api(book_id):
     language = volinfo.get('language', DEFAULT_LANGUAGE)
     description = volinfo.get('description', 'No description')
 
+    categories = volinfo.get('categories')
+    if categories:
+        categories = categories[0].split(" / ")
+        category_objects = []
+        for category in categories:
+            cat, _ = Category.objects.get_or_create(name=category)
+            category_objects.append(cat)
+
     if 'imageLinks' in volinfo and 'small' in volinfo['imageLinks']:
         image_size = parse.parse_qs(parse.urlparse(volinfo['imageLinks']['small']).query)['zoom'][0]
     else:
@@ -57,6 +65,8 @@ def get_book_info_from_api(book_id):
                 language=language,
                 description=description,
                 imagesize=image_size)
+    book.save()
+    book.categories.add(*category_objects)
     book.save()
 
     return book

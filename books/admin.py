@@ -13,7 +13,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class BookAdmin(admin.ModelAdmin):
     list_display = ("bookid", "title", "authors", "publisher", "pages", "inserted")
-    search_fields = ("title", "authors", "publisher")
+    search_fields = ("bookid", "title", "authors", "publisher")
 
 
 class SearchAdmin(admin.ModelAdmin):
@@ -64,6 +64,7 @@ class ImportedBookAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
 
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Book, BookAdmin)
 admin.site.register(Search, SearchAdmin)
 admin.site.register(UserBook, UserBookAdmin)
