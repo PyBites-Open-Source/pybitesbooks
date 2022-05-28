@@ -42,13 +42,11 @@ def get_book_info_from_api(book_id):
     language = volinfo.get('language', DEFAULT_LANGUAGE)
     description = volinfo.get('description', 'No description')
 
-    categories = volinfo.get('categories')
+    categories = volinfo.get('categories', [])
     category_objects = []
-    if categories:
-        categories = categories[0].split(" / ")
-        for category in categories:
-            cat, _ = Category.objects.get_or_create(name=category)
-            category_objects.append(cat)
+    for category in categories:
+        cat, _ = Category.objects.get_or_create(name=category)
+        category_objects.append(cat)
 
     if 'imageLinks' in volinfo and 'small' in volinfo['imageLinks']:
         image_size = parse.parse_qs(parse.urlparse(volinfo['imageLinks']['small']).query)['zoom'][0]
