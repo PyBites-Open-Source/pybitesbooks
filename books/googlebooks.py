@@ -43,9 +43,9 @@ def get_book_info_from_api(book_id):
     description = volinfo.get('description', 'No description')
 
     categories = volinfo.get('categories')
+    category_objects = []
     if categories:
         categories = categories[0].split(" / ")
-        category_objects = []
         for category in categories:
             cat, _ = Category.objects.get_or_create(name=category)
             category_objects.append(cat)

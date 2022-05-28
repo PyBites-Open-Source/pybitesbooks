@@ -11,8 +11,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         books = Book.objects.all()
-        for book in books[:10]:
+        for book in books:
             print(book.bookid, book.title)
-            resp = get_book_info_from_api(book.bookid)
-            breakpoint()
-            sleep(0.5)
+            if book.categories.count() > 0:
+                print("book already has categories, skipping")
+                continue
+            try:
+                get_book_info_from_api(book.bookid)
+            except KeyError:
+                print("cannot get book, skipping")
+            sleep(0.5)  # not sure about rates

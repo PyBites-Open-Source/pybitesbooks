@@ -23,7 +23,7 @@ class Category(models.Model):
 
 
 class Book(models.Model):
-    bookid = models.CharField(max_length=20)  # google bookid
+    bookid = models.CharField(max_length=20, unique=True)  # google bookid
     title = models.CharField(max_length=300)
     authors = models.CharField(max_length=200)
     publisher = models.CharField(max_length=100)
