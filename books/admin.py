@@ -23,7 +23,7 @@ class SearchAdmin(admin.ModelAdmin):
 
 class UserBookAdmin(admin.ModelAdmin):
     list_display = ("user", "book", "status", "favorite", "completed", "inserted")
-    search_fields = ("user__username", "book__title",)
+    search_fields = ("user__username", "book__title", "book__bookid",)
     list_filter = ("status", "favorite")
 
 

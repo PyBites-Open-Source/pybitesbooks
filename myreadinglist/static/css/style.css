@@ -253,3 +253,20 @@ ul#bookCategories {
   border-radius: 5px;
   border: 1px solid #f2f2f2;
 }
+#categoryTable {
+  margin-top: 20px;
+}
+.bookCard {
+  height: 250px;
+  position: relative;
+  margin: 5px;
+}
+.readers {
+  padding: 5px;
+  border: 1px solid #f2f2f2;
+  border-radius: 5px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
