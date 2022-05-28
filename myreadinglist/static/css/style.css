@@ -63,6 +63,7 @@ footer {
   background-color: #eee;
   border-top: 1px solid #e0e0e0;
   padding-top: 35px;
+  margin-top: 35px;
 }
 
 
@@ -242,16 +243,23 @@ progress[value] {
   padding: 10px;
 }
 ul#bookCategories {
-  margin: 20px 0;
   padding-left: 0;
+  margin: 0 0 20px 0;
+  padding: 2px;
+  border: 1px solid #f2f2f2;
+  border-radius: 5px;
+  font-size: 90%;
+  overflow: hidden;
 }
-.tag {
+li.tag {
   list-style: none;
   background-color: #f0f8ff;
-  margin: 10px 0;
+  margin: 5px;
   padding: 2px 5px;
-  border-radius: 5px;
-  border: 1px solid #f2f2f2;
+  float: left;
+}
+#bookTabs {
+  clear: both;
 }
 #categoryTable {
   margin-top: 20px;
