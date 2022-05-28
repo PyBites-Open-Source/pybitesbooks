@@ -6,7 +6,7 @@ from books.models import Book, Category
 
 
 class Command(BaseCommand):
-    help = 'Add categories to existing books'
+    help = 'remove duplicate cached books (needed for migration 0035)'
 
     def handle(self, *args, **options):
         books = Book.objects.all()
