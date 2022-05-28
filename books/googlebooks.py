@@ -73,7 +73,6 @@ def get_book_info_from_api(book_id):
 
     # if no categories yet add them
     if category_objects and book.categories.count() == 0:
-        print("categories found, adding them")
         book.categories.add(*category_objects)
         book.save()
 
