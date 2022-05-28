@@ -69,7 +69,7 @@ def get_book_info_from_api(book_id):
         book.language = language
         book.description = description
         book.imagesize = image_size
-        book.save()  # needed before we can add m2m
+        book.save()
 
     # if no categories yet add them
     if category_objects and book.categories.count() == 0:
