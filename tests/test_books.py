@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 pytestmark = pytest.mark.django_db
@@ -16,19 +18,15 @@ def test_homepage_shows_user_completed_books(client, user_books, bookid, title):
     assert expected in response.content.decode()
 
 
-@pytest.mark.parametrize("snippet, is_in", [
-    ("<td>Peter Seibel</td>", True),
-    ("<td>Apress</td>", True),
-    ("<td>2009-09-16</td>", True),
-    ("<td>978143021948463</td>", True),
-    ("<td>Page Count</td><td>632</td>", True),
-    (('<form class="mui-form" id="addBookForm" '
-      'method="post">'), False),
-])
-def test_book_page_logged_out(client, books, snippet, is_in):
+def test_book_page_logged_out(client, books):
     response = client.get('/books/nneBa6-mWfgC')
     html = response.content.decode()
-    assert snippet in html if is_in else snippet not in html
+    assert "<td>Peter Seibel</td>" in html
+    assert "<td>Apress</td>" in html
+    assert "<td>978143021948463</td>" in html
+    assert not re.search(r"<form.*addBookForm", html)
+    assert "Computers / Programming / General" in html
+    assert "Computers / Information Technology" in html
 
 
 def test_book_page_logged_in(login, books):
@@ -38,23 +36,17 @@ def test_book_page_logged_in(login, books):
             'method="post">') in html
 
 
-@pytest.mark.parametrize("snippet", [
-    "Reading (2)",
-    "Completed (2)",
-    "Wants to read (0)",
-    "wow you read 2 books!",
-    "World Class - completed",
-    "Unlimited Power - completed",
-    ('Total reading: <strong class="mui--text-title">'
-        '4</strong> books added'),
-    ('of which <strong class="mui--text-title">2</strong>'
-        ' read totalling '),
-    '<strong class="mui--text-title">729</strong> pages.'
-])
-def test_user_profile_page(client, user, user_books, snippet):
+def test_user_profile_page(client, user, user_books):
     response = client.get(f'/users/{user.username}')
     html = response.content.decode()
-    assert snippet in html
+    assert "Reading (2)" in html
+    assert "Completed (2)" in html
+    assert "Wants to read (0)" in html
+    assert "wow you read 2 books!" in html
+    assert "World Class - completed" in html
+    assert "Unlimited Power - completed" in html
+    assert re.search(r"Total reading:.*>4<.* books added", html)
+    assert re.search(r"of which.*>2<.* read .*>729<.* pages", html)
 
 
 @pytest.mark.parametrize("snippet", [
