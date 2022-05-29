@@ -5,17 +5,20 @@ import pytest
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.parametrize("bookid, title", [
-    ("__CvAFrcWY0C", "Unlimited Power"),
-    ("bK1ktwAACAAJ", "177 Mental Toughness Secrets of the World Class"),
-])
-def test_homepage_shows_user_completed_books(client, user_books, bookid, title):
+def test_homepage_shows_user_completed_books(client, user_books):
     response = client.get('/')
-    expected = (f'<a href="/books/{bookid}"><img class="thumbNail" '
-                f'src="http://books.google.com/books?id={bookid}&'
-                'printsec=frontcover&img=1&zoom=1&source=gbs_gdata" '
-                f'alt="{title}"></a>')
-    assert expected in response.content.decode()
+    html = response.content.decode()
+    book1 = ('<a href="/books/__CvAFrcWY0C"><img class="thumbNail" '
+             'src="http://books.google.com/books?id=__CvAFrcWY0C&'
+             'printsec=frontcover&img=1&zoom=1&source=gbs_gdata" '
+             'alt="Unlimited Power"></a>')
+    book2 = ('<a href="/books/bK1ktwAACAAJ"><img class="thumbNail" '
+             'src="http://books.google.com/books?id=bK1ktwAACAAJ&'
+             'printsec=frontcover&img=1&zoom=1&source=gbs_gdata" '
+             'alt="177 Mental Toughness Secrets of the World Class">'
+             '</a>')
+    assert book1 in html
+    assert book2 in html
 
 
 def test_book_page_logged_out(client, books):
