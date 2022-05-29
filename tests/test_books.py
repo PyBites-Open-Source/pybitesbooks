@@ -35,8 +35,9 @@ def test_book_page_logged_out(client, books):
 def test_book_page_logged_in(login, books):
     response = login.get('/books/nneBa6-mWfgC')
     html = response.content.decode()
-    assert ('<form class="mui-form" id="addBookForm" '
-            'method="post">') in html
+    assert re.search(r"<form.*addBookForm", html)
+    assert "Computers / Programming / General" in html
+    assert "Computers / Information Technology" in html
 
 
 def test_user_profile_page(client, user, user_books):
