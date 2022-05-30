@@ -25,7 +25,8 @@ psycopg2==2.9.3
 psycopg2-binary==2.9.3
 py==1.10.0
 pyparsing==2.4.7
-pytest==6.1.1
+pytest==7.1.2
+pytest-cov==3.0.0
 pytest-django==4.0.0
 python-decouple==3.3
 python-http-client==3.3.1
