@@ -268,10 +268,20 @@ li.tag {
   position: relative;
   margin: 5px;
 }
+.categoryRow {
+  margin-top: 15px;
+  overflow: hidden;
+}
+.categoryCard {
+  margin-top: 5px;
+  height: 280px;
+  background: #f2f2f2;
+}
 .readers {
   padding: 5px;
   border: 1px solid #f2f2f2;
-  border-radius: 5px;
+  background: #f0f8ff;
+  opacity: 0.8;
   overflow: hidden;
   position: absolute;
   bottom: 0px;
