@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -45,12 +47,49 @@ class UserListDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         obj = self.get_object()
-        books_on_list = UserBook.objects.select_related(
-            "book"
-        ).filter(
-            booklists__id=obj.id
+        user_books = UserBook.objects.select_related(
+            "book", "user"
         ).order_by("book__title")
-        context['books_on_list'] = books_on_list
+
+        # TODO: deduplicate
+        # users_by_bookid needs all user_books
+        users_by_bookid = defaultdict(set)
+        for ub in user_books:
+            bookid = ub.book.bookid
+            users_by_bookid[bookid].add(ub.user)
+
+        # ... hence this filter should go after that
+        user_books = user_books.filter(
+            booklists__id=obj.id)
+
+        users_by_bookid_sorted = {
+            bookid: sorted(
+                users,
+                key=lambda user: user.username.lower()
+            )
+            for bookid, users in users_by_bookid.items()
+        }
+
+        books_by_category = defaultdict(list)
+        # make sure books are only added once
+        books_done = set()
+        for ub in user_books:
+            for category in ub.book.categories.all():
+                if ub.book in books_done:
+                    continue
+                # only order by high level category
+                category = category.name.split(" / ")[0].title()
+                books_by_category[category].append(ub.book)
+                books_done.add(ub.book)
+
+        books_by_category_sorted = sorted(
+            books_by_category.items()
+        )
+
+        context['user_books'] = user_books
+        context['users_by_bookid'] = users_by_bookid_sorted
+        context['books_by_category'] = books_by_category_sorted
+
         context['min_num_books_show_search'] = MIN_NUM_BOOKS_SHOW_SEARCH
         is_auth = self.request.user.is_authenticated
         context['is_me'] = is_auth and self.request.user == obj.user
