@@ -158,24 +158,24 @@ def get_book_list(request, name):
     )
 
 
-def _get_book_stats(username=None):
-    user_books = UserBook.objects.select_related('book', 'user')
-    if username is not None:
-        user_books = user_books.filter(user__username=username)
+def get_book_stats(request, username):
+    user_books = UserBook.objects.select_related(
+        'book', 'user'
+    # ).prefetch_related(
+    #    'book__categories'
+    ).filter(user__username=username)
 
     data = defaultdict(list)
     for user_book in user_books:
         row = dict(bookid=user_book.book.bookid,
                    title=user_book.book.title,
                    url=user_book.book.url,
+                   # categories=[c.name for c in
+                   #             user_book.book.categories.all()],
                    status=user_book.status,
                    favorite=user_book.favorite,
                    completed=user_book.completed)
         data[user_book.user.username].append(row)
-    return data
 
-
-def get_book_stats(request, username=None):
-    data = _get_book_stats(username)
     json_data = json.dumps(data, indent=4, default=str, sort_keys=False)
     return HttpResponse(json_data, content_type='application/json')
