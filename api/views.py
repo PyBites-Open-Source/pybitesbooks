@@ -160,22 +160,18 @@ def get_book_list(request, name):
 
 def get_book_stats(request, username):
     user_books = UserBook.objects.select_related(
-        'book', 'user'
-    # ).prefetch_related(
-    #    'book__categories'
+        'book'
     ).filter(user__username=username)
 
-    data = defaultdict(list)
+    data = []
     for user_book in user_books:
         row = dict(bookid=user_book.book.bookid,
                    title=user_book.book.title,
                    url=user_book.book.url,
-                   # categories=[c.name for c in
-                   #             user_book.book.categories.all()],
                    status=user_book.status,
                    favorite=user_book.favorite,
                    completed=user_book.completed)
-        data[user_book.user.username].append(row)
+        data.append(row)
 
     json_data = json.dumps(data, indent=4, default=str, sort_keys=False)
     return HttpResponse(json_data, content_type='application/json')
