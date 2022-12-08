@@ -18,7 +18,7 @@ build==0.9.0
     # via pip-tools
 celery==5.2.7
     # via -r requirements.in
-certifi==2020.6.20
+certifi==2022.12.7
     # via
     #   requests
     #   sentry-sdk
@@ -37,11 +37,6 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.2.0
     # via celery
-colorama==0.4.6
-    # via
-    #   build
-    #   click
-    #   pytest
 confusable-homoglyphs==3.2.0
     # via django-registration
 coverage[toml]==6.5.0
@@ -58,6 +53,8 @@ django-debug-toolbar==3.7.0
     # via -r requirements.in
 django-registration==3.3
     # via -r requirements.in
+exceptiongroup==1.0.4
+    # via pytest
 gunicorn==20.1.0
     # via -r requirements.in
 idna==2.10
@@ -118,8 +115,12 @@ starkbank-ecdsa==2.0.1
     # via sendgrid
 toml==0.10.2
     # via -r requirements.in
-tzdata==2022.6
-    # via django
+tomli==2.0.1
+    # via
+    #   build
+    #   coverage
+    #   pep517
+    #   pytest
 urllib3==1.26.13
     # via
     #   requests
