@@ -101,7 +101,7 @@ requests==2.28.1
     # via -r requirements.in
 sendgrid==6.9.7
     # via -r requirements.in
-sentry-sdk==1.11.1
+sentry-sdk==1.14.0
     # via -r requirements.in
 six==1.15.0
     # via
