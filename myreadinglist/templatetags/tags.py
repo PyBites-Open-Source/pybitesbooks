@@ -39,9 +39,19 @@ def user2rgb(userid):
     """Generates a random color for user avatar"""
     idx = userid % len(COLORS)
     bg, fg = COLORS[idx]
-    return f'background-color: {bg}; color: {fg};'
+    return f"background-color: {bg}; color: {fg};"
 
 
 @register.filter
 def unslugify(value):
-    return value.replace('-', ' ')
+    return value.replace("-", " ")
+
+
+@register.filter
+def multiply(string, times):
+    return string * times
+
+
+@register.filter
+def subtract(value, arg):
+    return max(value - arg, 0)

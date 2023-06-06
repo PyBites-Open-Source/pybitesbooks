@@ -20,7 +20,7 @@ class Pomodoro(models.Model):
     # we want various pomodori sizes
     minutes = models.IntegerField(default=DEFAULT_POMO_MIN)
     # pomodoro will be added upon finishing the pomo
-    end = models.DateTimeField(auto_now_add=True)
+    end = models.DateTimeField()
 
     @property
     def start(self):
