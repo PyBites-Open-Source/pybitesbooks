@@ -31,6 +31,9 @@ What books were completed last week? {books_completed}
 
 Most ambitious readers (# books to read goal this year):
 {goals}
+
+Update your reading here:
+https://pybitesbooks.com
 """
 PROFILE_PAGE = settings.DOMAIN + "/users/{username}"
 THIS_YEAR = current_year()
