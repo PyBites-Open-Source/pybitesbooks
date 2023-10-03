@@ -120,7 +120,7 @@ tomli==2.0.1
     #   coverage
     #   pep517
     #   pytest
-urllib3==1.26.13
+urllib3==1.26.17
     # via
     #   requests
     #   sentry-sdk
