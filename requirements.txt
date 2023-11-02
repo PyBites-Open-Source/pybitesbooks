@@ -40,10 +40,12 @@ click-repl==0.2.0
 confusable-homoglyphs==3.2.0
     # via django-registration
 coverage[toml]==6.5.0
-    # via pytest-cov
+    # via
+    #   coverage
+    #   pytest-cov
 dj-database-url==1.0.0
     # via -r requirements.in
-django==4.1.10
+django==4.1.13
     # via
     #   -r requirements.in
     #   dj-database-url
@@ -53,8 +55,6 @@ django-debug-toolbar==3.7.0
     # via -r requirements.in
 django-registration==3.3
     # via -r requirements.in
-exceptiongroup==1.0.4
-    # via pytest
 gunicorn==20.1.0
     # via -r requirements.in
 idna==2.10
@@ -114,12 +114,6 @@ starkbank-ecdsa==2.0.1
     # via sendgrid
 toml==0.10.2
     # via -r requirements.in
-tomli==2.0.1
-    # via
-    #   build
-    #   coverage
-    #   pep517
-    #   pytest
 urllib3==1.26.18
     # via
     #   requests
