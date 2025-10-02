@@ -4,8 +4,6 @@ amqp==5.2.0
     # via kombu
 asgiref==3.8.1
     # via django
-async-timeout==4.0.3
-    # via redis
 attrs==24.2.0
     # via pytest
 billiard==3.6.4.0
@@ -37,13 +35,13 @@ click-repl==0.3.0
     # via celery
 confusable-homoglyphs==3.3.1
     # via django-registration
-coverage==7.6.4
+coverage[toml]==7.6.4
     # via pytest-cov
 distlib==0.3.9
     # via virtualenv
 dj-database-url==1.0.0
     # via -r requirements.in
-django==4.1.13
+django==4.2.25
     # via
     #   -r requirements.in
     #   dj-database-url
@@ -53,18 +51,14 @@ django-debug-toolbar==3.7.0
     # via -r requirements.in
 django-registration==3.3
     # via -r requirements.in
-exceptiongroup==1.2.2
-    # via pytest
 filelock==3.16.1
     # via virtualenv
-gunicorn==22.0.0
+gunicorn==23.0.0
     # via -r requirements.in
 identify==2.6.1
     # via pre-commit
 idna==3.10
     # via requests
-importlib-metadata==8.5.0
-    # via build
 iniconfig==2.0.0
     # via pytest
 kombu==5.4.2
@@ -76,8 +70,6 @@ packaging==24.1
     #   build
     #   gunicorn
     #   pytest
-pip==24.3.1
-    # via pip-tools
 pip-tools==6.10.0
     # via -r requirements.in
 platformdirs==4.3.6
@@ -117,8 +109,6 @@ sendgrid==6.9.7
     # via -r requirements.in
 sentry-sdk==2.8.0
     # via -r requirements.in
-setuptools==75.3.0
-    # via pip-tools
 sqlparse==0.5.1
     # via
     #   django
@@ -127,18 +117,9 @@ starkbank-ecdsa==2.2.0
     # via sendgrid
 toml==0.10.2
     # via -r requirements.in
-tomli==2.0.2
-    # via
-    #   build
-    #   coverage
-    #   pytest
-typing-extensions==4.12.2
-    # via
-    #   asgiref
-    #   kombu
 tzdata==2024.2
     # via kombu
-urllib3==2.2.3
+urllib3==2.5.0
     # via
     #   requests
     #   sentry-sdk
@@ -155,5 +136,3 @@ wheel==0.44.0
     # via pip-tools
 whitenoise==6.2.0
     # via -r requirements.in
-zipp==3.20.2
-    # via importlib-metadata
