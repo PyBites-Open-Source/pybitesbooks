@@ -51,7 +51,7 @@ django-debug-toolbar==3.7.0
     # via -r requirements.in
 django-registration==3.3
     # via -r requirements.in
-filelock==3.16.1
+filelock==3.20.1
     # via virtualenv
 gunicorn==23.0.0
     # via -r requirements.in
@@ -103,7 +103,7 @@ pyyaml==6.0.2
     # via pre-commit
 redis==4.5.4
     # via -r requirements.in
-requests==2.32.0
+requests==2.32.4
     # via -r requirements.in
 sendgrid==6.9.7
     # via -r requirements.in
