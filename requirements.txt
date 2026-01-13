@@ -51,7 +51,7 @@ django-debug-toolbar==3.7.0
     # via -r requirements.in
 django-registration==3.3
     # via -r requirements.in
-filelock==3.16.1
+filelock==3.20.3
     # via virtualenv
 gunicorn==23.0.0
     # via -r requirements.in
@@ -128,7 +128,7 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
-virtualenv==20.27.1
+virtualenv==20.36.1
     # via pre-commit
 wcwidth==0.2.13
     # via prompt-toolkit
