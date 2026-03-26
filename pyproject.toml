@@ -18,7 +18,7 @@ dependencies = [
     "pytest==7.2.0",
     "python-decouple==3.6",
     "redis==4.5.4",
-    "requests==2.32.4",
+    "requests==2.33.0",
     "sendgrid==6.9.7",
     "sentry-sdk==2.8.0",
     "toml==0.10.2",
