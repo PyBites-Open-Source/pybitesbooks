@@ -6,7 +6,7 @@ django-registration==3.3
 gunicorn==23.0.0
 pip-tools==6.10.0
 psycopg2-binary==2.9.5
-pytest==7.2.0
+pytest==9.0.3
 pytest-cov==4.0.0
 pytest-django==4.5.2
 python-decouple==3.6
